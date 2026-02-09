@@ -1,26 +1,236 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  /* Custom Colors - Luxury Palette */
+  --color-black: #0A0A0A;
+  --color-black-900: #000000;
+  --color-black-800: #1A1A1A;
+  --color-gold: #C9A227;
+  --color-gold-light: #D4AF37;
+  --color-gold-dark: #B8941F;
+  --color-green: #004225;
+  --color-green-light: #046A38;
+  --color-green-dark: #003018;
+  --color-cream: #F5F5F0;
+
+  /* Font Families */
+  --font-playfair: 'Playfair Display', serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Base Styles */
+* {
+  box-sizing: border-box;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-black);
+  color: var(--color-cream);
+  font-family: var(--font-playfair);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-playfair);
+  color: white;
+}
+
+/* Selection */
+::selection {
+  background-color: var(--color-gold);
+  color: var(--color-black);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 0.5rem;
+}
+
+::-webkit-scrollbar-track {
+  background-color: var(--color-black-800);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-gold);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-gold-light);
+}
+
+/* Gradient utilities */
+.from-black { --tw-gradient-from: var(--color-black); }
+.from-black-800 { --tw-gradient-from: var(--color-black-800); }
+.from-black-900 { --tw-gradient-from: var(--color-black-900); }
+.from-green { --tw-gradient-from: var(--color-green); }
+.from-green-dark { --tw-gradient-from: var(--color-green-dark); }
+.from-gold { --tw-gradient-from: var(--color-gold); }
+
+.via-black { --tw-gradient-via: var(--color-black); }
+.via-black-800 { --tw-gradient-via: var(--color-black-800); }
+.via-green { --tw-gradient-via: var(--color-green); }
+.via-green-dark { --tw-gradient-via: var(--color-green-dark); }
+.via-gold { --tw-gradient-via: var(--color-gold); }
+
+.to-black { --tw-gradient-to: var(--color-black); }
+.to-black-800 { --tw-gradient-to: var(--color-black-800); }
+.to-black-900 { --tw-gradient-to: var(--color-black-900); }
+.to-green { --tw-gradient-to: var(--color-green); }
+.to-green-dark { --tw-gradient-to: var(--color-green-dark); }
+.to-gold { --tw-gradient-to: var(--color-gold); }
+.to-transparent { --tw-gradient-to: transparent; }
+
+/* Ring utilities */
+.ring-gold { --tw-ring-color: var(--color-gold); }
+.ring-green { --tw-ring-color: var(--color-green); }
+
+/* Shadow utilities with gold */
+.shadow-gold { box-shadow: 0 4px 14px 0 rgba(201, 162, 39, 0.3); }
+.shadow-gold-lg { box-shadow: 0 10px 40px 0 rgba(201, 162, 39, 0.4); }
+
+/* ============================================
+   Hero Section Performance Animations
+   GPU-accelerated for 60fps smoothness
+   ============================================ */
+
+/* Ken Burns - Slow cinematic zoom effect */
+@keyframes ken-burns {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.1);
+  }
+}
+
+.animate-ken-burns {
+  animation: ken-burns 30s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+/* Fade in animation */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.8s ease-out forwards;
+  opacity: 0;
+}
+
+/* Fade in with upward movement */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  opacity: 0;
+}
+
+/* Line expand animation for decorative lines */
+@keyframes line-expand {
+  from {
+    transform: scaleX(0);
+    opacity: 0;
+  }
+  to {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
+.animate-line-expand {
+  animation: line-expand 1.2s ease-out forwards;
+  transform-origin: center;
+  opacity: 0;
+}
+
+/* Scroll indicator bounce */
+@keyframes scroll-bounce {
+  0%, 100% {
+    opacity: 0.5;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(8px);
+  }
+}
+
+.animate-scroll-bounce {
+  animation: scroll-bounce 2s ease-in-out infinite;
+}
+
+/* Marquee - continuous right-to-left scroll for partner logos */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-50% - 2rem));
+  }
+}
+
+.animate-marquee {
+  animation: marquee 35s linear infinite;
+  will-change: transform;
+}
+
+/* Animation delay utilities */
+.animation-delay-200 {
+  animation-delay: 0.2s;
+}
+
+.animation-delay-300 {
+  animation-delay: 0.3s;
+}
+
+.animation-delay-400 {
+  animation-delay: 0.4s;
+}
+
+.animation-delay-500 {
+  animation-delay: 0.5s;
+}
+
+.animation-delay-600 {
+  animation-delay: 0.6s;
+}
+
+.animation-delay-700 {
+  animation-delay: 0.7s;
+}
+
+/* Safe area for mobile bottom navigation */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Hide scrollbar for horizontal scroll sections */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
