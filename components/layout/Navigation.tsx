@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Home, BookOpen, Calendar, Mail, ChevronRight, Instagram, Facebook, Phone, MapPin } from 'lucide-react';
+import { Home, BookOpen, Calendar, Mail, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
@@ -79,26 +79,9 @@ const megaMenuItemVariants = {
   visible: { opacity: 1, x: 0, transition: { duration: 0.3 } },
 };
 
-const mobileMenuVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { duration: 0.4, staggerChildren: 0.08, delayChildren: 0.2 },
-  },
-  exit: {
-    opacity: 0,
-    transition: { duration: 0.3 },
-  },
-};
-
-const mobileNavLinkVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as const } },
-};
 
 export default function Navigation() {
   const [scrollState, setScrollState] = useState<'top' | 'mid' | 'solid'>('top');
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeMegaMenu, setActiveMegaMenu] = useState<string | null>(null);
   const pathname = usePathname();
   const megaMenuTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -118,14 +101,6 @@ export default function Navigation() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  useEffect(() => {
-    if (isMobileMenuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-  }, [isMobileMenuOpen]);
 
   const handleMegaMenuEnter = (menuName: string) => {
     if (megaMenuTimeoutRef.current) {
@@ -161,7 +136,7 @@ export default function Navigation() {
         }`}
       >
         <nav className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="flex h-24 items-center justify-between">
+          <div className="flex h-24 items-center justify-center lg:justify-between">
             {/* Logo with Emblem */}
             <Link
               href="/"
@@ -229,29 +204,9 @@ export default function Navigation() {
               </Link>
             </div>
 
-            {/* Mobile Menu Button */}
-            <button
-              onClick={() => setIsMobileMenuOpen(true)}
-              className="lg:hidden p-3 text-cream hover:text-gold transition-colors duration-200 -mr-2"
-              aria-label="Open menu"
-              aria-expanded={isMobileMenuOpen}
-            >
-              <Menu size={28} strokeWidth={1.5} />
-            </button>
           </div>
         </nav>
       </motion.header>
-
-      {/* Full-Screen Mobile Menu */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <FullScreenMobileMenu
-            navLinks={navLinks}
-            onClose={() => setIsMobileMenuOpen(false)}
-            pathname={pathname}
-          />
-        )}
-      </AnimatePresence>
 
       {/* Mobile Bottom Navigation Bar */}
       <MobileBottomNav links={bottomNavLinks} pathname={pathname} />
@@ -369,146 +324,6 @@ function MegaMenu({
             ))}
           </div>
         </div>
-      </div>
-    </motion.div>
-  );
-}
-
-function FullScreenMobileMenu({
-  navLinks,
-  onClose,
-  pathname,
-}: {
-  navLinks: NavLink[];
-  onClose: () => void;
-  pathname: string;
-}) {
-  return (
-    <motion.div
-      variants={mobileMenuVariants}
-      initial="hidden"
-      animate="visible"
-      exit="exit"
-      className="fixed inset-0 z-50 lg:hidden"
-    >
-      {/* Background with image and overlays */}
-      <div className="absolute inset-0">
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: 'url(/images/clubmarevabeirut/2023/Pictures-4.jpg)' }}
-        />
-        <div className="absolute inset-0 bg-black/90" />
-        {/* Noise texture */}
-        <div
-          className="absolute inset-0 opacity-[0.05]"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23noise)'/%3E%3C/svg%3E")`,
-          }}
-        />
-      </div>
-
-      {/* Content */}
-      <div className="relative h-full flex flex-col">
-        {/* Header */}
-        <div className="flex items-center justify-between px-6 py-6">
-          <motion.div
-            variants={mobileNavLinkVariants}
-            className="flex items-center gap-3"
-          >
-            <Image
-              src="/images/club-mareva-logo-gold.svg"
-              alt="Club Mareva"
-              width={168}
-              height={56}
-              className="h-14 w-auto object-contain"
-            />
-          </motion.div>
-          <motion.button
-            variants={mobileNavLinkVariants}
-            onClick={onClose}
-            whileHover={{ scale: 1.1, rotate: 90 }}
-            whileTap={{ scale: 0.9 }}
-            className="p-3 text-cream hover:text-gold transition-colors duration-200"
-            aria-label="Close menu"
-          >
-            <X size={28} strokeWidth={1.5} />
-          </motion.button>
-        </div>
-
-        {/* Navigation Links */}
-        <div className="flex-1 flex flex-col items-center justify-center px-8 -mt-16">
-          {navLinks.map((link) => {
-            const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href));
-            return (
-              <motion.div key={link.name} variants={mobileNavLinkVariants}>
-                <Link
-                  href={link.href}
-                  onClick={onClose}
-                  className="group block py-4"
-                >
-                  <span
-                    className={`font-playfair text-3xl md:text-4xl font-light tracking-[0.1em] transition-all duration-300 ${
-                      isActive
-                        ? 'text-gold'
-                        : 'text-cream group-hover:text-gold group-hover:tracking-[0.15em]'
-                    }`}
-                  >
-                    {link.name}
-                  </span>
-                  {isActive && (
-                    <motion.div
-                      layoutId="mobileActiveUnderline"
-                      className="h-px w-full bg-gold mt-2"
-                      transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                    />
-                  )}
-                </Link>
-              </motion.div>
-            );
-          })}
-        </div>
-
-        {/* Footer */}
-        <motion.div
-          variants={mobileNavLinkVariants}
-          className="px-8 py-8 border-t border-gold/20"
-        >
-          {/* Social Links */}
-          <div className="flex items-center justify-center gap-4 mb-6">
-            <a
-              href="https://instagram.com/clubmarevabeirut"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-3 rounded-full border border-cream/20 hover:border-gold transition-colors duration-300"
-              aria-label="Instagram"
-            >
-              <Instagram className="w-5 h-5 text-cream hover:text-gold transition-colors" />
-            </a>
-            <a
-              href="https://facebook.com/clubmarevabeirut"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-3 rounded-full border border-cream/20 hover:border-gold transition-colors duration-300"
-              aria-label="Facebook"
-            >
-              <Facebook className="w-5 h-5 text-cream hover:text-gold transition-colors" />
-            </a>
-            <span className="w-px h-6 bg-gold/30 mx-2" />
-            <a
-              href="tel:+96179117997"
-              className="flex items-center gap-2 text-cream/70 hover:text-gold transition-colors duration-300"
-            >
-              <Phone className="w-4 h-4" />
-              <span className="font-playfair text-sm">+961 79 117 997</span>
-            </a>
-          </div>
-
-          {/* Address */}
-          <div className="flex items-center justify-center gap-2 text-cream/50">
-            <MapPin className="w-4 h-4" />
-            <span className="font-playfair text-xs">Sea Side Rd, Jal El Dib, Beirut</span>
-          </div>
-        </motion.div>
       </div>
     </motion.div>
   );

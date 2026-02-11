@@ -92,7 +92,7 @@ const Introduction = () => {
           </motion.div>
 
           {/* Text Column */}
-          <div className="relative order-1 lg:order-2">
+          <div className="relative order-1 lg:order-2 text-center lg:text-left">
             {/* Gold accent line - draws from top to bottom */}
             <motion.div
               initial={{ opacity: 0, x: 50 }}
@@ -115,7 +115,7 @@ const Introduction = () => {
                 initial={{ opacity: 0 }}
                 animate={isInView ? { opacity: 1 } : { opacity: 0 }}
                 transition={{ duration: 0.6, delay: 0.6 }}
-                className="font-playfair text-cream/90 text-base md:text-lg leading-relaxed max-w-xl space-y-4"
+                className="font-playfair text-cream/90 text-base md:text-lg leading-relaxed max-w-xl mx-auto lg:mx-0 space-y-4"
               >
                 <p>
                   Located in Beirut, Club Mareva offers a unique place of peace and pleasure to their members and guests. Equipped with a state-of-the-art Spanish cedar humidor, this club boasts its excellence with one of the most advanced humidification systems to both its storage and walk-in humidors.
@@ -133,7 +133,7 @@ const Introduction = () => {
                 initial={{ opacity: 0, y: 10 }}
                 animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
                 transition={{ duration: 0.5, delay: 0.7 }}
-                className="flex flex-wrap gap-4 pt-2"
+                className="flex flex-wrap justify-center lg:justify-start gap-4 pt-2"
               >
                 {['Spanish Cedar Humidor', 'Premium Selection', 'Members Lounge'].map((feature, index) => (
                   <span
@@ -150,7 +150,7 @@ const Introduction = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                 transition={{ duration: 0.6, delay: 0.8 }}
-                className="pt-4"
+                className="pt-4 flex justify-center lg:justify-start"
               >
                 <Button href="/cigars" variant="primary" size="lg">
                   Explore Our Cigars

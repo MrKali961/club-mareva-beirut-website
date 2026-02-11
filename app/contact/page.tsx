@@ -14,7 +14,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { MapPin, Phone, Instagram, Facebook, ExternalLink, Clock } from 'lucide-react';
+import { Phone, Instagram, Facebook, ExternalLink, Clock } from 'lucide-react';
 import Link from 'next/link';
 
 export default function ContactPage() {
@@ -67,7 +67,7 @@ export default function ContactPage() {
   };
 
   return (
-    <main className="relative min-h-screen w-full bg-black overflow-hidden pt-24">
+    <main className="relative z-20 w-full bg-black overflow-hidden pt-24">
       {/* Atmospheric Background Noise */}
       <div
         className="fixed inset-0 opacity-[0.08] pointer-events-none z-0"
@@ -78,13 +78,13 @@ export default function ContactPage() {
       />
 
       {/* Split Screen Container */}
-      <div className="relative z-10 flex flex-col lg:flex-row min-h-screen">
+      <div className="relative z-10 flex flex-col lg:flex-row">
         {/* LEFT HALF - Google Maps */}
         <motion.div
           initial="hidden"
           animate="visible"
           variants={slideFromLeft}
-          className="relative w-full lg:w-1/2 h-[35vh] lg:h-[calc(100vh-6rem)] bg-black-800"
+          className="relative w-full lg:w-1/2 h-[35vh] lg:h-[calc(100vh-6rem)] bg-black"
         >
           {/* Map Container with Gold Border */}
           <div className="relative h-full w-full p-6 lg:p-12">
@@ -127,15 +127,15 @@ export default function ContactPage() {
           initial="hidden"
           animate="visible"
           variants={slideFromRight}
-          className="relative w-full lg:w-1/2 h-auto lg:h-[calc(100vh-6rem)] flex items-center justify-center p-6 lg:p-12 bg-gradient-to-br from-black-800 via-black to-green-dark/20"
+          className="relative w-full lg:w-1/2 h-auto lg:h-[calc(100vh-6rem)] flex items-center justify-center p-6 lg:p-12 bg-black"
         >
           {/* Contact Card */}
           <motion.div
             variants={containerVariants}
-            className="relative w-full max-w-[500px] bg-black border border-gold p-8 md:p-12 shadow-[0_0_80px_rgba(201,162,39,0.25)]"
+            className="relative w-full max-w-[500px] bg-black-800 border border-gold/30 p-8 md:p-12 shadow-[0_0_40px_rgba(201,162,39,0.1)]"
           >
             {/* Subtle Inner Glow */}
-            <div className="absolute inset-0 bg-gradient-to-br from-gold/5 via-transparent to-gold/5 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-br from-gold/5 via-transparent to-gold/3 pointer-events-none" />
 
             {/* Content Container */}
             <div className="relative z-10 space-y-8">
@@ -159,27 +159,24 @@ export default function ContactPage() {
               />
 
               {/* Address */}
-              <motion.div variants={fadeIn} className="space-y-2">
-                <div className="flex items-start gap-3 group">
-                  <MapPin className="w-5 h-5 text-gold mt-1 flex-shrink-0 transition-transform duration-300 group-hover:scale-110" />
-                  <p className="font-playfair text-cream/90 text-sm md:text-base leading-relaxed">
-                    Sea Side Rd, Jal El Dib, Lebanon
-                  </p>
-                </div>
+              <motion.div variants={fadeIn} className="text-center">
+                <p className="font-playfair text-cream/90 text-sm md:text-base leading-relaxed">
+                  Sea Side Rd, Jal El Dib, Lebanon
+                </p>
               </motion.div>
 
               {/* WhatsApp Contacts */}
-              <motion.div variants={fadeIn} className="space-y-3">
-                <h3 className="font-playfair text-xs tracking-widest text-gold/80 uppercase mb-3">
+              <motion.div variants={fadeIn} className="space-y-3 text-center">
+                <h3 className="font-playfair text-xs tracking-widest text-gold/80 uppercase mb-3 inline-flex items-center justify-center gap-2">
+                  <Phone className="w-4 h-4" />
                   WhatsApp
                 </h3>
                 <Link
                   href="https://wa.me/96179117997"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3 group transition-all duration-300"
+                  className="block group transition-all duration-300"
                 >
-                  <Phone className="w-5 h-5 text-gold flex-shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12" />
                   <span className="font-playfair text-cream/90 text-sm md:text-base relative">
                     +961 79 117 997
                     <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-gold transition-all duration-300 group-hover:w-full" />
@@ -189,9 +186,8 @@ export default function ContactPage() {
                   href="https://wa.me/96181638731"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3 group transition-all duration-300"
+                  className="block group transition-all duration-300"
                 >
-                  <Phone className="w-5 h-5 text-gold flex-shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12" />
                   <span className="font-playfair text-cream/90 text-sm md:text-base relative">
                     +961 81 638 731
                     <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-gold transition-all duration-300 group-hover:w-full" />
@@ -200,25 +196,27 @@ export default function ContactPage() {
               </motion.div>
 
               {/* Opening Hours */}
-              <motion.div variants={fadeIn} className="space-y-2">
-                <h3 className="font-playfair text-xs tracking-widest text-gold/80 uppercase mb-3">
+              <motion.div variants={fadeIn} className="space-y-2 text-center">
+                <h3 className="font-playfair text-xs tracking-widest text-gold/80 uppercase mb-3 inline-flex items-center justify-center gap-2">
+                  <Clock className="w-4 h-4" />
                   Hours
                 </h3>
-                <div className="flex items-start gap-3 group">
-                  <Clock className="w-5 h-5 text-gold mt-1 flex-shrink-0" />
-                  <div>
-                    <p className="font-playfair text-cream/90 text-sm md:text-base">Open Daily</p>
-                    <p className="font-playfair text-cream/60 text-sm">5:00 PM &ndash; Late</p>
-                  </div>
+                <div>
+                  <p className="font-playfair text-cream/90 text-sm md:text-base">Mon &ndash; Sat</p>
+                  <p className="font-playfair text-cream/60 text-sm">11:00 AM &ndash; 11:00 PM</p>
+                </div>
+                <div>
+                  <p className="font-playfair text-cream/90 text-sm md:text-base">Sunday</p>
+                  <p className="font-playfair text-cream/60 text-sm">5:00 PM &ndash; 11:00 PM</p>
                 </div>
               </motion.div>
 
               {/* Social Media */}
-              <motion.div variants={fadeIn} className="space-y-3">
+              <motion.div variants={fadeIn} className="space-y-3 text-center">
                 <h3 className="font-playfair text-xs tracking-widest text-gold/80 uppercase mb-3">
                   Follow Us
                 </h3>
-                <div className="flex gap-6">
+                <div className="flex justify-center gap-6">
                   <Link
                     href="https://instagram.com/clubmarevabeirut"
                     target="_blank"
@@ -270,7 +268,7 @@ export default function ContactPage() {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-                    className="relative w-full bg-gold text-black py-4 px-6 font-playfair font-medium tracking-wide uppercase text-sm md:text-base text-center overflow-hidden shadow-[0_0_30px_rgba(201,162,39,0.4)] transition-shadow duration-300 group-hover:shadow-[0_0_50px_rgba(201,162,39,0.6)]"
+                    className="relative w-full bg-gold text-black py-4 px-6 font-playfair font-medium tracking-wide uppercase text-sm md:text-base text-center overflow-hidden shadow-[0_0_20px_rgba(201,162,39,0.25)] transition-shadow duration-300 group-hover:shadow-[0_0_40px_rgba(201,162,39,0.4)]"
                   >
                     {/* Shimmer Effect */}
                     <motion.span
@@ -298,13 +296,13 @@ export default function ContactPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 1, delay: 1.2 }}
-              className="absolute top-0 right-0 w-16 h-16 border-t border-r border-gold/20"
+              className="absolute top-0 right-0 w-16 h-16 border-t border-r border-gold/15"
             />
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 1, delay: 1.4 }}
-              className="absolute bottom-0 left-0 w-16 h-16 border-b border-l border-gold/20"
+              className="absolute bottom-0 left-0 w-16 h-16 border-b border-l border-gold/15"
             />
           </motion.div>
         </motion.div>
