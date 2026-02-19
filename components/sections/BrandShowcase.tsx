@@ -4,8 +4,8 @@ import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import Image from 'next/image';
 
-// Premium cigar brand partners with their logos
-const brands = [
+// Premium cigar brand partners with their logos (fallback)
+const defaultBrands = [
   { name: 'Habanos', logo: '/images/external/habanos-sa-logo-vector.png' },
   { name: 'Davidoff', logo: '/images/external/davidoff_cigars_logo.png' },
   { name: 'Caldwell', logo: '/images/external/7085500fef0c5d55f740aa2b82a20d69_Caldwell-Cigar-Co-logo.jpg' },
@@ -17,6 +17,10 @@ const brands = [
   { name: 'Saga', logo: '/images/external/SAGA.png' },
   { name: 'Smoking Jacket', logo: '/images/external/Smoking_Jacket_Cigars_logo.png' },
 ];
+
+interface BrandShowcaseProps {
+  brands?: { name: string; logo: string }[];
+}
 
 function LogoItem({ brand }: { brand: { name: string; logo: string } }) {
   return (
@@ -33,10 +37,10 @@ function LogoItem({ brand }: { brand: { name: string; logo: string } }) {
 }
 
 // Static fallback grid for reduced motion preference
-function StaticLogoGrid() {
+function StaticLogoGrid({ displayBrands }: { displayBrands: { name: string; logo: string }[] }) {
   return (
     <div className="flex flex-wrap justify-center items-center gap-8 px-6">
-      {brands.map((brand) => (
+      {displayBrands.map((brand) => (
         <div
           key={brand.name}
           className=""
@@ -54,9 +58,11 @@ function StaticLogoGrid() {
   );
 }
 
-export default function BrandShowcase() {
+export default function BrandShowcase({ brands }: BrandShowcaseProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: '-100px' });
+
+  const displayBrands = brands && brands.length > 0 ? brands : defaultBrands;
 
   return (
     <section
@@ -107,11 +113,11 @@ export default function BrandShowcase() {
           {/* Scrolling track - continuous motion, always looping right to left */}
           <div className="flex w-max animate-marquee">
             {/* First set of logos */}
-            {brands.map((brand) => (
+            {displayBrands.map((brand) => (
               <LogoItem key={brand.name} brand={brand} />
             ))}
             {/* Duplicate for seamless loop */}
-            {brands.map((brand) => (
+            {displayBrands.map((brand) => (
               <LogoItem key={`${brand.name}-dup`} brand={brand} />
             ))}
           </div>
@@ -124,7 +130,7 @@ export default function BrandShowcase() {
           transition={{ duration: 0.6, delay: 0.5 }}
           className="hidden motion-reduce:block"
         >
-          <StaticLogoGrid />
+          <StaticLogoGrid displayBrands={displayBrands} />
         </motion.div>
       </div>
     </section>

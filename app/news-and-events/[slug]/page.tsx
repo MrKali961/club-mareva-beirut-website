@@ -1,9 +1,17 @@
 import { notFound } from 'next/navigation';
-import { getPostBySlug, getAllPosts, getLatestPosts } from '@/lib/content';
+import { getPostBySlug, getLatestPosts } from '@/lib/content';
 import PostClient from './PostClient';
 
+export const revalidate = 300;
+
+function resolveImagePath(path: string | undefined): string {
+  if (!path) return '';
+  if (path.startsWith('http://') || path.startsWith('https://')) return path;
+  return path.startsWith('/') ? path : `/${path}`;
+}
+
 export async function generateStaticParams() {
-  const posts = await getAllPosts();
+  const posts = await getLatestPosts(20);
   return posts.map(post => ({ slug: post.slug }));
 }
 
@@ -33,9 +41,7 @@ export default async function PostPage({
         day: 'numeric'
       }),
       category: p.categories[0] || 'Events',
-      image: p.featured_image?.local_path
-        ? `/${p.featured_image.local_path}`
-        : '',
+      image: resolveImagePath(p.featured_image?.local_path || p.featured_image?.original_url),
       excerpt: p.content.text.substring(0, 120) + '...'
     }));
 
@@ -49,13 +55,11 @@ export default async function PostPage({
       day: 'numeric'
     }),
     category: post.categories[0] || 'Events',
-    featuredImage: post.featured_image?.local_path
-      ? `/${post.featured_image.local_path}`
-      : '',
+    featuredImage: resolveImagePath(post.featured_image?.local_path || post.featured_image?.original_url),
     content: post.content.clean,
     images: post.images
-      .filter(img => img.local_path)
-      .map(img => `/${img.local_path}`)
+      .filter(img => img.local_path || img.original_url)
+      .map(img => resolveImagePath(img.local_path || img.original_url))
   };
 
   return <PostClient post={postData} relatedPosts={relatedPosts} />;

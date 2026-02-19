@@ -1,20 +1,22 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import { getUpcomingEventById, getUpcomingEvents, getAllUpcomingEventIds } from '@/lib/content';
+import { getUpcomingEventBySlug, getUpcomingEvents, getAllUpcomingEventSlugs } from '@/lib/content';
 import UpcomingEventDetail from './UpcomingEventDetail';
 
+export const revalidate = 300;
+
 export async function generateStaticParams() {
-  const ids = await getAllUpcomingEventIds();
-  return ids.map(id => ({ id }));
+  const slugs = await getAllUpcomingEventSlugs();
+  return slugs.map(slug => ({ slug }));
 }
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
-  const { id } = await params;
-  const event = await getUpcomingEventById(id);
+  const { slug } = await params;
+  const event = await getUpcomingEventBySlug(slug);
 
   if (!event) {
     return { title: 'Event Not Found | Club Mareva Beirut' };
@@ -40,10 +42,10 @@ export async function generateMetadata({
 export default async function UpcomingEventPage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ slug: string }>;
 }) {
-  const { id } = await params;
-  const event = await getUpcomingEventById(id);
+  const { slug } = await params;
+  const event = await getUpcomingEventBySlug(slug);
 
   if (!event) {
     return notFound();
@@ -51,10 +53,11 @@ export default async function UpcomingEventPage({
 
   const allUpcoming = await getUpcomingEvents();
   const otherEvents = allUpcoming
-    .filter(e => e.id !== id)
+    .filter(e => e.id !== event.id)
     .slice(0, 3)
     .map(e => ({
       id: e.id,
+      slug: e.slug || e.id,
       title: e.title,
       category: e.category,
       image: e.image,
@@ -73,6 +76,8 @@ export default async function UpcomingEventPage({
     category: event.category,
     description: event.description,
     image: event.image,
+    body: event.body,
+    location: event.location,
     month: new Date(event.date).toLocaleDateString('en-US', { month: 'short' }).toUpperCase(),
     day: new Date(event.date).getDate().toString(),
     displayDate: new Date(event.date).toLocaleDateString('en-US', {

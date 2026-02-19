@@ -10,6 +10,7 @@ import Link from 'next/link';
 
 export interface UpcomingEventItem {
   id: string;
+  slug?: string;
   title: string;
   date: string;
   category: string;
@@ -37,7 +38,7 @@ const UpcomingEventCard = ({
   const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <Link href={`/news-and-events/upcoming/${event.id}`}>
+    <Link href={`/news-and-events/upcoming/${event.slug || event.id}`}>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

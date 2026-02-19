@@ -1,6 +1,14 @@
 import { getAllPosts, getUpcomingEvents } from '@/lib/content';
 import NewsEventsClient from './NewsEventsClient';
 
+export const revalidate = 300;
+
+function resolveImagePath(path: string | undefined): string {
+  if (!path) return '';
+  if (path.startsWith('http://') || path.startsWith('https://')) return path;
+  return path.startsWith('/') ? path : `/${path}`;
+}
+
 export default async function NewsAndEventsPage() {
   const posts = await getAllPosts();
   const upcomingEvents = await getUpcomingEvents();
@@ -15,9 +23,7 @@ export default async function NewsAndEventsPage() {
       day: 'numeric'
     }),
     category: post.categories[0] || 'Uncategorized',
-    image: post.featured_image?.local_path
-      ? `/${post.featured_image.local_path}`
-      : '',
+    image: resolveImagePath(post.featured_image?.local_path || post.featured_image?.original_url),
     slug: post.slug,
     excerpt: post.content.text.substring(0, 150) + '...',
     readTime: `${Math.ceil(post.content.text.split(' ').length / 200)} min`
@@ -25,6 +31,7 @@ export default async function NewsAndEventsPage() {
 
   const mappedUpcoming = upcomingEvents.map(event => ({
     id: event.id,
+    slug: event.slug || event.id,
     title: event.title,
     date: event.date,
     category: event.category,

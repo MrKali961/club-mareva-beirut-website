@@ -1,4 +1,6 @@
 import { getLatestPosts, getUpcomingEvents } from "@/lib/content";
+import { fetchCigarBrands } from "@/lib/api/brands";
+import { apiBrandToShowcaseBrand } from "@/lib/adapters/brands-adapter";
 import Hero from "@/components/sections/Hero";
 import Introduction from "@/components/sections/Introduction";
 import BrandShowcase from "@/components/sections/BrandShowcase";
@@ -7,11 +9,32 @@ import Story from "@/components/sections/Story";
 import Amenities from "@/components/sections/Amenities";
 import CTASection from "@/components/sections/CTASection";
 
+export const revalidate = 300;
+
+function resolveImagePath(path: string | undefined): string {
+  if (!path) return '';
+  if (path.startsWith('http://') || path.startsWith('https://')) return path;
+  return path.startsWith('/') ? path : `/${path}`;
+}
+
 export default async function Home() {
   const [posts, upcomingEvents] = await Promise.all([
     getLatestPosts(6),
     getUpcomingEvents(),
   ]);
+
+  // Fetch cigar brands for BrandShowcase
+  let brandItems: { name: string; logo: string }[] = [];
+  try {
+    const brandsResponse = await fetchCigarBrands();
+    brandItems = brandsResponse.items.map(b => apiBrandToShowcaseBrand({
+      name: b.title,
+      description: b.description,
+      logoUrl: b.logo?.url || b.logoUrl || '',
+    }));
+  } catch (error) {
+    console.error('Error fetching brands for showcase:', error);
+  }
 
   // Map upcoming events (shown first)
   const upcomingItems = upcomingEvents.map(event => ({
@@ -23,8 +46,8 @@ export default async function Home() {
       day: 'numeric',
     }),
     category: event.category,
-    image: event.image,
-    slug: '',
+    image: resolveImagePath(event.image),
+    slug: event.slug || '',
     type: 'upcoming' as const,
   }));
 
@@ -38,9 +61,7 @@ export default async function Home() {
       day: 'numeric',
     }),
     category: post.categories[0] || 'Events',
-    image: post.featured_image?.local_path
-      ? `/${post.featured_image.local_path}`
-      : '',
+    image: resolveImagePath(post.featured_image?.local_path),
     slug: post.slug,
     type: (post.categories[0] === 'News' ? 'news' : 'event') as 'news' | 'event',
   }));
@@ -52,7 +73,7 @@ export default async function Home() {
     <main>
       <Hero />
       <EventsCarousel events={events} />
-      <BrandShowcase />
+      <BrandShowcase brands={brandItems} />
       <Introduction />
       <Story />
       <Amenities />

@@ -12,6 +12,8 @@ interface EventData {
   category: string;
   description: string;
   image: string;
+  body?: string;
+  location?: string;
   month: string;
   day: string;
   displayDate: string;
@@ -20,6 +22,7 @@ interface EventData {
 
 interface OtherEvent {
   id: string;
+  slug?: string;
   title: string;
   category: string;
   image: string;
@@ -258,7 +261,7 @@ function OtherEventCard({ event, index }: { event: OtherEvent; index: number }) 
       viewport={{ once: true }}
       transition={{ delay: index * 0.1, duration: 0.6, ease }}
     >
-      <Link href={`/news-and-events/upcoming/${event.id}`}>
+      <Link href={`/news-and-events/upcoming/${event.slug || event.id}`}>
         <div
           className="block relative h-[350px] sm:h-[400px] md:h-[450px] group overflow-hidden cursor-pointer"
           onMouseEnter={() => setIsHovered(true)}

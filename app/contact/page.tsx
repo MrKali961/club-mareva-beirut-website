@@ -13,9 +13,11 @@
 
 'use client';
 
+import { useActionState } from 'react';
 import { motion } from 'framer-motion';
 import { Phone, Instagram, Facebook, ExternalLink, Clock } from 'lucide-react';
 import Link from 'next/link';
+import { submitContact } from './actions';
 
 export default function ContactPage() {
   // Animation variants for orchestrated entrance
@@ -307,6 +309,135 @@ export default function ContactPage() {
           </motion.div>
         </motion.div>
       </div>
+
+      {/* Contact Form Section */}
+      <section className="relative z-10 py-16 sm:py-20 lg:py-24 px-6 lg:px-12">
+        <div className="max-w-xl mx-auto">
+          {/* Section Header */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            className="text-center mb-10"
+          >
+            <p className="font-playfair text-xs tracking-[0.3em] uppercase text-gold/80 mb-3">
+              Get in Touch
+            </p>
+            <h2 className="font-playfair text-3xl md:text-4xl font-bold text-cream tracking-wider mb-4">
+              SEND US A MESSAGE
+            </h2>
+            <div className="w-16 h-[1px] bg-gradient-to-r from-transparent via-gold to-transparent mx-auto" />
+          </motion.div>
+
+          <ContactForm />
+        </div>
+      </section>
     </main>
+  );
+}
+
+function ContactForm() {
+  const [state, formAction, isPending] = useActionState(submitContact, {
+    success: false,
+    message: '',
+  });
+
+  if (state.success) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="text-center py-12 px-6 border border-gold/30 bg-black-800"
+      >
+        <div className="w-16 h-16 mx-auto mb-4 border border-gold/30 flex items-center justify-center">
+          <svg className="w-8 h-8 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+          </svg>
+        </div>
+        <p className="font-playfair text-gold text-lg mb-2">Message Sent</p>
+        <p className="font-playfair text-cream/70 text-sm">{state.message}</p>
+      </motion.div>
+    );
+  }
+
+  return (
+    <motion.form
+      action={formAction}
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+      className="space-y-5"
+    >
+      {state.message && !state.success && (
+        <div className="p-3 border border-red-500/30 bg-red-500/10 text-red-300 text-sm font-playfair">
+          {state.message}
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <div>
+          <input
+            type="text"
+            name="firstName"
+            placeholder="First Name"
+            required
+            className="w-full bg-transparent border border-gold/30 px-4 py-3 font-playfair text-cream text-sm placeholder:text-cream/40 focus:outline-none focus:border-gold transition-colors"
+          />
+          {state.errors?.firstName && (
+            <p className="text-red-400 text-xs mt-1 font-playfair">{state.errors.firstName}</p>
+          )}
+        </div>
+        <div>
+          <input
+            type="text"
+            name="lastName"
+            placeholder="Last Name"
+            required
+            className="w-full bg-transparent border border-gold/30 px-4 py-3 font-playfair text-cream text-sm placeholder:text-cream/40 focus:outline-none focus:border-gold transition-colors"
+          />
+          {state.errors?.lastName && (
+            <p className="text-red-400 text-xs mt-1 font-playfair">{state.errors.lastName}</p>
+          )}
+        </div>
+      </div>
+
+      <div>
+        <input
+          type="email"
+          name="email"
+          placeholder="Email Address"
+          required
+          className="w-full bg-transparent border border-gold/30 px-4 py-3 font-playfair text-cream text-sm placeholder:text-cream/40 focus:outline-none focus:border-gold transition-colors"
+        />
+        {state.errors?.email && (
+          <p className="text-red-400 text-xs mt-1 font-playfair">{state.errors.email}</p>
+        )}
+      </div>
+
+      <div>
+        <textarea
+          name="message"
+          placeholder="Your Message"
+          required
+          rows={5}
+          className="w-full bg-transparent border border-gold/30 px-4 py-3 font-playfair text-cream text-sm placeholder:text-cream/40 focus:outline-none focus:border-gold transition-colors resize-none"
+        />
+        {state.errors?.message && (
+          <p className="text-red-400 text-xs mt-1 font-playfair">{state.errors.message}</p>
+        )}
+      </div>
+
+      <motion.button
+        type="submit"
+        disabled={isPending}
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+        className="w-full bg-gold text-black py-3.5 font-playfair font-semibold tracking-wider uppercase text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-opacity"
+      >
+        {isPending ? 'Sending...' : 'Send Message'}
+      </motion.button>
+    </motion.form>
   );
 }
