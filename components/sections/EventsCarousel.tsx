@@ -146,7 +146,7 @@ const EventCard = ({ event, index }: { event: EventItem; index: number }) => {
 
   if (isUpcoming) {
     return (
-      <Link href={`/news-and-events/upcoming/${event.id}`}>{cardContent}</Link>
+      <Link href={`/news-and-events/upcoming/${event.slug}`}>{cardContent}</Link>
     );
   }
 

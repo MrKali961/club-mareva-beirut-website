@@ -1,12 +1,18 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import { getUpcomingEventBySlug, getUpcomingEvents, getAllUpcomingEventSlugs } from '@/lib/content';
+import { getUpcomingEventBySlug, getUpcomingEvents, getAllEventSlugs } from '@/lib/content';
 import UpcomingEventDetail from './UpcomingEventDetail';
 
 export const revalidate = 300;
 
+// Allow slugs not in generateStaticParams (e.g. events created after last build)
+// to be rendered on-demand without returning 404.
+export const dynamicParams = true;
+
 export async function generateStaticParams() {
-  const slugs = await getAllUpcomingEventSlugs();
+  // Include ALL events — past and future — so archived event pages are
+  // pre-rendered and do not hit a cold ISR miss on first visit.
+  const slugs = await getAllEventSlugs();
   return slugs.map(slug => ({ slug }));
 }
 

@@ -2,6 +2,7 @@ import { readdir, readFile } from "fs/promises";
 import { join } from "path";
 import { fetchAllNews, fetchNewsBySlug, fetchLatestNews } from "./api/news";
 import {
+  fetchAllEvents as fetchAllEventsApi,
   fetchUpcomingEvents as fetchUpcomingEventsApi,
   fetchEventBySlug,
 } from "./api/events";
@@ -290,6 +291,33 @@ export async function getAllPostSlugs(): Promise<string[]> {
     }
   } catch {
     // API unavailable at build time — fall back to filesystem slugs only
+  }
+
+  return Array.from(slugs);
+}
+
+/**
+ * Returns all event slugs from the API (past + future), with full pagination.
+ * Used by the event detail page's generateStaticParams so that past events
+ * are pre-rendered and do not rely solely on on-demand ISR.
+ */
+export async function getAllEventSlugs(): Promise<string[]> {
+  const slugs = new Set<string>();
+
+  try {
+    const first = await fetchAllEventsApi(1, 500);
+    first.items.forEach((item) => slugs.add(item.slug));
+
+    if (first.pagination.totalPages > 1) {
+      const pages = await Promise.all(
+        Array.from({ length: first.pagination.totalPages - 1 }, (_, i) =>
+          fetchAllEventsApi(i + 2, 500)
+        )
+      );
+      pages.forEach((page) => page.items.forEach((item) => slugs.add(item.slug)));
+    }
+  } catch {
+    // API unavailable at build time — dynamic rendering (dynamicParams=true) handles the rest
   }
 
   return Array.from(slugs);

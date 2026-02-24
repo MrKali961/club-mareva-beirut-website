@@ -1,5 +1,5 @@
-import { notFound } from 'next/navigation';
-import { getPostBySlug, getLatestPosts, getAllPostSlugs } from '@/lib/content';
+import { notFound, redirect } from 'next/navigation';
+import { getPostBySlug, getLatestPosts, getAllPostSlugs, getUpcomingEventBySlug } from '@/lib/content';
 import PostClient from './PostClient';
 
 export const revalidate = 300;
@@ -29,6 +29,13 @@ export default async function PostPage({
   const post = await getPostBySlug(slug);
 
   if (!post) {
+    // The slug may belong to an event rather than a news article. Events are
+    // published via the dashboard into the events table and have a canonical
+    // URL of /news-and-events/upcoming/{slug}. Redirect there transparently.
+    const event = await getUpcomingEventBySlug(slug);
+    if (event) {
+      redirect(`/news-and-events/upcoming/${event.slug || slug}`);
+    }
     return notFound();
   }
 
