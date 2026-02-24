@@ -1,13 +1,15 @@
-'use client';
+"use client";
 
-import { Suspense, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import Image from 'next/image';
-import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
-import UpcomingEvents, { UpcomingEventItem } from '@/components/sections/UpcomingEvents';
+import { Suspense, useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import UpcomingEvents, {
+  UpcomingEventItem,
+} from "@/components/sections/UpcomingEvents";
 
-type Category = 'All' | 'Events' | 'News';
+type Category = "All" | "Events" | "News";
 
 export interface PostItem {
   id: number;
@@ -25,9 +27,12 @@ interface NewsEventsClientProps {
   upcomingEvents: UpcomingEventItem[];
 }
 
-const categories: Category[] = ['All', 'Events', 'News'];
+const categories: Category[] = ["All", "Events", "News"];
 
-export default function NewsEventsClient({ posts, upcomingEvents }: NewsEventsClientProps) {
+export default function NewsEventsClient({
+  posts,
+  upcomingEvents,
+}: NewsEventsClientProps) {
   return (
     <Suspense>
       <NewsEventsContent posts={posts} upcomingEvents={upcomingEvents} />
@@ -37,26 +42,45 @@ export default function NewsEventsClient({ posts, upcomingEvents }: NewsEventsCl
 
 function NewsEventsContent({ posts, upcomingEvents }: NewsEventsClientProps) {
   const searchParams = useSearchParams();
-  const filterParam = searchParams.get('filter');
-  const initialCategory: Category = filterParam === 'Events' ? 'Events' : filterParam === 'News' ? 'News' : 'All';
-  const [activeCategory, setActiveCategory] = useState<Category>(initialCategory);
+  const filterParam = searchParams.get("filter");
+  const initialCategory: Category =
+    filterParam === "Events"
+      ? "Events"
+      : filterParam === "News"
+        ? "News"
+        : "All";
+  const [activeCategory, setActiveCategory] =
+    useState<Category>(initialCategory);
   const [visibleCount, setVisibleCount] = useState(9);
 
-  const filteredPosts = activeCategory === 'All'
-    ? posts
-    : activeCategory === 'Events'
-      ? posts.filter(post =>
-          post.category === 'Events' ||
-          post.category === 'International Events' ||
-          post.category === 'Mareva Malt Mavericks Tastings'
-        )
-      : posts.filter(post => post.category === activeCategory);
+  useEffect(() => {
+    const cat: Category =
+      filterParam === "Events"
+        ? "Events"
+        : filterParam === "News"
+          ? "News"
+          : "All";
+    setActiveCategory(cat);
+    setVisibleCount(9);
+  }, [filterParam]);
+
+  const filteredPosts =
+    activeCategory === "All"
+      ? posts
+      : activeCategory === "Events"
+        ? posts.filter(
+            (post) =>
+              post.category === "Events" ||
+              post.category === "International Events" ||
+              post.category === "Mareva Malt Mavericks Tastings",
+          )
+        : posts.filter((post) => post.category === activeCategory);
 
   const displayedPosts = filteredPosts.slice(0, visibleCount);
   const hasMore = visibleCount < filteredPosts.length;
 
   const handleLoadMore = () => {
-    setVisibleCount(prev => Math.min(prev + 9, filteredPosts.length));
+    setVisibleCount((prev) => Math.min(prev + 9, filteredPosts.length));
   };
 
   const handleCategoryChange = (category: Category) => {
@@ -77,7 +101,11 @@ function NewsEventsContent({ posts, upcomingEvents }: NewsEventsClientProps) {
           <div className="absolute inset-0 opacity-[0.015] mix-blend-overlay">
             <svg className="w-full h-full">
               <filter id="noise">
-                <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" />
+                <feTurbulence
+                  type="fractalNoise"
+                  baseFrequency="0.9"
+                  numOctaves="4"
+                />
                 <feColorMatrix type="saturate" values="0" />
               </filter>
               <rect width="100%" height="100%" filter="url(#noise)" />
@@ -106,9 +134,7 @@ function NewsEventsContent({ posts, upcomingEvents }: NewsEventsClientProps) {
       </section>
 
       {/* Upcoming Events Timeline */}
-      {upcomingEvents.length > 0 && (
-        <UpcomingEvents events={upcomingEvents} />
-      )}
+      {upcomingEvents.length > 0 && <UpcomingEvents events={upcomingEvents} />}
 
       {/* Category Filter */}
       <section className="relative z-20 mt-4">
@@ -119,7 +145,8 @@ function NewsEventsContent({ posts, upcomingEvents }: NewsEventsClientProps) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
             style={{
-              boxShadow: '0 20px 60px rgba(0,0,0,0.8), 0 0 40px rgba(201,162,39,0.1)'
+              boxShadow:
+                "0 20px 60px rgba(0,0,0,0.8), 0 0 40px rgba(201,162,39,0.1)",
             }}
           >
             {categories.map((category, index) => (
@@ -129,9 +156,10 @@ function NewsEventsContent({ posts, upcomingEvents }: NewsEventsClientProps) {
                 className={`
                   relative px-4 md:px-6 py-3 rounded-xl font-playfair text-xs md:text-sm uppercase tracking-widest
                   transition-all duration-300
-                  ${activeCategory === category
-                    ? 'bg-gold text-black font-semibold shadow-[0_0_20px_rgba(201,162,39,0.4)]'
-                    : 'bg-transparent text-gold border border-gold/40 hover:border-gold hover:bg-gold/5'
+                  ${
+                    activeCategory === category
+                      ? "bg-gold text-black font-semibold shadow-[0_0_20px_rgba(201,162,39,0.4)]"
+                      : "bg-transparent text-gold border border-gold/40 hover:border-gold hover:bg-gold/5"
                   }
                 `}
                 initial={{ opacity: 0, x: -20 }}
@@ -157,7 +185,7 @@ function NewsEventsContent({ posts, upcomingEvents }: NewsEventsClientProps) {
             <AnimatePresence mode="popLayout">
               {displayedPosts.map((post, index) => (
                 <motion.div
-                  key={post.id}
+                  key={post.slug}
                   layout
                   initial={{ opacity: 0, y: 40 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -165,10 +193,10 @@ function NewsEventsContent({ posts, upcomingEvents }: NewsEventsClientProps) {
                   transition={{
                     duration: 0.5,
                     delay: index * 0.08,
-                    ease: [0.22, 1, 0.36, 1]
+                    ease: [0.22, 1, 0.36, 1],
                   }}
                 >
-                  <Link href={`/news-and-events/${post.slug}`}>
+                  <Link href={`/${post.slug}`}>
                     <div className="group relative bg-black-800 rounded-xl overflow-hidden border border-gold/20 hover:border-gold transition-all duration-500 h-full">
                       {/* Image Container */}
                       <div className="relative aspect-[16/9] overflow-hidden">
@@ -229,7 +257,7 @@ function NewsEventsContent({ posts, upcomingEvents }: NewsEventsClientProps) {
                           initial={{ scaleX: 0 }}
                           whileHover={{ scaleX: 1 }}
                           transition={{ duration: 0.3 }}
-                          style={{ transformOrigin: 'left' }}
+                          style={{ transformOrigin: "left" }}
                         />
                       </div>
                     </div>
@@ -258,12 +286,12 @@ function NewsEventsContent({ posts, upcomingEvents }: NewsEventsClientProps) {
                 {/* Shimmer effect */}
                 <motion.span
                   className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent"
-                  initial={{ x: '-100%' }}
+                  initial={{ x: "-100%" }}
                   whileHover={{
-                    x: '200%',
+                    x: "200%",
                     transition: {
                       duration: 0.6,
-                      ease: 'easeInOut',
+                      ease: "easeInOut",
                     },
                   }}
                 />
@@ -293,7 +321,8 @@ function NewsEventsContent({ posts, upcomingEvents }: NewsEventsClientProps) {
               Stay Connected
             </p>
             <p className="font-playfair text-gold/80 max-w-2xl mx-auto">
-              Never miss an exclusive event or tasting. Follow our social channels for the latest updates.
+              Never miss an exclusive event or tasting. Follow our social
+              channels for the latest updates.
             </p>
           </motion.div>
         </div>

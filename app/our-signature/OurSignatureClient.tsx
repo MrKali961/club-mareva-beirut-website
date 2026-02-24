@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useEffect, useRef, useState, useCallback, forwardRef } from 'react';
-import { motion } from 'framer-motion';
-import { ChevronDown, ArrowRight } from 'lucide-react';
-import Image from 'next/image';
-import Link from 'next/link';
+import { useEffect, useRef, useState, useCallback, forwardRef } from "react";
+import { motion } from "framer-motion";
+import { ChevronDown, ArrowRight } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 
 interface SignatureContentSection {
   heading?: string;
@@ -68,7 +68,7 @@ export default function OurSignatureClient({ items }: OurSignatureClientProps) {
   }, [items]);
 
   const scrollTo = (index: number) => {
-    sectionRefs.current[index]?.scrollIntoView({ behavior: 'smooth' });
+    sectionRefs.current[index]?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
@@ -119,7 +119,7 @@ export default function OurSignatureClient({ items }: OurSignatureClientProps) {
         >
           <motion.div
             animate={{ y: [0, 6, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
           >
             <ChevronDown className="w-5 h-5 text-cream/40" />
           </motion.div>
@@ -205,7 +205,7 @@ export default function OurSignatureClient({ items }: OurSignatureClientProps) {
               animate={{
                 scale: activeIndex === i ? 1 : 0.7,
                 backgroundColor:
-                  activeIndex === i ? '#C9A227' : 'rgba(245,245,240,0.25)',
+                  activeIndex === i ? "#C9A227" : "rgba(245,245,240,0.25)",
               }}
               transition={{ duration: 0.3, ease }}
               className="w-2.5 h-2.5 rounded-full"
@@ -215,7 +215,7 @@ export default function OurSignatureClient({ items }: OurSignatureClientProps) {
                 layoutId="signatureActiveNav"
                 className="absolute inset-0 rounded-full border-2 border-gold"
                 initial={false}
-                transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                transition={{ type: "spring", stiffness: 400, damping: 30 }}
                 style={{ scale: 1.8 }}
               />
             )}
@@ -253,7 +253,7 @@ const VaultSection = forwardRef<HTMLElement, VaultSectionProps>(
             initial={{ scale: 1.08 }}
             whileInView={{ scale: 1 }}
             viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 12, ease: 'easeOut' }}
+            transition={{ duration: 12, ease: "easeOut" }}
             className="absolute inset-0"
           >
             <Image
@@ -319,7 +319,7 @@ const VaultSection = forwardRef<HTMLElement, VaultSectionProps>(
                   <div
                     key={spec.label}
                     className={`flex flex-col pr-5 sm:pr-6 ${
-                      i > 0 ? 'sm:pl-6 sm:border-l sm:border-gold/30' : ''
+                      i > 0 ? "sm:pl-6 sm:border-l sm:border-gold/30" : ""
                     }`}
                   >
                     <span className="font-playfair text-[10px] sm:text-xs tracking-[0.2em] text-gold uppercase leading-none mb-1">
@@ -353,7 +353,7 @@ const VaultSection = forwardRef<HTMLElement, VaultSectionProps>(
                   className="flex items-center gap-3"
                 >
                   <Link
-                    href={`/news-and-events/${item.postSlug}`}
+                    href={`/${item.postSlug}`}
                     className="inline-flex items-center gap-2 text-gold hover:text-gold-light font-playfair text-sm tracking-wider uppercase transition-colors duration-300 group"
                   >
                     <span>Read Full Story</span>
@@ -368,7 +368,7 @@ const VaultSection = forwardRef<HTMLElement, VaultSectionProps>(
                   transition={{ duration: 0.5, delay: 0.5, ease }}
                 >
                   <Link
-                    href={`/news-and-events/${item.postSlug}`}
+                    href={`/${item.postSlug}`}
                     className="inline-flex items-center gap-2 text-gold hover:text-gold-light font-playfair text-sm tracking-wider uppercase transition-colors duration-300 group"
                   >
                     <span>Read Full Story</span>
@@ -402,22 +402,23 @@ const VaultSection = forwardRef<HTMLElement, VaultSectionProps>(
                     delay: 0.1,
                     ease,
                   }}
-                  className={`${sIdx > 0 ? 'mt-16 sm:mt-20 lg:mt-28' : ''}`}
+                  className={`${sIdx > 0 ? "mt-16 sm:mt-20 lg:mt-28" : ""}`}
                 >
                   {section.image ? (
                     /* ── Section with image: alternating layout ── */
                     <div
                       className={`flex flex-col ${
-                        sIdx % 2 === 0
-                          ? 'lg:flex-row'
-                          : 'lg:flex-row-reverse'
+                        sIdx % 2 === 0 ? "lg:flex-row" : "lg:flex-row-reverse"
                       } gap-8 sm:gap-10 lg:gap-16 items-center`}
                     >
                       {/* Text side */}
                       <div className="flex-1 min-w-0">
                         {section.heading && (
                           <motion.div
-                            initial={{ opacity: 0, x: sIdx % 2 === 0 ? -20 : 20 }}
+                            initial={{
+                              opacity: 0,
+                              x: sIdx % 2 === 0 ? -20 : 20,
+                            }}
                             whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.5, ease }}
@@ -489,7 +490,7 @@ const VaultSection = forwardRef<HTMLElement, VaultSectionProps>(
                 className="flex justify-center mt-16 sm:mt-20"
               >
                 <Link
-                  href={`/news-and-events/${item.postSlug}`}
+                  href={`/${item.postSlug}`}
                   className="inline-flex items-center gap-3 px-8 py-4 border border-gold/50 text-gold font-playfair font-medium tracking-wider uppercase text-sm transition-all duration-300 hover:border-gold hover:bg-gold/10 group"
                 >
                   <span>Read the Full Story</span>

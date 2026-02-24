@@ -3,7 +3,7 @@ import type { PaginatedResponse, ApiNewsArticle } from './types';
 
 const REVALIDATE = 300; // 5 minutes
 
-export async function fetchAllNews(page = 1, limit = 200): Promise<PaginatedResponse<ApiNewsArticle>> {
+export async function fetchAllNews(page = 1, limit = 50): Promise<PaginatedResponse<ApiNewsArticle>> {
   return apiGet<PaginatedResponse<ApiNewsArticle>>('/news', {
     params: { page, limit },
     next: { revalidate: REVALIDATE },

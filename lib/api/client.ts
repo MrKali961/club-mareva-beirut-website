@@ -33,7 +33,8 @@ function getBaseUrl(): string {
 
 export async function apiGet<T>(path: string, options?: FetchOptions): Promise<T> {
   const base = getBaseUrl();
-  const url = new URL(path, base.endsWith('/') ? base : base + '/');
+  const relativePath = path.startsWith('/') ? path.slice(1) : path;
+  const url = new URL(relativePath, base.endsWith('/') ? base : base + '/');
 
   if (options?.params) {
     Object.entries(options.params).forEach(([key, value]) => {
@@ -70,7 +71,8 @@ export async function apiPost<T, B = unknown>(
   options?: FetchOptions,
 ): Promise<T> {
   const base = getBaseUrl();
-  const url = new URL(path, base.endsWith('/') ? base : base + '/');
+  const relativePath = path.startsWith('/') ? path.slice(1) : path;
+  const url = new URL(relativePath, base.endsWith('/') ? base : base + '/');
 
   const response = await fetch(url.toString(), {
     method: 'POST',

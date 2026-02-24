@@ -13,6 +13,22 @@ interface ApiNewsArticle {
     url: string;
     alt: string;
   };
+  imageUrls?: {
+    original: string | null;
+    medium: string | null;
+    thumb: string | null;
+  };
+  galleryImages?: Array<{
+    id: string;
+    mediaAssetId: string;
+    displayOrder: number;
+    createdAt: string;
+    imageUrls: {
+      original: string;
+      medium: string;
+      thumb: string;
+    };
+  }>;
   createdAt: string;
   updatedAt: string;
 }
@@ -31,7 +47,7 @@ export function stripHtml(html: string): string {
 }
 
 export function apiNewsToPost(article: ApiNewsArticle): Post {
-  const imageUrl = article.image?.url || article.mainImageUrl || '';
+  const imageUrl = article.imageUrls?.original || article.image?.url || article.mainImageUrl || '';
 
   return {
     id: typeof article.id === 'number' ? article.id : parseInt(article.id, 10) || 0,
@@ -54,6 +70,10 @@ export function apiNewsToPost(article: ApiNewsArticle): Post {
           alt_text: article.image?.alt || article.title,
         }
       : undefined,
-    images: [],
+    images: (article.galleryImages ?? []).map((gi) => ({
+      original_url: gi.imageUrls.original,
+      local_path: gi.imageUrls.original,
+      alt_text: '',
+    })),
   };
 }

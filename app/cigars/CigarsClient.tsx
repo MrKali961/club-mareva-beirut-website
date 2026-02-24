@@ -96,12 +96,14 @@ function InstagramBrandCard({ brand, index }: { brand: Brand; index: number }) {
         >
           <div className="absolute inset-0 bg-white">
             <div className="absolute inset-0 flex items-center justify-center p-6">
-              <Image
-                src={brand.logo}
-                alt={`${brand.name} logo`}
-                fill
-                className="object-contain p-8"
-              />
+              {brand.logo && (
+                <Image
+                  src={brand.logo}
+                  alt={`${brand.name} logo`}
+                  fill
+                  className="object-contain p-8"
+                />
+              )}
             </div>
           </div>
         </motion.div>

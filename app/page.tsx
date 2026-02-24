@@ -1,5 +1,4 @@
-import { getLatestPosts, getUpcomingEvents } from "@/lib/content";
-import { fetchCigarBrands } from "@/lib/api/brands";
+import { getLatestPosts, getUpcomingEvents, getBrands } from "@/lib/content";
 import { apiBrandToShowcaseBrand } from "@/lib/adapters/brands-adapter";
 import Hero from "@/components/sections/Hero";
 import Introduction from "@/components/sections/Introduction";
@@ -26,8 +25,8 @@ export default async function Home() {
   // Fetch cigar brands for BrandShowcase
   let brandItems: { name: string; logo: string }[] = [];
   try {
-    const brandsResponse = await fetchCigarBrands();
-    brandItems = brandsResponse.items.map(b => apiBrandToShowcaseBrand({
+    const apiBrands = await getBrands();
+    brandItems = apiBrands.map(b => apiBrandToShowcaseBrand({
       name: b.title,
       description: b.description,
       logoUrl: b.logo?.url || b.logoUrl || '',

@@ -14,6 +14,11 @@ interface ApiEvent {
     url: string;
     alt: string;
   };
+  imageUrls?: {
+    original: string | null;
+    medium: string | null;
+    thumb: string | null;
+  };
 }
 
 // Extended UpcomingEvent with slug for routing
@@ -39,7 +44,7 @@ export function apiEventToUpcomingEvent(event: ApiEvent): UpcomingEventWithSlug 
     date: event.date,
     category: 'Event',
     description: stripHtml(event.body),
-    image: event.image?.url || event.mainImageUrl || '',
+    image: event.imageUrls?.original || event.image?.url || event.mainImageUrl || '',
     featured: event.isFeatured,
     location: event.location,
     maxVisitors: event.maxVisitors,

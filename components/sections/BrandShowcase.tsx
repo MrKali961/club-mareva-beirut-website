@@ -23,6 +23,7 @@ interface BrandShowcaseProps {
 }
 
 function LogoItem({ brand }: { brand: { name: string; logo: string } }) {
+  if (!brand.logo) return null;
   return (
     <div className="flex-shrink-0 mx-8">
       <Image
@@ -40,7 +41,7 @@ function LogoItem({ brand }: { brand: { name: string; logo: string } }) {
 function StaticLogoGrid({ displayBrands }: { displayBrands: { name: string; logo: string }[] }) {
   return (
     <div className="flex flex-wrap justify-center items-center gap-8 px-6">
-      {displayBrands.map((brand) => (
+      {displayBrands.filter((brand) => brand.logo).map((brand) => (
         <div
           key={brand.name}
           className=""
