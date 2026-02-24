@@ -19,6 +19,17 @@ interface ApiEvent {
     medium: string | null;
     thumb: string | null;
   };
+  galleryImages?: Array<{
+    id: string;
+    mediaAssetId: string;
+    displayOrder: number;
+    createdAt: string;
+    imageUrls: {
+      original: string;
+      medium: string;
+      thumb: string;
+    };
+  }>;
 }
 
 // Extended UpcomingEvent with slug for routing
@@ -34,6 +45,17 @@ export interface UpcomingEventWithSlug {
   location?: string;
   maxVisitors?: number;
   body?: string; // raw HTML body for detail page
+  galleryImages?: Array<{
+    id: string;
+    mediaAssetId: string;
+    displayOrder: number;
+    createdAt: string;
+    imageUrls: {
+      original: string;
+      medium: string;
+      thumb: string;
+    };
+  }>;
 }
 
 export function apiEventToUpcomingEvent(event: ApiEvent): UpcomingEventWithSlug {
@@ -49,5 +71,6 @@ export function apiEventToUpcomingEvent(event: ApiEvent): UpcomingEventWithSlug 
     location: event.location,
     maxVisitors: event.maxVisitors,
     body: event.body,
+    galleryImages: event.galleryImages,
   };
 }

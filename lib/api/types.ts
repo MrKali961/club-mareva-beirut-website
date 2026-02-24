@@ -63,6 +63,17 @@ export interface ApiEvent {
     medium: string | null;
     thumb: string | null;
   };
+  galleryImages?: Array<{
+    id: string;
+    mediaAssetId: string;
+    displayOrder: number;
+    createdAt: string;
+    imageUrls: {
+      original: string;
+      medium: string;
+      thumb: string;
+    };
+  }>;
 }
 
 // Cigar Brand
