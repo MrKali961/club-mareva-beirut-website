@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useActionState } from 'react';
 import { motion } from 'framer-motion';
-import { Calendar, ChevronDown, ArrowLeft } from 'lucide-react';
+import { Calendar, ChevronDown, ArrowLeft, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { submitEventRegistration } from '../actions';
@@ -199,6 +199,26 @@ export default function UpcomingEventDetail({ event, otherEvents }: UpcomingEven
         )}
       </section>
 
+      {/* Body Content */}
+      {event.body && (
+        <section className="relative bg-black py-16 sm:py-20 overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/20 to-transparent" />
+          <motion.article
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="max-w-[800px] mx-auto px-6 sm:px-8"
+          >
+            <div
+              className="prose-article"
+              dangerouslySetInnerHTML={{ __html: event.body }}
+            />
+          </motion.article>
+          <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/20 to-transparent" />
+        </section>
+      )}
+
       {/* Event Registration */}
       <section className="relative bg-black py-16 sm:py-20 lg:py-24 overflow-hidden">
         <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/20 to-transparent" />
@@ -300,6 +320,80 @@ export default function UpcomingEventDetail({ event, otherEvents }: UpcomingEven
           <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/20 to-transparent" />
         </section>
       )}
+      <style jsx global>{`
+        .prose-article {
+          color: var(--color-cream);
+        }
+
+        .prose-article p {
+          font-size: 1.25rem;
+          line-height: 1.9;
+          margin-bottom: 1.5rem;
+          color: rgba(245, 245, 240, 0.9);
+        }
+
+        .prose-article h2 {
+          font-family: var(--font-playfair), serif;
+          font-size: 2.25rem;
+          font-weight: 700;
+          color: var(--color-cream);
+          margin-top: 3rem;
+          margin-bottom: 1.5rem;
+          letter-spacing: -0.02em;
+        }
+
+        .prose-article h3 {
+          font-family: var(--font-playfair), serif;
+          font-size: 1.75rem;
+          font-weight: 600;
+          color: var(--color-cream);
+          margin-top: 2.5rem;
+          margin-bottom: 1rem;
+        }
+
+        .prose-article blockquote {
+          font-family: var(--font-playfair), serif;
+          font-size: 1.5rem;
+          font-style: italic;
+          line-height: 1.6;
+          color: var(--color-gold);
+          border-left: 4px solid var(--color-gold);
+          padding-left: 2rem;
+          margin: 3rem 0;
+        }
+
+        .prose-article strong {
+          color: var(--color-cream);
+          font-weight: 600;
+        }
+
+        .prose-article a {
+          color: var(--color-gold);
+          text-decoration: none;
+          transition: color 0.3s ease;
+        }
+
+        .prose-article a:hover {
+          color: var(--color-gold-light);
+        }
+
+        .prose-article img {
+          display: none;
+        }
+
+        .prose-article ul,
+        .prose-article ol {
+          margin: 1.5rem 0;
+          padding-left: 2rem;
+          color: rgba(245, 245, 240, 0.9);
+        }
+
+        .prose-article li {
+          margin-bottom: 0.5rem;
+          line-height: 1.8;
+          font-size: 1.125rem;
+        }
+      `}</style>
     </main>
   );
 }
@@ -407,7 +501,7 @@ function OtherEventCard({ event, index }: { event: OtherEvent; index: number }) 
       viewport={{ once: true }}
       transition={{ delay: index * 0.1, duration: 0.6, ease }}
     >
-      <Link href={`/news-and-events/upcoming/${event.slug || event.id}`}>
+      <Link href={`/${event.slug || event.id}`}>
         <div
           className="block relative h-[350px] sm:h-[400px] md:h-[450px] group overflow-hidden cursor-pointer"
           onMouseEnter={() => setIsHovered(true)}
@@ -472,12 +566,36 @@ function OtherEventCard({ event, index }: { event: OtherEvent; index: number }) 
             </motion.div>
 
             <motion.h3
-              animate={{ y: isHovered ? -6 : 0 }}
+              animate={{ y: isHovered ? -8 : 0 }}
               transition={{ duration: 0.4, ease }}
-              className="font-playfair text-2xl sm:text-3xl text-cream leading-tight line-clamp-2"
+              className="font-playfair text-2xl sm:text-3xl text-cream leading-tight line-clamp-2 mb-4"
             >
               {event.title}
             </motion.h3>
+
+            {/* "VIEW EVENT" CTA — fades in on hover (desktop), always shown on mobile */}
+            <motion.div
+              animate={{
+                opacity: isHovered ? 1 : 0,
+                y: isHovered ? 0 : 6,
+              }}
+              transition={{ duration: 0.3, delay: isHovered ? 0.05 : 0 }}
+              className="hidden sm:flex items-center gap-2 text-gold font-playfair text-xs sm:text-sm tracking-[0.2em] uppercase"
+            >
+              <span>View Event</span>
+              <motion.span
+                animate={{ x: isHovered ? 4 : 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              </motion.span>
+            </motion.div>
+
+            {/* Mobile: always visible */}
+            <div className="flex sm:hidden items-center gap-2 text-gold font-playfair text-xs tracking-[0.2em] uppercase opacity-70">
+              <span>View Event</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </div>
 
             <motion.div
               initial={{ scaleX: 0 }}

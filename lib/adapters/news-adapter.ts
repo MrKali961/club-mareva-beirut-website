@@ -57,7 +57,7 @@ export function apiNewsToPost(article: ApiNewsArticle): Post {
     date_created: article.date || article.createdAt,
     date_modified: article.updatedAt || article.date || article.createdAt,
     author: { id: 0, name: 'Club Mareva Beirut', login: 'admin' },
-    categories: article.isFeatured ? ['Events'] : ['News'],
+    categories: ['News'],
     content: {
       raw: article.body,
       clean: article.body,

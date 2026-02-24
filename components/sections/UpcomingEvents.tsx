@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
 import { motion } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Calendar } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Calendar, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -38,7 +38,7 @@ const UpcomingEventCard = ({
   const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <Link href={`/news-and-events/upcoming/${event.slug || event.id}`}>
+    <Link href={`/${event.slug || event.id}`}>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -86,8 +86,8 @@ const UpcomingEventCard = ({
               </>
             )}
 
-            {/* Dark gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/20" />
+            {/* Dark gradient overlay — deeper at bottom to host text */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/65 to-black/20" />
           </motion.div>
         </div>
 
@@ -126,7 +126,7 @@ const UpcomingEventCard = ({
           </motion.div>
         )}
 
-        {/* Category Badge */}
+        {/* Content area — bottom of card */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -153,15 +153,48 @@ const UpcomingEventCard = ({
             {event.title}
           </motion.h3>
 
-          {/* Description — fades in on hover */}
+          {/* Description:
+              - Mobile: always visible at reduced opacity
+              - Desktop: fades in on hover */}
           <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: isHovered ? 1 : 0, y: isHovered ? 0 : 6 }}
+            animate={{
+              opacity: isHovered ? 1 : 0,
+              y: isHovered ? 0 : 6,
+            }}
             transition={{ duration: 0.3 }}
-            className="font-playfair text-cream/70 text-sm line-clamp-2 mb-1"
+            className="font-playfair text-cream/70 text-sm line-clamp-2 mb-4 hidden md:block"
           >
             {event.description}
           </motion.p>
+
+          {/* Mobile-only: description always visible */}
+          <p className="font-playfair text-cream/60 text-sm line-clamp-2 mb-4 md:hidden">
+            {event.description}
+          </p>
+
+          {/* "VIEW EVENT" CTA — fades in on hover (desktop), always visible on mobile */}
+          <motion.div
+            animate={{
+              opacity: isHovered ? 1 : 0,
+              y: isHovered ? 0 : 6,
+            }}
+            transition={{ duration: 0.3, delay: isHovered ? 0.05 : 0 }}
+            className="hidden md:flex items-center gap-2 text-gold font-playfair text-sm tracking-[0.2em] uppercase"
+          >
+            <span>View Event</span>
+            <motion.span
+              animate={{ x: isHovered ? 4 : 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <ArrowRight className="w-4 h-4" />
+            </motion.span>
+          </motion.div>
+
+          {/* Mobile: "VIEW EVENT" always visible */}
+          <div className="flex md:hidden items-center gap-2 text-gold font-playfair text-xs tracking-[0.2em] uppercase opacity-80">
+            <span>View Event</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </div>
 
           {/* Bottom accent line — scaleX 0→1 on hover from origin-left */}
           <motion.div

@@ -65,7 +65,10 @@ export function apiEventToUpcomingEvent(event: ApiEvent): UpcomingEventWithSlug 
     slug: event.slug,
     date: event.date,
     category: 'Event',
-    description: stripHtml(event.body),
+    description: (() => {
+      const text = stripHtml(event.body);
+      return text.length > 200 ? text.substring(0, 197).trimEnd() + '...' : text;
+    })(),
     image: event.imageUrls?.original || event.image?.url || event.mainImageUrl || '',
     featured: event.isFeatured,
     location: event.location,

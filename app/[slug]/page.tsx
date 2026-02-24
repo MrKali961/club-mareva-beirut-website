@@ -1,6 +1,7 @@
-import { notFound, redirect } from 'next/navigation';
-import { getPostBySlug, getLatestPosts, getAllPostSlugs, getUpcomingEventBySlug } from '@/lib/content';
+import { notFound } from 'next/navigation';
+import { getPostBySlug, getLatestPosts, getAllPostSlugs, getUpcomingEventBySlug, getUpcomingEvents } from '@/lib/content';
 import PostClient from './PostClient';
+import UpcomingEventDetail from '../news-and-events/upcoming/[slug]/UpcomingEventDetail';
 
 export const revalidate = 300;
 
@@ -29,12 +30,52 @@ export default async function PostPage({
   const post = await getPostBySlug(slug);
 
   if (!post) {
-    // The slug may belong to an event rather than a news article. Events are
-    // published via the dashboard into the events table and have a canonical
-    // URL of /news-and-events/upcoming/{slug}. Redirect there transparently.
+    // The slug may belong to an event. Render it directly here so the
+    // canonical URL stays at /{slug} rather than /news-and-events/upcoming/{slug}.
     const event = await getUpcomingEventBySlug(slug);
     if (event) {
-      redirect(`/news-and-events/upcoming/${event.slug || slug}`);
+      const allUpcoming = await getUpcomingEvents();
+      const otherEvents = allUpcoming
+        .filter(e => e.id !== event.id)
+        .slice(0, 3)
+        .map(e => ({
+          id: e.id,
+          slug: e.slug,
+          title: e.title,
+          category: e.category,
+          image: e.image,
+          month: new Date(e.date).toLocaleDateString('en-US', { month: 'short' }).toUpperCase(),
+          day: new Date(e.date).getDate().toString(),
+          displayDate: new Date(e.date).toLocaleDateString('en-US', {
+            weekday: 'long',
+            month: 'long',
+            day: 'numeric',
+          }),
+        }));
+
+      const eventData = {
+        id: event.id,
+        title: event.title,
+        category: event.category,
+        description: event.description,
+        image: event.image,
+        body: event.body,
+        location: event.location,
+        month: new Date(event.date).toLocaleDateString('en-US', { month: 'short' }).toUpperCase(),
+        day: new Date(event.date).getDate().toString(),
+        displayDate: new Date(event.date).toLocaleDateString('en-US', {
+          weekday: 'long',
+          month: 'long',
+          day: 'numeric',
+        }),
+        time: new Date(event.date).toLocaleTimeString('en-US', {
+          hour: 'numeric',
+          minute: '2-digit',
+          hour12: true,
+        }),
+      };
+
+      return <UpcomingEventDetail event={eventData} otherEvents={otherEvents} />;
     }
     return notFound();
   }

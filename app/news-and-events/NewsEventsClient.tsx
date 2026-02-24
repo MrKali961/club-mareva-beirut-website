@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { Calendar, ArrowRight } from "lucide-react";
 import UpcomingEvents, {
   UpcomingEventItem,
 } from "@/components/sections/UpcomingEvents";
@@ -28,6 +29,193 @@ interface NewsEventsClientProps {
 }
 
 const categories: Category[] = ["All", "Events", "News"];
+
+const EVENT_CATEGORIES = ["Events", "International Events", "Mareva Malt Mavericks Tastings"];
+
+function isEventPost(post: PostItem): boolean {
+  return EVENT_CATEGORIES.includes(post.category);
+}
+
+function parseDateBadge(dateStr: string): { month: string; day: string } | null {
+  // Attempt to parse "Month Day, Year" or "Month Day Year" or ISO
+  try {
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return null;
+    return {
+      month: d.toLocaleString("en-US", { month: "short" }).toUpperCase(),
+      day: String(d.getDate()),
+    };
+  } catch {
+    return null;
+  }
+}
+
+function PostCard({ post, index }: { post: PostItem; index: number }) {
+  const isEvent = isEventPost(post);
+  const dateBadge = isEvent ? parseDateBadge(post.date) : null;
+  const [isHovered, setIsHovered] = useState(false);
+
+  return (
+    <motion.div
+      key={post.slug}
+      layout
+      initial={{ opacity: 0, y: 40 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.9 }}
+      transition={{
+        duration: 0.5,
+        delay: index * 0.08,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+    >
+      <Link href={`/${post.slug}`}>
+        <div
+          className={`
+            group relative bg-black rounded-xl overflow-hidden border transition-all duration-500 h-full flex flex-col
+            ${isEvent
+              ? "border-l-2 border-l-green-dark border-t border-r border-b border-gold/15 hover:border-l-[3px] hover:border-l-green-dark hover:border-gold/30"
+              : "border-l-2 border-l-gold/60 border-t border-r border-b border-gold/15 hover:border-l-[3px] hover:border-l-gold hover:border-gold/30"
+            }
+          `}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          style={{
+            boxShadow: isHovered
+              ? isEvent
+                ? "0 0 40px rgba(28, 61, 45, 0.25), 0 8px 32px rgba(0,0,0,0.6)"
+                : "0 0 40px rgba(201,162,39,0.12), 0 8px 32px rgba(0,0,0,0.6)"
+              : "0 4px 20px rgba(0,0,0,0.4)",
+            transition: "box-shadow 0.5s ease",
+          }}
+        >
+          {/* Image Container */}
+          <div className="relative aspect-[16/9] overflow-hidden flex-shrink-0">
+            {post.image ? (
+              <Image
+                src={post.image}
+                alt={post.title}
+                fill
+                className="object-cover transition-transform duration-700 group-hover:scale-105"
+                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              />
+            ) : (
+              <>
+                <div className="absolute inset-0 bg-gradient-to-br from-green-dark via-black to-black" />
+                <div className="absolute inset-0 opacity-30">
+                  <div className="w-full h-full bg-[radial-gradient(circle_at_50%_40%,rgba(201,162,39,0.2),transparent_60%)]" />
+                </div>
+                <div className="absolute inset-0 opacity-10">
+                  <div className="w-full h-full bg-[linear-gradient(45deg,transparent_25%,rgba(201,162,39,0.1)_25%,rgba(201,162,39,0.1)_50%,transparent_50%,transparent_75%,rgba(201,162,39,0.1)_75%)] bg-[length:60px_60px]" />
+                </div>
+              </>
+            )}
+
+            {/* Dark overlay gradient */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent z-10" />
+
+            {/* Event: calendar date badge top-left */}
+            {isEvent && dateBadge ? (
+              <motion.div
+                initial={{ opacity: 0, x: -12 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.08 + 0.15, duration: 0.4 }}
+                className="absolute top-4 left-4 z-20 bg-black/70 backdrop-blur-sm border border-gold/40 px-3 py-2 flex flex-col items-center min-w-[44px]"
+              >
+                <span className="font-playfair text-[9px] text-gold tracking-[0.2em] uppercase leading-none mb-0.5">
+                  {dateBadge.month}
+                </span>
+                <span className="font-playfair text-2xl font-bold text-cream leading-none">
+                  {dateBadge.day}
+                </span>
+              </motion.div>
+            ) : !isEvent ? (
+              /* News: category badge top-left */
+              <div className="absolute top-4 left-4 z-20">
+                <span className="bg-gold text-black px-3 py-1 text-xs font-playfair font-semibold uppercase tracking-wider">
+                  {post.category}
+                </span>
+              </div>
+            ) : (
+              /* Event with no parseable date: show Upcoming badge */
+              <div className="absolute top-4 left-4 z-20">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-dark/90 border border-green-dark text-gold text-xs font-playfair font-semibold tracking-[0.15em] uppercase backdrop-blur-sm">
+                  <span className="w-1.5 h-1.5 rounded-full bg-gold animate-pulse" />
+                  Event
+                </span>
+              </div>
+            )}
+
+            {/* Event: category label top-right (only when date badge is shown top-left) */}
+            {isEvent && dateBadge && (
+              <div className="absolute top-4 right-4 z-20">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-green-dark/80 border border-green-dark/60 text-gold text-[10px] font-playfair font-semibold tracking-[0.15em] uppercase backdrop-blur-sm">
+                  {post.category}
+                </span>
+              </div>
+            )}
+          </div>
+
+          {/* Content */}
+          <div className="p-6 md:p-7 flex flex-col flex-1 relative">
+            {/* Title */}
+            <h3 className="font-playfair text-xl md:text-2xl text-cream mb-3 line-clamp-2 group-hover:text-gold transition-colors duration-300 leading-snug">
+              {post.title}
+            </h3>
+
+            {/* Excerpt */}
+            <p className="text-cream/60 text-sm font-playfair mb-5 line-clamp-2 leading-relaxed flex-1">
+              {post.excerpt}
+            </p>
+
+            {/* Footer row */}
+            <div className="flex items-center justify-between text-xs font-playfair mt-auto">
+              {isEvent ? (
+                /* Events: date with calendar icon + no readTime */
+                <span className="flex items-center gap-1.5 text-gold">
+                  <Calendar className="w-3.5 h-3.5 flex-shrink-0" />
+                  <span className="tracking-wide">{post.date}</span>
+                </span>
+              ) : (
+                /* News: date */
+                <span className="flex items-center gap-1.5 text-gold">
+                  <span className="tracking-wide">{post.date}</span>
+                </span>
+              )}
+
+              {isEvent ? (
+                /* Events: no readTime shown — show "View Event" affordance */
+                <motion.span
+                  animate={{ x: isHovered ? 2 : 0, opacity: isHovered ? 1 : 0.55 }}
+                  transition={{ duration: 0.3 }}
+                  className="flex items-center gap-1 text-gold/70 uppercase tracking-widest text-[10px]"
+                >
+                  View Event
+                  <ArrowRight className="w-3 h-3" />
+                </motion.span>
+              ) : (
+                /* News: read time */
+                <span className="text-cream/50 tracking-wide">{post.readTime}</span>
+              )}
+            </div>
+
+            {/* Bottom accent bar — slides in on hover, color differs by type */}
+            <motion.div
+              className={`absolute bottom-0 left-0 right-0 h-[2px] ${
+                isEvent
+                  ? "bg-gradient-to-r from-green-dark via-green-dark/60 to-transparent"
+                  : "bg-gradient-to-r from-gold via-gold/60 to-transparent"
+              }`}
+              initial={{ scaleX: 0 }}
+              animate={{ scaleX: isHovered ? 1 : 0 }}
+              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+              style={{ transformOrigin: "left" }}
+            />
+          </div>
+        </div>
+      </Link>
+    </motion.div>
+  );
+}
 
 export default function NewsEventsClient({
   posts,
@@ -68,12 +256,7 @@ function NewsEventsContent({ posts, upcomingEvents }: NewsEventsClientProps) {
     activeCategory === "All"
       ? posts
       : activeCategory === "Events"
-        ? posts.filter(
-            (post) =>
-              post.category === "Events" ||
-              post.category === "International Events" ||
-              post.category === "Mareva Malt Mavericks Tastings",
-          )
+        ? posts.filter(isEventPost)
         : posts.filter((post) => post.category === activeCategory);
 
   const displayedPosts = filteredPosts.slice(0, visibleCount);
@@ -140,7 +323,7 @@ function NewsEventsContent({ posts, upcomingEvents }: NewsEventsClientProps) {
       <section className="relative z-20 mt-4">
         <div className="container mx-auto px-6">
           <motion.div
-            className="bg-black-800/80 backdrop-blur-md border border-gold/20 rounded-2xl p-2 inline-flex flex-wrap gap-2 shadow-2xl"
+            className="bg-black/80 backdrop-blur-md border border-gold/20 rounded-2xl p-2 inline-flex flex-wrap gap-2 shadow-2xl"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
@@ -179,90 +362,12 @@ function NewsEventsContent({ posts, upcomingEvents }: NewsEventsClientProps) {
       <section className="py-20 px-6">
         <div className="container mx-auto max-w-7xl">
           <motion.div
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8"
             layout
           >
             <AnimatePresence mode="popLayout">
               {displayedPosts.map((post, index) => (
-                <motion.div
-                  key={post.slug}
-                  layout
-                  initial={{ opacity: 0, y: 40 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{
-                    duration: 0.5,
-                    delay: index * 0.08,
-                    ease: [0.22, 1, 0.36, 1],
-                  }}
-                >
-                  <Link href={`/${post.slug}`}>
-                    <div className="group relative bg-black-800 rounded-xl overflow-hidden border border-gold/20 hover:border-gold transition-all duration-500 h-full">
-                      {/* Image Container */}
-                      <div className="relative aspect-[16/9] overflow-hidden">
-                        {post.image ? (
-                          <Image
-                            src={post.image}
-                            alt={post.title}
-                            fill
-                            className="object-cover transition-transform duration-700 group-hover:scale-105"
-                            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                          />
-                        ) : (
-                          <>
-                            {/* Base gradient background */}
-                            <div className="absolute inset-0 bg-gradient-to-br from-green-dark via-black-800 to-black" />
-
-                            {/* Radial glow effect */}
-                            <div className="absolute inset-0 opacity-30">
-                              <div className="w-full h-full bg-[radial-gradient(circle_at_50%_40%,rgba(201,162,39,0.2),transparent_60%)]" />
-                            </div>
-
-                            {/* Placeholder pattern */}
-                            <div className="absolute inset-0 opacity-10">
-                              <div className="w-full h-full bg-[linear-gradient(45deg,transparent_25%,rgba(201,162,39,0.1)_25%,rgba(201,162,39,0.1)_50%,transparent_50%,transparent_75%,rgba(201,162,39,0.1)_75%)] bg-[length:60px_60px]" />
-                            </div>
-                          </>
-                        )}
-
-                        {/* Dark overlay gradient */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent z-10" />
-
-                        {/* Category Badge */}
-                        <div className="absolute top-4 left-4 z-20">
-                          <span className="bg-gold text-black px-3 py-1 text-xs font-playfair font-semibold uppercase tracking-wider rounded-md">
-                            {post.category}
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Content */}
-                      <div className="p-6 relative">
-                        <h3 className="font-playfair text-2xl text-cream mb-3 line-clamp-2 group-hover:text-gold transition-colors duration-300">
-                          {post.title}
-                        </h3>
-
-                        <p className="text-cream/70 text-sm font-playfair mb-4 line-clamp-2">
-                          {post.excerpt}
-                        </p>
-
-                        <div className="flex items-center justify-between text-sm font-playfair">
-                          <span className="text-gold">{post.date}</span>
-                          <span className="text-cream/70">{post.readTime}</span>
-                        </div>
-
-                        {/* Hover indicator */}
-                        <motion.div
-                          className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-gold via-gold-light to-gold"
-                          initial={{ scaleX: 0 }}
-                          whileHover={{ scaleX: 1 }}
-                          transition={{ duration: 0.3 }}
-                          style={{ transformOrigin: "left" }}
-                        />
-                      </div>
-                    </div>
-                  </Link>
-                </motion.div>
+                <PostCard key={post.slug} post={post} index={index} />
               ))}
             </AnimatePresence>
           </motion.div>
