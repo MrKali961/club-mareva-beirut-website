@@ -1,8 +1,13 @@
 import { notFound } from 'next/navigation';
-import { getPostBySlug, getLatestPosts } from '@/lib/content';
+import { getPostBySlug, getLatestPosts, getAllPostSlugs } from '@/lib/content';
 import PostClient from './PostClient';
 
 export const revalidate = 300;
+
+// Allow slugs not returned by generateStaticParams to be rendered on-demand
+// (ISR fallback). This ensures articles published after the last build are
+// accessible immediately without requiring a full rebuild.
+export const dynamicParams = true;
 
 function resolveImagePath(path: string | undefined): string {
   if (!path) return '';
@@ -11,8 +16,8 @@ function resolveImagePath(path: string | undefined): string {
 }
 
 export async function generateStaticParams() {
-  const posts = await getLatestPosts(20);
-  return posts.map(post => ({ slug: post.slug }));
+  const slugs = await getAllPostSlugs();
+  return slugs.map(slug => ({ slug }));
 }
 
 export default async function PostPage({

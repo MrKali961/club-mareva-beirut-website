@@ -209,6 +209,9 @@ export async function getAllPosts(): Promise<Post[]> {
 }
 
 export async function getPostBySlug(slug: string): Promise<Post | null> {
+  // API-first: try the live API regardless of USE_API when looking up a single
+  // post by slug. Articles created through the dashboard have no local JSON file,
+  // so the filesystem alone is not sufficient.
   if (USE_API) {
     try {
       const article = await fetchNewsBySlug(slug);
@@ -220,8 +223,25 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
       );
     }
   }
+
+  // Filesystem lookup — covers the 49 legacy JSON articles
   const posts = await getAllPostsFromFilesystem();
-  return posts.find((p) => p.slug === slug) || null;
+  const fsPost = posts.find((p) => p.slug === slug);
+  if (fsPost) return fsPost;
+
+  // Last-resort API lookup when USE_API=false: the article may only exist in
+  // the database (e.g. published via the dashboard after the static files were
+  // generated). Silently try the API so those pages don't 404.
+  if (!USE_API) {
+    try {
+      const article = await fetchNewsBySlug(slug);
+      return apiNewsToPost(article);
+    } catch {
+      return null;
+    }
+  }
+
+  return null;
 }
 
 export async function getLatestPosts(count: number): Promise<Post[]> {
@@ -238,6 +258,41 @@ export async function getLatestPosts(count: number): Promise<Post[]> {
   }
   const posts = await getAllPostsFromFilesystem();
   return posts.slice(0, count);
+}
+
+/**
+ * Returns all known post slugs from both the API and the local filesystem,
+ * deduplicated. Used by generateStaticParams to pre-build every article page.
+ */
+export async function getAllPostSlugs(): Promise<string[]> {
+  const slugs = new Set<string>();
+
+  // Always collect filesystem slugs — fast, no network dependency
+  try {
+    const fsPosts = await getAllPostsFromFilesystem();
+    fsPosts.forEach((p) => slugs.add(p.slug));
+  } catch {
+    // ignore — filesystem may be empty in some environments
+  }
+
+  // Collect API slugs with full pagination so no article is missed
+  try {
+    const first = await fetchAllNews(1, 500);
+    first.items.forEach((item) => slugs.add(item.slug));
+
+    if (first.pagination.totalPages > 1) {
+      const pages = await Promise.all(
+        Array.from({ length: first.pagination.totalPages - 1 }, (_, i) =>
+          fetchAllNews(i + 2, 500)
+        )
+      );
+      pages.forEach((page) => page.items.forEach((item) => slugs.add(item.slug)));
+    }
+  } catch {
+    // API unavailable at build time — fall back to filesystem slugs only
+  }
+
+  return Array.from(slugs);
 }
 
 export async function getPostsByCategory(category: string): Promise<Post[]> {
