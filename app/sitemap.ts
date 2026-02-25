@@ -1,5 +1,5 @@
 import { MetadataRoute } from "next";
-import { getAllPosts, getUpcomingEvents } from "@/lib/content";
+import { getAllPosts, getAllEventSlugs } from "@/lib/content";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://clubmarevabeirut.com";
@@ -52,14 +52,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.error("Error fetching posts for sitemap:", error);
   }
 
-  // Dynamic event pages
+  // Dynamic event pages — all events (past + future) at canonical /{slug}
   let eventEntries: MetadataRoute.Sitemap = [];
   try {
-    const events = await getUpcomingEvents();
-    eventEntries = events.map((event) => ({
-      url: `${baseUrl}/news-and-events/upcoming/${event.slug || event.id}`,
+    const eventSlugs = await getAllEventSlugs();
+    eventEntries = eventSlugs.map((slug) => ({
+      url: `${baseUrl}/${slug}`,
       lastModified: new Date(),
-      changeFrequency: "weekly" as const,
+      changeFrequency: "monthly" as const,
       priority: 0.7,
     }));
   } catch (error) {

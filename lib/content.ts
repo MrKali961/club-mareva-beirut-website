@@ -274,15 +274,18 @@ export async function getLatestPosts(count: number): Promise<Post[]> {
 export async function getAllPostSlugs(): Promise<string[]> {
   const slugs = new Set<string>();
 
-  // Always collect filesystem slugs — fast, no network dependency
-  try {
-    const fsPosts = await getAllPostsFromFilesystem();
-    fsPosts.forEach((p) => slugs.add(p.slug));
-  } catch {
-    // ignore — filesystem may be empty in some environments
+  if (!USE_API) {
+    // Filesystem-only mode: collect all local slugs
+    try {
+      const fsPosts = await getAllPostsFromFilesystem();
+      fsPosts.forEach((p) => slugs.add(p.slug));
+    } catch {
+      // ignore
+    }
+    return Array.from(slugs);
   }
 
-  // Collect API slugs with full pagination so no article is missed
+  // API mode: collect slugs from API with full pagination
   try {
     const first = await fetchAllNews(1, 500);
     first.items.forEach((item) => slugs.add(item.slug));
@@ -296,7 +299,13 @@ export async function getAllPostSlugs(): Promise<string[]> {
       pages.forEach((page) => page.items.forEach((item) => slugs.add(item.slug)));
     }
   } catch {
-    // API unavailable at build time — fall back to filesystem slugs only
+    // API unavailable at build time — fall back to filesystem slugs
+    try {
+      const fsPosts = await getAllPostsFromFilesystem();
+      fsPosts.forEach((p) => slugs.add(p.slug));
+    } catch {
+      // ignore
+    }
   }
 
   return Array.from(slugs);
