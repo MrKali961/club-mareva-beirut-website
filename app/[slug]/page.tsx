@@ -1,7 +1,14 @@
-import { notFound } from 'next/navigation';
-import { getPostBySlug, getLatestPosts, getAllPostSlugs, getUpcomingEventBySlug, getUpcomingEvents } from '@/lib/content';
-import PostClient from './PostClient';
-import UpcomingEventDetail from '../news-and-events/upcoming/[slug]/UpcomingEventDetail';
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import {
+  getPostBySlug,
+  getLatestPosts,
+  getAllPostSlugs,
+  getUpcomingEventBySlug,
+  getUpcomingEvents,
+} from "@/lib/content";
+import PostClient from "./PostClient";
+import UpcomingEventDetail from "../news-and-events/upcoming/[slug]/UpcomingEventDetail";
 
 export const revalidate = 300;
 
@@ -10,21 +17,93 @@ export const revalidate = 300;
 // accessible immediately without requiring a full rebuild.
 export const dynamicParams = true;
 
+const SITE_URL = "https://www.clubmarevabeirut.com";
+
 function resolveImagePath(path: string | undefined): string {
-  if (!path) return '';
-  if (path.startsWith('http://') || path.startsWith('https://')) return path;
-  return path.startsWith('/') ? path : `/${path}`;
+  if (!path) return "";
+  if (path.startsWith("http://") || path.startsWith("https://")) return path;
+  return path.startsWith("/") ? path : `/${path}`;
+}
+
+function resolveAbsoluteImageUrl(path: string | undefined): string {
+  if (!path) return "";
+  if (path.startsWith("http://") || path.startsWith("https://")) return path;
+  return path.startsWith("/") ? `${SITE_URL}${path}` : `${SITE_URL}/${path}`;
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+
+  const post = await getPostBySlug(slug);
+  if (post) {
+    const imageUrl = resolveAbsoluteImageUrl(
+      post.featured_image?.local_path || post.featured_image?.original_url,
+    );
+    const description = post.content.text.substring(0, 155);
+    return {
+      title: post.title,
+      description,
+      openGraph: {
+        title: post.title,
+        description,
+        url: `${SITE_URL}/${slug}`,
+        siteName: "Club Mareva Beirut",
+        type: "article",
+        images: imageUrl
+          ? [{ url: imageUrl, width: 1200, height: 630, alt: post.title }]
+          : [],
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: post.title,
+        description,
+        images: imageUrl ? [imageUrl] : [],
+      },
+    };
+  }
+
+  const event = await getUpcomingEventBySlug(slug);
+  if (event) {
+    const imageUrl = resolveAbsoluteImageUrl(event.image);
+    const description = event.description || "";
+    return {
+      title: event.title,
+      description,
+      openGraph: {
+        title: event.title,
+        description,
+        url: `${SITE_URL}/${slug}`,
+        siteName: "Club Mareva Beirut",
+        type: "article",
+        images: imageUrl
+          ? [{ url: imageUrl, width: 1200, height: 630, alt: event.title }]
+          : [],
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: event.title,
+        description,
+        images: imageUrl ? [imageUrl] : [],
+      },
+    };
+  }
+
+  return { title: "Club Mareva Beirut" };
 }
 
 export async function generateStaticParams() {
   const slugs = await getAllPostSlugs();
-  return slugs.map(slug => ({ slug }));
+  return slugs.map((slug) => ({ slug }));
 }
 
 export default async function PostPage({
-  params
+  params,
 }: {
-  params: Promise<{ slug: string }>
+  params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
   const post = await getPostBySlug(slug);
@@ -41,32 +120,38 @@ export default async function PostPage({
       if (isPastEvent) {
         const latestPosts = await getLatestPosts(4);
         const relatedPosts = latestPosts
-          .filter(p => p.slug !== event.slug)
+          .filter((p) => p.slug !== event.slug)
           .slice(0, 3)
-          .map(p => ({
+          .map((p) => ({
             title: p.title,
             slug: p.slug,
-            date: new Date(p.date_created).toLocaleDateString('en-US', {
-              year: 'numeric', month: 'long', day: 'numeric',
+            date: new Date(p.date_created).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
             }),
-            category: p.categories[0] || 'Events',
-            image: resolveImagePath(p.featured_image?.local_path || p.featured_image?.original_url),
-            excerpt: p.content.text.substring(0, 120) + '...',
+            category: p.categories[0] || "Events",
+            image: resolveImagePath(
+              p.featured_image?.local_path || p.featured_image?.original_url,
+            ),
+            excerpt: p.content.text.substring(0, 120) + "...",
           }));
 
         const galleryImages = (event.galleryImages ?? [])
           .sort((a, b) => a.displayOrder - b.displayOrder)
-          .map(gi => resolveImagePath(gi.imageUrls.original));
+          .map((gi) => resolveImagePath(gi.imageUrls.original));
 
         const postData = {
           title: event.title,
           slug: event.slug,
-          date: new Date(event.date).toLocaleDateString('en-US', {
-            year: 'numeric', month: 'long', day: 'numeric',
+          date: new Date(event.date).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
           }),
-          category: event.category || 'Events',
+          category: event.category || "Events",
           featuredImage: resolveImagePath(event.image),
-          content: event.body || '',
+          content: event.body || "",
           images: galleryImages,
         };
 
@@ -76,20 +161,22 @@ export default async function PostPage({
       // Future event → UpcomingEventDetail (unchanged)
       const allUpcoming = await getUpcomingEvents();
       const otherEvents = allUpcoming
-        .filter(e => e.id !== event.id)
+        .filter((e) => e.id !== event.id)
         .slice(0, 3)
-        .map(e => ({
+        .map((e) => ({
           id: e.id,
           slug: e.slug,
           title: e.title,
           category: e.category,
           image: e.image,
-          month: new Date(e.date).toLocaleDateString('en-US', { month: 'short' }).toUpperCase(),
+          month: new Date(e.date)
+            .toLocaleDateString("en-US", { month: "short" })
+            .toUpperCase(),
           day: new Date(e.date).getDate().toString(),
-          displayDate: new Date(e.date).toLocaleDateString('en-US', {
-            weekday: 'long',
-            month: 'long',
-            day: 'numeric',
+          displayDate: new Date(e.date).toLocaleDateString("en-US", {
+            weekday: "long",
+            month: "long",
+            day: "numeric",
           }),
         }));
 
@@ -101,21 +188,25 @@ export default async function PostPage({
         image: event.image,
         body: event.body,
         location: event.location,
-        month: new Date(event.date).toLocaleDateString('en-US', { month: 'short' }).toUpperCase(),
+        month: new Date(event.date)
+          .toLocaleDateString("en-US", { month: "short" })
+          .toUpperCase(),
         day: new Date(event.date).getDate().toString(),
-        displayDate: new Date(event.date).toLocaleDateString('en-US', {
-          weekday: 'long',
-          month: 'long',
-          day: 'numeric',
+        displayDate: new Date(event.date).toLocaleDateString("en-US", {
+          weekday: "long",
+          month: "long",
+          day: "numeric",
         }),
-        time: new Date(event.date).toLocaleTimeString('en-US', {
-          hour: 'numeric',
-          minute: '2-digit',
+        time: new Date(event.date).toLocaleTimeString("en-US", {
+          hour: "numeric",
+          minute: "2-digit",
           hour12: true,
         }),
       };
 
-      return <UpcomingEventDetail event={eventData} otherEvents={otherEvents} />;
+      return (
+        <UpcomingEventDetail event={eventData} otherEvents={otherEvents} />
+      );
     }
     return notFound();
   }
@@ -123,36 +214,40 @@ export default async function PostPage({
   // Get related posts (latest 3, excluding current post)
   const latestPosts = await getLatestPosts(4);
   const relatedPosts = latestPosts
-    .filter(p => p.slug !== post.slug)
+    .filter((p) => p.slug !== post.slug)
     .slice(0, 3)
-    .map(p => ({
+    .map((p) => ({
       title: p.title,
       slug: p.slug,
-      date: new Date(p.date_created).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
+      date: new Date(p.date_created).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
       }),
-      category: p.categories[0] || 'Events',
-      image: resolveImagePath(p.featured_image?.local_path || p.featured_image?.original_url),
-      excerpt: p.content.text.substring(0, 120) + '...'
+      category: p.categories[0] || "Events",
+      image: resolveImagePath(
+        p.featured_image?.local_path || p.featured_image?.original_url,
+      ),
+      excerpt: p.content.text.substring(0, 120) + "...",
     }));
 
   // Map post to client-safe format
   const postData = {
     title: post.title,
     slug: post.slug,
-    date: new Date(post.date_created).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
+    date: new Date(post.date_created).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     }),
-    category: post.categories[0] || 'Events',
-    featuredImage: resolveImagePath(post.featured_image?.local_path || post.featured_image?.original_url),
+    category: post.categories[0] || "Events",
+    featuredImage: resolveImagePath(
+      post.featured_image?.local_path || post.featured_image?.original_url,
+    ),
     content: post.content.clean,
     images: post.images
-      .filter(img => img.local_path || img.original_url)
-      .map(img => resolveImagePath(img.local_path || img.original_url))
+      .filter((img) => img.local_path || img.original_url)
+      .map((img) => resolveImagePath(img.local_path || img.original_url)),
   };
 
   return <PostClient post={postData} relatedPosts={relatedPosts} />;
