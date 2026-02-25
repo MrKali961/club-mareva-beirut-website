@@ -34,6 +34,46 @@ export default async function PostPage({
     // canonical URL stays at /{slug} rather than /news-and-events/upcoming/{slug}.
     const event = await getUpcomingEventBySlug(slug);
     if (event) {
+      // Use strict past check: event happening today (not yet passed) stays as UpcomingEventDetail.
+      // event.date is an ISO 8601 string from the API (e.g. "2025-03-15T20:00:00.000Z").
+      const isPastEvent = new Date(event.date) < new Date();
+
+      if (isPastEvent) {
+        const latestPosts = await getLatestPosts(4);
+        const relatedPosts = latestPosts
+          .filter(p => p.slug !== event.slug)
+          .slice(0, 3)
+          .map(p => ({
+            title: p.title,
+            slug: p.slug,
+            date: new Date(p.date_created).toLocaleDateString('en-US', {
+              year: 'numeric', month: 'long', day: 'numeric',
+            }),
+            category: p.categories[0] || 'Events',
+            image: resolveImagePath(p.featured_image?.local_path || p.featured_image?.original_url),
+            excerpt: p.content.text.substring(0, 120) + '...',
+          }));
+
+        const galleryImages = (event.galleryImages ?? [])
+          .sort((a, b) => a.displayOrder - b.displayOrder)
+          .map(gi => resolveImagePath(gi.imageUrls.original));
+
+        const postData = {
+          title: event.title,
+          slug: event.slug,
+          date: new Date(event.date).toLocaleDateString('en-US', {
+            year: 'numeric', month: 'long', day: 'numeric',
+          }),
+          category: event.category || 'Events',
+          featuredImage: resolveImagePath(event.image),
+          content: event.body || '',
+          images: galleryImages,
+        };
+
+        return <PostClient post={postData} relatedPosts={relatedPosts} />;
+      }
+
+      // Future event → UpcomingEventDetail (unchanged)
       const allUpcoming = await getUpcomingEvents();
       const otherEvents = allUpcoming
         .filter(e => e.id !== event.id)

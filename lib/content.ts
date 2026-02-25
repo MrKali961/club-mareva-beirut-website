@@ -8,6 +8,7 @@ import {
 } from "./api/events";
 import { apiNewsToPost } from "./adapters/news-adapter";
 import { apiEventToUpcomingEvent } from "./adapters/events-adapter";
+import type { UpcomingEventWithSlug } from "./adapters/events-adapter";
 import {
   apiCigarToSignatureItem,
   SIGNATURE_SLUGS,
@@ -373,7 +374,7 @@ export async function getUpcomingEvents(): Promise<UpcomingEvent[]> {
 
 export async function getUpcomingEventBySlug(
   slug: string,
-): Promise<UpcomingEvent | null> {
+): Promise<UpcomingEventWithSlug | null> {
   if (USE_API) {
     try {
       const event = await fetchEventBySlug(slug);
@@ -386,7 +387,7 @@ export async function getUpcomingEventBySlug(
     }
   }
   const events = await getUpcomingEventsFromFilesystem();
-  return events.find((e) => e.slug === slug || e.id === slug) || null;
+  return (events.find((e) => e.slug === slug || e.id === slug) || null) as UpcomingEventWithSlug | null;
 }
 
 /** @deprecated Use getUpcomingEventBySlug instead */

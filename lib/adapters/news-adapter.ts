@@ -46,6 +46,21 @@ export function stripHtml(html: string): string {
     .trim();
 }
 
+export function normalizeWordPressHtml(html: string): string {
+  // If content already has block-level HTML tags, return as-is.
+  // Known limitation: mixed content (some <p> tags, some bare text) is not handled.
+  if (/<(p|h[1-6]|ul|ol|li|blockquote|div|section|article)\b/i.test(html)) {
+    return html;
+  }
+  // Wrap bare text blocks (separated by double newlines) in <p> tags.
+  return html
+    .split(/\r?\n\r?\n/)
+    .map(block => block.trim())
+    .filter(Boolean)
+    .map(block => `<p>${block.replace(/\r?\n/g, '<br />')}</p>`)
+    .join('\n');
+}
+
 export function apiNewsToPost(article: ApiNewsArticle): Post {
   const imageUrl = article.imageUrls?.original || article.image?.url || article.mainImageUrl || '';
 
@@ -60,7 +75,7 @@ export function apiNewsToPost(article: ApiNewsArticle): Post {
     categories: ['News'],
     content: {
       raw: article.body,
-      clean: article.body,
+      clean: normalizeWordPressHtml(article.body),
       text: stripHtml(article.body),
     },
     featured_image: imageUrl

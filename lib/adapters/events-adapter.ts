@@ -1,4 +1,4 @@
-import { stripHtml } from './news-adapter';
+import { stripHtml, normalizeWordPressHtml } from './news-adapter';
 
 interface ApiEvent {
   id: string;
@@ -73,7 +73,7 @@ export function apiEventToUpcomingEvent(event: ApiEvent): UpcomingEventWithSlug 
     featured: event.isFeatured,
     location: event.location,
     maxVisitors: event.maxVisitors,
-    body: event.body,
+    body: normalizeWordPressHtml(event.body ?? ''),
     galleryImages: event.galleryImages,
   };
 }

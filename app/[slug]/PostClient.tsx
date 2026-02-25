@@ -165,7 +165,7 @@ export default function PostClient({ post, relatedPosts }: PostClientProps) {
               segIdx > 0 &&
               segIdx < contentSegments.length - 1 && (
                 <div
-                  className={`my-10 ${segment.images.length === 1 ? "" : "grid grid-cols-2 gap-3"}`}
+                  className={`my-10 ${segment.images.length === 1 ? "" : "grid grid-cols-1 sm:grid-cols-2 gap-3"}`}
                 >
                   {segment.images.map(({ src, index }) => (
                     <motion.button
