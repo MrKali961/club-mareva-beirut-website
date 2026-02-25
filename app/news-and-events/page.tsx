@@ -17,9 +17,9 @@ export default async function NewsAndEventsPage() {
   const [posts, upcomingEvents, eventsResponse] = await Promise.all([
     getAllPosts(),
     getUpcomingEvents(),
-    fetchAllEvents(1, 50).catch(() => ({
+    fetchAllEvents(1, 100).catch(() => ({
       items: [] as ApiEvent[],
-      pagination: { page: 1, limit: 50, total: 0, totalPages: 0 },
+      pagination: { page: 1, limit: 100, total: 0, totalPages: 0 },
     })),
   ]);
 
