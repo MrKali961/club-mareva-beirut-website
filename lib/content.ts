@@ -218,6 +218,11 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
       const article = await fetchNewsBySlug(slug);
       return apiNewsToPost(article);
     } catch (error) {
+      const msg = error instanceof Error ? error.message : String(error);
+      // A 404 means this slug is not a news article (likely an event).
+      // Do not fall back to local filesystem files which may contain event
+      // recaps stored as posts — let the caller try getUpcomingEventBySlug.
+      if (msg.includes('404')) return null;
       console.error(
         `API error fetching post "${slug}", falling back to filesystem:`,
         error,
