@@ -202,7 +202,7 @@ function BrandCard({ brand, index }: { brand: Brand; index: number }) {
       className="group relative bg-black-800 border border-white/[0.06] overflow-hidden transition-all duration-500 hover:border-gold/30 hover:shadow-[0_0_40px_-12px_rgba(201,162,39,0.15)]"
     >
       {/* Logo area */}
-      <div className="relative aspect-[4/3] bg-black-900 overflow-hidden">
+      <div className="relative aspect-[3/2] bg-black-900 overflow-hidden">
         {/* Subtle radial gradient behind logo */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(201,162,39,0.04)_0%,transparent_70%)]" />
 
@@ -210,7 +210,7 @@ function BrandCard({ brand, index }: { brand: Brand; index: number }) {
         <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/20 to-transparent" />
 
         {brand.logo ? (
-          <div className="absolute inset-0 flex items-center justify-center p-10 md:p-12">
+          <div className="absolute inset-0 flex items-center justify-center p-12 md:p-16">
             <div className="relative w-full h-full transition-transform duration-700 ease-out group-hover:scale-105">
               <Image
                 src={brand.logo}

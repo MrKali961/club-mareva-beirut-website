@@ -78,8 +78,17 @@ export default function OurSignatureClient({ items }: OurSignatureClientProps) {
         ref={setRef(0)}
         className="relative h-[100svh] min-h-[600px] flex flex-col items-center justify-center overflow-hidden"
       >
-        {/* Decorative background */}
+        {/* Background image */}
         <div className="absolute inset-0">
+          <Image
+            src="/images/clubmarevabeirut/2025/ANGELO20251114-L0026.jpg"
+            alt="Club Mareva Beirut lounge"
+            fill
+            className="object-cover"
+            priority
+            sizes="100vw"
+          />
+          <div className="absolute inset-0 bg-black/65" />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_40%,rgba(201,162,39,0.08),transparent_70%)]" />
         </div>
 

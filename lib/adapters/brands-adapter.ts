@@ -16,7 +16,7 @@ export interface Brand {
 }
 
 function resolveBrandLogo(brand: ApiCigarBrand): string {
-  return brand.logoUrls?.medium || brand.logoUrls?.original || '';
+  return brand.logoUrls?.original || brand.logoUrls?.medium || '';
 }
 
 interface BrandEnrichment {
