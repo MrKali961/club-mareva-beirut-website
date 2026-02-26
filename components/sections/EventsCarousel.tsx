@@ -318,7 +318,7 @@ const EventsCarousel = ({ events }: EventsCarouselProps) => {
               whileTap={{ scale: 0.98 }}
               className="group inline-flex items-center gap-3 px-8 py-4 border border-gold/50 text-gold font-playfair font-medium tracking-wider uppercase text-sm transition-all duration-300 hover:border-gold hover:bg-gold/10"
             >
-              View All Events
+              View All News &amp; Events
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
             </motion.span>
           </Link>
