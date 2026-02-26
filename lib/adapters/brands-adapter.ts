@@ -1,3 +1,5 @@
+import type { ApiCigarBrand } from '@/lib/api/types';
+
 export interface Brand {
   name: string;
   origin: string;
@@ -13,10 +15,8 @@ export interface Brand {
   website?: string;
 }
 
-interface ApiBrand {
-  name: string;
-  description: string;
-  logoUrl: string;
+function resolveBrandLogo(brand: ApiCigarBrand): string {
+  return brand.logoUrls?.medium || brand.logoUrls?.original || '';
 }
 
 interface BrandEnrichment {
@@ -153,24 +153,24 @@ export const BRAND_ENRICHMENT: Record<string, BrandEnrichment> = {
   },
 };
 
-export function apiBrandToLocalBrand(apiBrand: ApiBrand): Brand {
-  const enrichment = BRAND_ENRICHMENT[apiBrand.name] ?? { origin: 'Unknown' };
+export function apiBrandToLocalBrand(apiBrand: ApiCigarBrand): Brand {
+  const enrichment = BRAND_ENRICHMENT[apiBrand.title] ?? { origin: 'Unknown' };
 
   return {
-    name: apiBrand.name,
+    name: apiBrand.title,
     origin: enrichment.origin,
     established: enrichment.established,
-    description: apiBrand.description,
-    logo: apiBrand.logoUrl,
+    description: apiBrand.description || '',
+    logo: resolveBrandLogo(apiBrand),
     hashtags: enrichment.hashtags,
     testimonial: enrichment.testimonial,
     website: enrichment.website,
   };
 }
 
-export function apiBrandToShowcaseBrand(apiBrand: ApiBrand): { name: string; logo: string } {
+export function apiBrandToShowcaseBrand(apiBrand: ApiCigarBrand): { name: string; logo: string } {
   return {
-    name: apiBrand.name,
-    logo: apiBrand.logoUrl,
+    name: apiBrand.title,
+    logo: resolveBrandLogo(apiBrand),
   };
 }

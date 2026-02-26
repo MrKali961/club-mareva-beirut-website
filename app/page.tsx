@@ -32,11 +32,7 @@ export default async function Home() {
   let brandItems: { name: string; logo: string }[] = [];
   try {
     const apiBrands = await getBrands();
-    brandItems = apiBrands.map(b => apiBrandToShowcaseBrand({
-      name: b.title,
-      description: b.description,
-      logoUrl: b.logo?.url || b.logoUrl || '',
-    }));
+    brandItems = apiBrands.map(apiBrandToShowcaseBrand);
   } catch (error) {
     console.error('Error fetching brands for showcase:', error);
   }

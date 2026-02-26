@@ -80,13 +80,13 @@ export interface ApiEvent {
 export interface ApiCigarBrand {
   id: string;
   title: string;
-  description: string;
-  logoUrl?: string;
+  description: string | null;
   isFeatured: boolean;
   displayOrder: number;
-  logo?: {
-    url: string;
-    alt: string;
+  logoUrls: {
+    original: string | null;
+    medium: string | null;
+    thumb: string | null;
   };
 }
 

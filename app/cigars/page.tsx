@@ -12,13 +12,7 @@ export default async function CigarsPage() {
 
   try {
     const apiBrands = await fetchCigarBrands(100);
-    brands = apiBrands.map((b) =>
-      apiBrandToLocalBrand({
-        name: b.title,
-        description: b.description || "",
-        logoUrl: b.logo?.url || b.logoUrl || "",
-      }),
-    );
+    brands = apiBrands.map(apiBrandToLocalBrand);
   } catch (error) {
     console.error("Error fetching cigar brands:", error);
   }
