@@ -1,21 +1,38 @@
-import { readdir, readFile } from 'fs/promises';
-import { join } from 'path';
-import { fetchAllNews, fetchNewsBySlug, fetchLatestNews } from './api/news';
+import { readdir, readFile } from "fs/promises";
+import { join } from "path";
+import { fetchAllNews, fetchNewsBySlug, fetchLatestNews } from "./api/news";
 import {
+  fetchAllEvents as fetchAllEventsApi,
   fetchUpcomingEvents as fetchUpcomingEventsApi,
   fetchEventBySlug,
-} from './api/events';
-import { apiNewsToPost } from './adapters/news-adapter';
-import { apiEventToUpcomingEvent } from './adapters/events-adapter';
+} from "./api/events";
+import { apiNewsToPost } from "./adapters/news-adapter";
+import { apiEventToUpcomingEvent } from "./adapters/events-adapter";
+import type { UpcomingEventWithSlug } from "./adapters/events-adapter";
+import {
+  apiCigarToSignatureItem,
+  SIGNATURE_SLUGS,
+} from "./adapters/signatures-adapter";
+import { fetchAllCigars, fetchCigarBySlug } from "./api/cigars";
+import { fetchCigarBrands } from "./api/brands";
+import { fetchAllAlcohol, fetchAlcoholBySlug } from "./api/alcohol";
+import { fetchAllAccessories, fetchAccessoryBySlug } from "./api/accessories";
+import { fetchPublicMenu } from "./api/menu";
+import type {
+  ApiCigar,
+  ApiAlcohol,
+  ApiAccessory,
+  ApiMenuSection,
+  ApiCigarBrand,
+} from "./api/types";
 
-export type { UpcomingEventWithSlug } from './adapters/events-adapter';
+export type { UpcomingEventWithSlug } from "./adapters/events-adapter";
 
-const USE_API = process.env.USE_API === 'true';
+const USE_API = process.env.USE_API === "true";
 
-const DATA_BASE = join(process.cwd(), 'data');
-const POSTS_DIR = join(DATA_BASE, 'posts');
-const PAGES_DIR = join(DATA_BASE, 'pages');
-const METADATA_DIR = join(DATA_BASE, 'metadata');
+const DATA_BASE = join(process.cwd(), "data");
+const PAGES_DIR = join(DATA_BASE, "pages");
+const METADATA_DIR = join(DATA_BASE, "metadata");
 
 // ========================================
 // Interfaces
@@ -127,7 +144,6 @@ export interface ImageManifest {
 // Caches (filesystem mode)
 // ========================================
 
-let postsCache: Post[] | null = null;
 let pagesCache: Page[] | null = null;
 let categoriesCache: Category[] | null = null;
 let imageManifestCache: ImageManifest | null = null;
@@ -136,7 +152,7 @@ let signaturesCache: SignatureItem[] | null = null;
 
 async function loadJSON<T>(filePath: string): Promise<T | null> {
   try {
-    const content = await readFile(filePath, 'utf-8');
+    const content = await readFile(filePath, "utf-8");
     return JSON.parse(content) as T;
   } catch (error) {
     console.error(`Error loading ${filePath}:`, error);
@@ -145,80 +161,98 @@ async function loadJSON<T>(filePath: string): Promise<T | null> {
 }
 
 // ========================================
-// Posts (News) — API-backed with filesystem fallback
+// Posts (News) — API-only
 // ========================================
 
-async function getAllPostsFromFilesystem(): Promise<Post[]> {
-  if (postsCache) return postsCache;
-
+export async function getAllPosts(): Promise<Post[]> {
   try {
-    const files = await readdir(POSTS_DIR);
-    const jsonFiles = files.filter(f => f.endsWith('.json'));
-    const posts: Post[] = [];
-
-    for (const file of jsonFiles) {
-      const filePath = join(POSTS_DIR, file);
-      const post = await loadJSON<Post>(filePath);
-      if (post && post.status === 'publish') {
-        posts.push(post);
-      }
-    }
-
-    posts.sort(
-      (a, b) =>
-        new Date(b.date_created).getTime() - new Date(a.date_created).getTime(),
-    );
-
-    postsCache = posts;
-    return posts;
+    const response = await fetchAllNews();
+    return response.items.map(apiNewsToPost);
   } catch (error) {
-    console.error('Error loading posts from filesystem:', error);
+    console.error("API error fetching all posts:", error);
     return [];
   }
 }
 
-export async function getAllPosts(): Promise<Post[]> {
-  if (USE_API) {
-    try {
-      const response = await fetchAllNews();
-      return response.items.map(apiNewsToPost);
-    } catch (error) {
-      console.error('API error fetching all posts, falling back to filesystem:', error);
-    }
-  }
-  return getAllPostsFromFilesystem();
-}
-
 export async function getPostBySlug(slug: string): Promise<Post | null> {
-  if (USE_API) {
-    try {
-      const article = await fetchNewsBySlug(slug);
-      return apiNewsToPost(article);
-    } catch (error) {
-      console.error(`API error fetching post "${slug}", falling back to filesystem:`, error);
-    }
+  try {
+    const article = await fetchNewsBySlug(slug);
+    return apiNewsToPost(article);
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : String(error);
+    if (msg.includes('404')) return null;
+    console.error(`API error fetching post "${slug}":`, error);
+    return null;
   }
-  const posts = await getAllPostsFromFilesystem();
-  return posts.find(p => p.slug === slug) || null;
 }
 
 export async function getLatestPosts(count: number): Promise<Post[]> {
-  if (USE_API) {
-    try {
-      const response = await fetchLatestNews(count);
-      return response.items.map(apiNewsToPost);
-    } catch (error) {
-      console.error('API error fetching latest posts, falling back to filesystem:', error);
-    }
+  try {
+    const response = await fetchLatestNews(count);
+    return response.items.map(apiNewsToPost);
+  } catch (error) {
+    console.error("API error fetching latest posts:", error);
+    return [];
   }
-  const posts = await getAllPostsFromFilesystem();
-  return posts.slice(0, count);
+}
+
+/**
+ * Returns all known post slugs from the API.
+ * Used by generateStaticParams to pre-build every article page.
+ */
+export async function getAllPostSlugs(): Promise<string[]> {
+  const slugs = new Set<string>();
+
+  try {
+    const first = await fetchAllNews(1, 50);
+    first.items.forEach((item) => slugs.add(item.slug));
+
+    if (first.pagination.totalPages > 1) {
+      const pages = await Promise.all(
+        Array.from({ length: first.pagination.totalPages - 1 }, (_, i) =>
+          fetchAllNews(i + 2, 50)
+        )
+      );
+      pages.forEach((page) => page.items.forEach((item) => slugs.add(item.slug)));
+    }
+  } catch (error) {
+    console.error("API error fetching post slugs:", error);
+  }
+
+  return Array.from(slugs);
+}
+
+/**
+ * Returns all event slugs from the API (past + future), with full pagination.
+ * Used by the event detail page's generateStaticParams so that past events
+ * are pre-rendered and do not rely solely on on-demand ISR.
+ */
+export async function getAllEventSlugs(): Promise<string[]> {
+  const slugs = new Set<string>();
+
+  try {
+    const first = await fetchAllEventsApi(1, 50);
+    first.items.forEach((item) => slugs.add(item.slug));
+
+    if (first.pagination.totalPages > 1) {
+      const pages = await Promise.all(
+        Array.from({ length: first.pagination.totalPages - 1 }, (_, i) =>
+          fetchAllEventsApi(i + 2, 50)
+        )
+      );
+      pages.forEach((page) => page.items.forEach((item) => slugs.add(item.slug)));
+    }
+  } catch {
+    // API unavailable at build time — dynamic rendering (dynamicParams=true) handles the rest
+  }
+
+  return Array.from(slugs);
 }
 
 export async function getPostsByCategory(category: string): Promise<Post[]> {
   const posts = await getAllPosts();
-  return posts.filter(p =>
-    p.categories.some(cat => cat.toLowerCase() === category.toLowerCase()),
+  return posts.filter((p) =>
+    p.categories.some((cat) => cat.toLowerCase() === category.toLowerCase()),
   );
 }
 
@@ -229,14 +263,14 @@ export async function getPostsByCategory(category: string): Promise<Post[]> {
 async function getUpcomingEventsFromFilesystem(): Promise<UpcomingEvent[]> {
   if (upcomingEventsCache) return upcomingEventsCache;
 
-  const filePath = join(DATA_BASE, 'upcoming-events.json');
+  const filePath = join(DATA_BASE, "upcoming-events.json");
   const events = await loadJSON<UpcomingEvent[]>(filePath);
 
   if (!events) return [];
 
   const now = new Date();
   const upcoming = events
-    .filter(e => new Date(e.date) > now)
+    .filter((e) => new Date(e.date) > now)
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
   upcomingEventsCache = upcoming;
@@ -249,45 +283,58 @@ export async function getUpcomingEvents(): Promise<UpcomingEvent[]> {
       const response = await fetchUpcomingEventsApi();
       return response.items.map(apiEventToUpcomingEvent);
     } catch (error) {
-      console.error('API error fetching upcoming events, falling back to filesystem:', error);
+      console.error(
+        "API error fetching upcoming events, falling back to filesystem:",
+        error,
+      );
     }
   }
   return getUpcomingEventsFromFilesystem();
 }
 
-export async function getUpcomingEventBySlug(slug: string): Promise<UpcomingEvent | null> {
+export async function getUpcomingEventBySlug(
+  slug: string,
+): Promise<UpcomingEventWithSlug | null> {
   if (USE_API) {
     try {
       const event = await fetchEventBySlug(slug);
       return apiEventToUpcomingEvent(event);
     } catch (error) {
-      console.error(`API error fetching event "${slug}", falling back to filesystem:`, error);
+      console.error(
+        `API error fetching event "${slug}", falling back to filesystem:`,
+        error,
+      );
     }
   }
   const events = await getUpcomingEventsFromFilesystem();
-  return events.find(e => e.slug === slug || e.id === slug) || null;
+  return (events.find((e) => e.slug === slug || e.id === slug) || null) as UpcomingEventWithSlug | null;
 }
 
 /** @deprecated Use getUpcomingEventBySlug instead */
-export async function getUpcomingEventById(id: string): Promise<UpcomingEvent | null> {
+export async function getUpcomingEventById(
+  id: string,
+): Promise<UpcomingEvent | null> {
   if (USE_API) {
     return getUpcomingEventBySlug(id);
   }
   const events = await getUpcomingEventsFromFilesystem();
-  return events.find(e => e.id === id) || null;
+  return events.find((e) => e.id === id) || null;
 }
 
 export async function getAllUpcomingEventSlugs(): Promise<string[]> {
   if (USE_API) {
     try {
       const response = await fetchUpcomingEventsApi();
-      return response.items.map(e => e.slug);
+      return response.items.map((e) => e.slug);
     } catch (error) {
-      console.error('API error fetching event slugs, falling back to filesystem:', error);
+      console.error(
+        "API error fetching event slugs, falling back to filesystem:",
+        error,
+      );
     }
   }
   const events = await getUpcomingEventsFromFilesystem();
-  return events.map(e => e.slug || e.id);
+  return events.map((e) => e.slug || e.id);
 }
 
 /** @deprecated Use getAllUpcomingEventSlugs instead */
@@ -296,7 +343,7 @@ export async function getAllUpcomingEventIds(): Promise<string[]> {
     return getAllUpcomingEventSlugs();
   }
   const events = await getUpcomingEventsFromFilesystem();
-  return events.map(e => e.id);
+  return events.map((e) => e.id);
 }
 
 // ========================================
@@ -308,13 +355,13 @@ export async function getAllPages(): Promise<Page[]> {
 
   try {
     const files = await readdir(PAGES_DIR);
-    const jsonFiles = files.filter(f => f.endsWith('.json'));
+    const jsonFiles = files.filter((f) => f.endsWith(".json"));
     const pages: Page[] = [];
 
     for (const file of jsonFiles) {
       const filePath = join(PAGES_DIR, file);
       const page = await loadJSON<Page>(filePath);
-      if (page && page.status === 'publish') {
+      if (page && page.status === "publish") {
         pages.push(page);
       }
     }
@@ -322,14 +369,14 @@ export async function getAllPages(): Promise<Page[]> {
     pagesCache = pages;
     return pages;
   } catch (error) {
-    console.error('Error loading pages:', error);
+    console.error("Error loading pages:", error);
     return [];
   }
 }
 
 export async function getPageBySlug(slug: string): Promise<Page | null> {
   const pages = await getAllPages();
-  return pages.find(p => p.slug === slug) || null;
+  return pages.find((p) => p.slug === slug) || null;
 }
 
 // ========================================
@@ -339,7 +386,7 @@ export async function getPageBySlug(slug: string): Promise<Page | null> {
 async function getImageManifest(): Promise<ImageManifest> {
   if (imageManifestCache) return imageManifestCache;
 
-  const manifestPath = join(METADATA_DIR, 'image-manifest.json');
+  const manifestPath = join(METADATA_DIR, "image-manifest.json");
   const manifest = await loadJSON<ImageManifest>(manifestPath);
 
   imageManifestCache = manifest || {};
@@ -367,7 +414,7 @@ export async function getImagePath(originalUrl: string): Promise<string> {
 export async function getCategories(): Promise<Category[]> {
   if (categoriesCache) return categoriesCache;
 
-  const categoriesPath = join(METADATA_DIR, 'categories.json');
+  const categoriesPath = join(METADATA_DIR, "categories.json");
   const data = await loadJSON<{ categories: Category[] }>(categoriesPath);
 
   if (data && data.categories) {
@@ -379,7 +426,7 @@ export async function getCategories(): Promise<Category[]> {
 }
 
 export async function getAuthors(): Promise<Author[]> {
-  const authorsPath = join(METADATA_DIR, 'authors.json');
+  const authorsPath = join(METADATA_DIR, "authors.json");
   const data = await loadJSON<{ authors: Author[] }>(authorsPath);
   return data?.authors || [];
 }
@@ -390,10 +437,27 @@ export async function getAuthors(): Promise<Author[]> {
 
 export async function getSignatures(): Promise<SignatureItem[]> {
   if (signaturesCache) return signaturesCache;
-  const filePath = join(DATA_BASE, 'signatures.json');
+
+  const filePath = join(DATA_BASE, "signatures.json");
   const items = await loadJSON<SignatureItem[]>(filePath);
   signaturesCache = (items || []).sort((a, b) => a.order - b.order);
   return signaturesCache;
+}
+
+// ========================================
+// Cigar Brands — API-backed (no filesystem fallback)
+// ========================================
+
+export async function getBrands(): Promise<ApiCigarBrand[]> {
+  if (USE_API) {
+    try {
+      return await fetchCigarBrands();
+    } catch (err) {
+      console.error("getBrands API error:", err);
+      return [];
+    }
+  }
+  return [];
 }
 
 // ========================================
@@ -401,10 +465,120 @@ export async function getSignatures(): Promise<SignatureItem[]> {
 // ========================================
 
 export function clearCache(): void {
-  postsCache = null;
   pagesCache = null;
   categoriesCache = null;
   imageManifestCache = null;
   upcomingEventsCache = null;
   signaturesCache = null;
+}
+
+// ========================================
+// Cigars
+// ========================================
+
+export async function getCigars(
+  filters: { brandId?: string; strength?: string; origin?: string } = {},
+): Promise<ApiCigar[]> {
+  if (USE_API) {
+    try {
+      const result = await fetchAllCigars(1, 200, filters);
+      return result.cigars;
+    } catch (err) {
+      console.error("getCigars API error:", err);
+      return [];
+    }
+  }
+  return [];
+}
+
+export async function getCigarBySlug(slug: string): Promise<ApiCigar | null> {
+  if (USE_API) {
+    try {
+      return await fetchCigarBySlug(slug);
+    } catch (err) {
+      console.error("getCigarBySlug API error:", err);
+      return null;
+    }
+  }
+  return null;
+}
+
+// ========================================
+// Alcohol
+// ========================================
+
+export async function getAlcohol(
+  filters: { category?: string; brand?: string; inHouse?: boolean } = {},
+): Promise<ApiAlcohol[]> {
+  if (USE_API) {
+    try {
+      const result = await fetchAllAlcohol(1, 200, filters);
+      return result.items;
+    } catch (err) {
+      console.error("getAlcohol API error:", err);
+      return [];
+    }
+  }
+  return [];
+}
+
+export async function getAlcoholBySlug(
+  slug: string,
+): Promise<ApiAlcohol | null> {
+  if (USE_API) {
+    try {
+      return await fetchAlcoholBySlug(slug);
+    } catch (err) {
+      console.error("getAlcoholBySlug API error:", err);
+      return null;
+    }
+  }
+  return null;
+}
+
+// ========================================
+// Accessories
+// ========================================
+
+export async function getAccessories(): Promise<ApiAccessory[]> {
+  if (USE_API) {
+    try {
+      const result = await fetchAllAccessories(1, 200);
+      return result.items;
+    } catch (err) {
+      console.error("getAccessories API error:", err);
+      return [];
+    }
+  }
+  return [];
+}
+
+export async function getAccessoryBySlug(
+  slug: string,
+): Promise<ApiAccessory | null> {
+  if (USE_API) {
+    try {
+      return await fetchAccessoryBySlug(slug);
+    } catch (err) {
+      console.error("getAccessoryBySlug API error:", err);
+      return null;
+    }
+  }
+  return null;
+}
+
+// ========================================
+// Menu
+// ========================================
+
+export async function getMenuSections(): Promise<ApiMenuSection[]> {
+  if (USE_API) {
+    try {
+      return await fetchPublicMenu();
+    } catch (err) {
+      console.error("getMenuSections API error:", err);
+      return [];
+    }
+  }
+  return [];
 }

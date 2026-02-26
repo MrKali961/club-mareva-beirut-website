@@ -11,13 +11,13 @@
  * - Fully responsive with mobile stacking
  */
 
-'use client';
+"use client";
 
-import { useActionState } from 'react';
-import { motion } from 'framer-motion';
-import { Phone, Instagram, Facebook, ExternalLink, Clock } from 'lucide-react';
-import Link from 'next/link';
-import { submitContact } from './actions';
+import { useActionState } from "react";
+import { motion } from "framer-motion";
+import { Phone, Instagram, Facebook, ExternalLink, Clock } from "lucide-react";
+import Link from "next/link";
+import { submitContact } from "./actions";
 
 export default function ContactPage() {
   // Animation variants for orchestrated entrance
@@ -75,7 +75,7 @@ export default function ContactPage() {
         className="fixed inset-0 opacity-[0.08] pointer-events-none z-0"
         style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-          backgroundRepeat: 'repeat',
+          backgroundRepeat: "repeat",
         }}
       />
 
@@ -204,12 +204,20 @@ export default function ContactPage() {
                   Hours
                 </h3>
                 <div>
-                  <p className="font-playfair text-cream/90 text-sm md:text-base">Mon &ndash; Sat</p>
-                  <p className="font-playfair text-cream/60 text-sm">11:00 AM &ndash; 11:00 PM</p>
+                  <p className="font-playfair text-cream/90 text-sm md:text-base">
+                    Mon &ndash; Sat
+                  </p>
+                  <p className="font-playfair text-cream/60 text-sm">
+                    11:00 AM &ndash; 11:00 PM
+                  </p>
                 </div>
                 <div>
-                  <p className="font-playfair text-cream/90 text-sm md:text-base">Sunday</p>
-                  <p className="font-playfair text-cream/60 text-sm">5:00 PM &ndash; 11:00 PM</p>
+                  <p className="font-playfair text-cream/90 text-sm md:text-base">
+                    Sunday
+                  </p>
+                  <p className="font-playfair text-cream/60 text-sm">
+                    5:00 PM &ndash; 11:00 PM
+                  </p>
                 </div>
               </motion.div>
 
@@ -228,7 +236,11 @@ export default function ContactPage() {
                     <motion.div
                       whileHover={{ scale: 1.15 }}
                       whileTap={{ scale: 0.95 }}
-                      transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 400,
+                        damping: 17,
+                      }}
                       className="p-3 border border-gold/30 bg-gold/5 transition-all duration-300 group-hover:border-gold group-hover:bg-gold/10 group-hover:shadow-[0_0_20px_rgba(201,162,39,0.3)]"
                     >
                       <Instagram className="w-6 h-6 text-gold" />
@@ -243,7 +255,11 @@ export default function ContactPage() {
                     <motion.div
                       whileHover={{ scale: 1.15 }}
                       whileTap={{ scale: 0.95 }}
-                      transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 400,
+                        damping: 17,
+                      }}
                       className="p-3 border border-gold/30 bg-gold/5 transition-all duration-300 group-hover:border-gold group-hover:bg-gold/10 group-hover:shadow-[0_0_20px_rgba(201,162,39,0.3)]"
                     >
                       <Facebook className="w-6 h-6 text-gold" />
@@ -269,18 +285,18 @@ export default function ContactPage() {
                   <motion.div
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
                     className="relative w-full bg-gold text-black py-3 px-5 font-playfair font-medium tracking-wide uppercase text-sm text-center overflow-hidden shadow-[0_0_20px_rgba(201,162,39,0.25)] transition-shadow duration-300 group-hover:shadow-[0_0_40px_rgba(201,162,39,0.4)]"
                   >
                     {/* Shimmer Effect */}
                     <motion.span
                       className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent"
-                      initial={{ x: '-100%' }}
+                      initial={{ x: "-100%" }}
                       whileHover={{
-                        x: '200%',
+                        x: "200%",
                         transition: {
                           duration: 0.6,
-                          ease: 'easeInOut',
+                          ease: "easeInOut",
                         },
                       }}
                     />
@@ -340,7 +356,7 @@ export default function ContactPage() {
 function ContactForm() {
   const [state, formAction, isPending] = useActionState(submitContact, {
     success: false,
-    message: '',
+    message: "",
   });
 
   if (state.success) {
@@ -351,8 +367,18 @@ function ContactForm() {
         className="text-center py-12 px-6 border border-gold/30 bg-black-800"
       >
         <div className="w-16 h-16 mx-auto mb-4 border border-gold/30 flex items-center justify-center">
-          <svg className="w-8 h-8 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+          <svg
+            className="w-8 h-8 text-gold"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={1.5}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M4.5 12.75l6 6 9-13.5"
+            />
           </svg>
         </div>
         <p className="font-playfair text-gold text-lg mb-2">Message Sent</p>
@@ -386,7 +412,9 @@ function ContactForm() {
             className="w-full bg-transparent border border-gold/30 px-4 py-3 font-playfair text-cream text-sm placeholder:text-cream/40 focus:outline-none focus:border-gold transition-colors"
           />
           {state.errors?.firstName && (
-            <p className="text-red-400 text-xs mt-1 font-playfair">{state.errors.firstName}</p>
+            <p className="text-red-400 text-xs mt-1 font-playfair">
+              {state.errors.firstName}
+            </p>
           )}
         </div>
         <div>
@@ -398,7 +426,9 @@ function ContactForm() {
             className="w-full bg-transparent border border-gold/30 px-4 py-3 font-playfair text-cream text-sm placeholder:text-cream/40 focus:outline-none focus:border-gold transition-colors"
           />
           {state.errors?.lastName && (
-            <p className="text-red-400 text-xs mt-1 font-playfair">{state.errors.lastName}</p>
+            <p className="text-red-400 text-xs mt-1 font-playfair">
+              {state.errors.lastName}
+            </p>
           )}
         </div>
       </div>
@@ -412,7 +442,9 @@ function ContactForm() {
           className="w-full bg-transparent border border-gold/30 px-4 py-3 font-playfair text-cream text-sm placeholder:text-cream/40 focus:outline-none focus:border-gold transition-colors"
         />
         {state.errors?.email && (
-          <p className="text-red-400 text-xs mt-1 font-playfair">{state.errors.email}</p>
+          <p className="text-red-400 text-xs mt-1 font-playfair">
+            {state.errors.email}
+          </p>
         )}
       </div>
 
@@ -425,7 +457,9 @@ function ContactForm() {
           className="w-full bg-transparent border border-gold/30 px-4 py-3 font-playfair text-cream text-sm placeholder:text-cream/40 focus:outline-none focus:border-gold transition-colors resize-none"
         />
         {state.errors?.message && (
-          <p className="text-red-400 text-xs mt-1 font-playfair">{state.errors.message}</p>
+          <p className="text-red-400 text-xs mt-1 font-playfair">
+            {state.errors.message}
+          </p>
         )}
       </div>
 
@@ -436,7 +470,7 @@ function ContactForm() {
         whileTap={{ scale: 0.98 }}
         className="w-full bg-gold text-black py-3.5 font-playfair font-semibold tracking-wider uppercase text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-opacity"
       >
-        {isPending ? 'Sending...' : 'Send Message'}
+        {isPending ? "Sending..." : "Send Message"}
       </motion.button>
     </motion.form>
   );

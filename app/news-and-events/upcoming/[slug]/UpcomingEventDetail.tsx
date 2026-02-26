@@ -1,10 +1,12 @@
 'use client';
 
 import { useState } from 'react';
+import { useActionState } from 'react';
 import { motion } from 'framer-motion';
-import { Calendar, ChevronDown, ArrowLeft } from 'lucide-react';
+import { Calendar, ChevronDown, ArrowLeft, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { submitEventRegistration } from '../actions';
 
 interface EventData {
   id: string;
@@ -197,6 +199,77 @@ export default function UpcomingEventDetail({ event, otherEvents }: UpcomingEven
         )}
       </section>
 
+      {/* Body Content */}
+      {event.body && (
+        <section className="relative bg-black py-16 sm:py-20 overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/20 to-transparent" />
+          <motion.article
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="max-w-[800px] mx-auto px-6 sm:px-8"
+          >
+            <div
+              className="prose-article"
+              dangerouslySetInnerHTML={{ __html: event.body }}
+            />
+          </motion.article>
+          <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/20 to-transparent" />
+        </section>
+      )}
+
+      {/* Event Registration */}
+      <section className="relative bg-black py-16 sm:py-20 lg:py-24 overflow-hidden">
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/20 to-transparent" />
+        <div className="absolute top-1/2 left-1/4 w-80 h-80 bg-gold/5 rounded-full blur-[100px] pointer-events-none" />
+
+        <div className="max-w-lg mx-auto px-6 sm:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            className="text-center mb-10"
+          >
+            <p className="font-playfair text-xs tracking-[0.3em] uppercase text-gold/80 mb-3">
+              Secure Your Seat
+            </p>
+            <h2 className="font-playfair text-3xl sm:text-4xl font-bold text-cream tracking-wider mb-4">
+              RESERVE YOUR PLACE
+            </h2>
+            <div className="w-16 h-[1px] bg-gradient-to-r from-transparent via-gold to-transparent mx-auto mb-4" />
+            <p className="font-playfair text-cream/60 text-sm leading-relaxed">
+              Register below to confirm your attendance. We will reach out with further details.
+            </p>
+          </motion.div>
+
+          <RegistrationForm eventId={event.id} />
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.4 }}
+            className="mt-6 text-center"
+          >
+            <p className="font-playfair text-cream/40 text-xs tracking-wider">
+              Prefer WhatsApp?{' '}
+              <a
+                href="https://wa.me/96179117997"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gold/70 hover:text-gold transition-colors underline underline-offset-2"
+              >
+                Reserve directly
+              </a>
+            </p>
+          </motion.div>
+        </div>
+
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/20 to-transparent" />
+      </section>
+
       {/* More Upcoming Events */}
       {otherEvents.length > 0 && (
         <section className="relative bg-black py-16 sm:py-20 lg:py-28 overflow-hidden">
@@ -247,7 +320,174 @@ export default function UpcomingEventDetail({ event, otherEvents }: UpcomingEven
           <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/20 to-transparent" />
         </section>
       )}
+      <style jsx global>{`
+        .prose-article {
+          color: var(--color-cream);
+        }
+
+        .prose-article p {
+          font-size: 1.25rem;
+          line-height: 1.9;
+          margin-bottom: 1.5rem;
+          color: rgba(245, 245, 240, 0.9);
+        }
+
+        .prose-article h2 {
+          font-family: var(--font-playfair), serif;
+          font-size: 2.25rem;
+          font-weight: 700;
+          color: var(--color-cream);
+          margin-top: 3rem;
+          margin-bottom: 1.5rem;
+          letter-spacing: -0.02em;
+        }
+
+        .prose-article h3 {
+          font-family: var(--font-playfair), serif;
+          font-size: 1.75rem;
+          font-weight: 600;
+          color: var(--color-cream);
+          margin-top: 2.5rem;
+          margin-bottom: 1rem;
+        }
+
+        .prose-article blockquote {
+          font-family: var(--font-playfair), serif;
+          font-size: 1.5rem;
+          font-style: italic;
+          line-height: 1.6;
+          color: var(--color-gold);
+          border-left: 4px solid var(--color-gold);
+          padding-left: 2rem;
+          margin: 3rem 0;
+        }
+
+        .prose-article strong {
+          color: var(--color-cream);
+          font-weight: 600;
+        }
+
+        .prose-article a {
+          color: var(--color-gold);
+          text-decoration: none;
+          transition: color 0.3s ease;
+        }
+
+        .prose-article a:hover {
+          color: var(--color-gold-light);
+        }
+
+        .prose-article img {
+          display: none;
+        }
+
+        .prose-article ul,
+        .prose-article ol {
+          margin: 1.5rem 0;
+          padding-left: 2rem;
+          color: rgba(245, 245, 240, 0.9);
+        }
+
+        .prose-article li {
+          margin-bottom: 0.5rem;
+          line-height: 1.8;
+          font-size: 1.125rem;
+        }
+      `}</style>
     </main>
+  );
+}
+
+function RegistrationForm({ eventId }: { eventId: string }) {
+  const [state, formAction, isPending] = useActionState(submitEventRegistration, {
+    success: false,
+    message: '',
+  });
+
+  if (state.success) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="text-center py-12 px-6 border border-gold/30 bg-black/60"
+      >
+        <div className="w-14 h-14 mx-auto mb-4 border border-gold/30 flex items-center justify-center">
+          <svg className="w-7 h-7 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+          </svg>
+        </div>
+        <p className="font-playfair text-gold text-lg mb-2 tracking-wider">Registration Confirmed</p>
+        <p className="font-playfair text-cream/70 text-sm">{state.message}</p>
+      </motion.div>
+    );
+  }
+
+  return (
+    <motion.form
+      action={formAction}
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+      className="space-y-5"
+    >
+      <input type="hidden" name="eventId" value={eventId} />
+
+      {state.message && !state.success && (
+        <div className="p-3 border border-red-500/30 bg-red-500/10 text-red-300 text-sm font-playfair">
+          {state.message}
+        </div>
+      )}
+
+      <div>
+        <input
+          type="text"
+          name="name"
+          placeholder="Full Name"
+          required
+          className="w-full bg-transparent border border-gold/30 px-4 py-3 font-playfair text-cream text-sm placeholder:text-cream/40 focus:outline-none focus:border-gold transition-colors"
+        />
+        {state.errors?.name && (
+          <p className="text-red-400 text-xs mt-1 font-playfair">{state.errors.name}</p>
+        )}
+      </div>
+
+      <div>
+        <input
+          type="email"
+          name="email"
+          placeholder="Email Address"
+          required
+          className="w-full bg-transparent border border-gold/30 px-4 py-3 font-playfair text-cream text-sm placeholder:text-cream/40 focus:outline-none focus:border-gold transition-colors"
+        />
+        {state.errors?.email && (
+          <p className="text-red-400 text-xs mt-1 font-playfair">{state.errors.email}</p>
+        )}
+      </div>
+
+      <div>
+        <input
+          type="tel"
+          name="phone"
+          placeholder="Phone Number"
+          required
+          className="w-full bg-transparent border border-gold/30 px-4 py-3 font-playfair text-cream text-sm placeholder:text-cream/40 focus:outline-none focus:border-gold transition-colors"
+        />
+        {state.errors?.phone && (
+          <p className="text-red-400 text-xs mt-1 font-playfair">{state.errors.phone}</p>
+        )}
+      </div>
+
+      <motion.button
+        type="submit"
+        disabled={isPending}
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+        className="w-full bg-gold text-black py-3.5 font-playfair font-semibold tracking-wider uppercase text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-opacity"
+      >
+        {isPending ? 'Registering...' : 'Register for This Event'}
+      </motion.button>
+    </motion.form>
   );
 }
 
@@ -261,7 +501,7 @@ function OtherEventCard({ event, index }: { event: OtherEvent; index: number }) 
       viewport={{ once: true }}
       transition={{ delay: index * 0.1, duration: 0.6, ease }}
     >
-      <Link href={`/news-and-events/upcoming/${event.slug || event.id}`}>
+      <Link href={`/${event.slug || event.id}`}>
         <div
           className="block relative h-[350px] sm:h-[400px] md:h-[450px] group overflow-hidden cursor-pointer"
           onMouseEnter={() => setIsHovered(true)}
@@ -326,12 +566,36 @@ function OtherEventCard({ event, index }: { event: OtherEvent; index: number }) 
             </motion.div>
 
             <motion.h3
-              animate={{ y: isHovered ? -6 : 0 }}
+              animate={{ y: isHovered ? -8 : 0 }}
               transition={{ duration: 0.4, ease }}
-              className="font-playfair text-2xl sm:text-3xl text-cream leading-tight line-clamp-2"
+              className="font-playfair text-2xl sm:text-3xl text-cream leading-tight line-clamp-2 mb-4"
             >
               {event.title}
             </motion.h3>
+
+            {/* "VIEW EVENT" CTA — fades in on hover (desktop), always shown on mobile */}
+            <motion.div
+              animate={{
+                opacity: isHovered ? 1 : 0,
+                y: isHovered ? 0 : 6,
+              }}
+              transition={{ duration: 0.3, delay: isHovered ? 0.05 : 0 }}
+              className="hidden sm:flex items-center gap-2 text-gold font-playfair text-xs sm:text-sm tracking-[0.2em] uppercase"
+            >
+              <span>View Event</span>
+              <motion.span
+                animate={{ x: isHovered ? 4 : 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              </motion.span>
+            </motion.div>
+
+            {/* Mobile: always visible */}
+            <div className="flex sm:hidden items-center gap-2 text-gold font-playfair text-xs tracking-[0.2em] uppercase opacity-70">
+              <span>View Event</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </div>
 
             <motion.div
               initial={{ scaleX: 0 }}

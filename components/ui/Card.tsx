@@ -23,7 +23,7 @@ interface BrandCardProps {
 
 export function EventCard({ image, title, date, category, slug, className = '' }: EventCardProps) {
   return (
-    <Link href={`/events/${slug}`}>
+    <Link href={`/${slug}`}>
       <motion.article
         className={`group relative overflow-hidden bg-black-800 cursor-pointer ${className}`}
         whileHover="hover"

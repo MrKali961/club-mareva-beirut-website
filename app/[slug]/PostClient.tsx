@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useEffect, useState, useCallback, useMemo } from 'react';
-import { motion, useScroll, AnimatePresence } from 'framer-motion';
-import { X, ChevronLeft, ChevronRight } from 'lucide-react';
-import Link from 'next/link';
-import Image from 'next/image';
-import Masonry from 'react-masonry-css';
+import { useEffect, useState, useCallback, useMemo } from "react";
+import { motion, useScroll, AnimatePresence } from "framer-motion";
+import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import Link from "next/link";
+import Image from "next/image";
+import Masonry from "react-masonry-css";
 
 export interface PostData {
   title: string;
@@ -41,24 +41,26 @@ export default function PostClient({ post, relatedPosts }: PostClientProps) {
   }, [post.images.length]);
 
   const prevImage = useCallback(() => {
-    setCurrentImageIndex((prev) => (prev - 1 + post.images.length) % post.images.length);
+    setCurrentImageIndex(
+      (prev) => (prev - 1 + post.images.length) % post.images.length,
+    );
   }, [post.images.length]);
 
   // Prevent body scroll when lightbox is open and add keyboard navigation
   useEffect(() => {
     if (lightboxOpen) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
 
       const handleKeyDown = (e: KeyboardEvent) => {
-        if (e.key === 'Escape') setLightboxOpen(false);
-        if (e.key === 'ArrowRight') nextImage();
-        if (e.key === 'ArrowLeft') prevImage();
+        if (e.key === "Escape") setLightboxOpen(false);
+        if (e.key === "ArrowRight") nextImage();
+        if (e.key === "ArrowLeft") prevImage();
       };
 
-      window.addEventListener('keydown', handleKeyDown);
-      return () => window.removeEventListener('keydown', handleKeyDown);
+      window.addEventListener("keydown", handleKeyDown);
+      return () => window.removeEventListener("keydown", handleKeyDown);
     } else {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     }
   }, [lightboxOpen, nextImage, prevImage]);
 
@@ -69,12 +71,16 @@ export default function PostClient({ post, relatedPosts }: PostClientProps) {
 
   // Split content into blocks and distribute images evenly between them
   const contentSegments = useMemo(() => {
-    const blockRegex = /<(?:p|h[1-6]|blockquote|ul|ol|div|table|figure|hr)[^>]*>[\s\S]*?<\/(?:p|h[1-6]|blockquote|ul|ol|div|table|figure|hr)>|<hr\s*\/?>/gi;
+    const blockRegex =
+      /<(?:p|h[1-6]|blockquote|ul|ol|div|table|figure|hr)[^>]*>[\s\S]*?<\/(?:p|h[1-6]|blockquote|ul|ol|div|table|figure|hr)>|<hr\s*\/?>/gi;
     const blocks = post.content.match(blockRegex) || [post.content];
     const totalBlocks = blocks.length;
     const totalImages = post.images.length;
 
-    const segments: { html: string; images: { src: string; index: number }[] }[] = [];
+    const segments: {
+      html: string;
+      images: { src: string; index: number }[];
+    }[] = [];
     let imageIdx = 0;
 
     for (let i = 0; i < totalBlocks; i++) {
@@ -155,33 +161,37 @@ export default function PostClient({ post, relatedPosts }: PostClientProps) {
               className="prose-article"
               dangerouslySetInnerHTML={{ __html: segment.html }}
             />
-            {segment.images.length > 0 && segIdx > 0 && segIdx < contentSegments.length - 1 && (
-              <div className={`my-10 ${segment.images.length === 1 ? '' : 'grid grid-cols-2 gap-3'}`}>
-                {segment.images.map(({ src, index }) => (
-                  <motion.button
-                    key={index}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-50px" }}
-                    transition={{ duration: 0.5 }}
-                    onClick={() => openLightbox(index)}
-                    className="relative w-full overflow-hidden group cursor-pointer block"
-                  >
-                    <div className="relative overflow-hidden">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={src}
-                        alt={`${post.title} - Image ${index + 1}`}
-                        className="w-full h-auto block transition-transform duration-700 group-hover:scale-105"
-                        loading="lazy"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400" />
-                      <div className="absolute inset-0 border border-gold/0 group-hover:border-gold/40 transition-all duration-400" />
-                    </div>
-                  </motion.button>
-                ))}
-              </div>
-            )}
+            {segment.images.length > 0 &&
+              segIdx > 0 &&
+              segIdx < contentSegments.length - 1 && (
+                <div
+                  className={`my-10 ${segment.images.length === 1 ? "" : "grid grid-cols-1 sm:grid-cols-2 gap-3"}`}
+                >
+                  {segment.images.map(({ src, index }) => (
+                    <motion.button
+                      key={index}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true, margin: "-50px" }}
+                      transition={{ duration: 0.5 }}
+                      onClick={() => openLightbox(index)}
+                      className="relative w-full overflow-hidden group cursor-pointer block"
+                    >
+                      <div className="relative overflow-hidden">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={src}
+                          alt={`${post.title} - Image ${index + 1}`}
+                          className="w-full h-auto block transition-transform duration-700 group-hover:scale-105"
+                          loading="lazy"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400" />
+                        <div className="absolute inset-0 border border-gold/0 group-hover:border-gold/40 transition-all duration-400" />
+                      </div>
+                    </motion.button>
+                  ))}
+                </div>
+              )}
           </div>
         ))}
       </motion.article>
@@ -208,7 +218,7 @@ export default function PostClient({ post, relatedPosts }: PostClientProps) {
               1280: 3,
               1024: 2,
               768: 2,
-              480: 1
+              480: 1,
             }}
             className="masonry-grid"
             columnClassName="masonry-grid-column"
@@ -235,8 +245,18 @@ export default function PostClient({ post, relatedPosts }: PostClientProps) {
                   <div className="absolute inset-0 border-2 border-gold/0 group-hover:border-gold/80 transition-all duration-400" />
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-400">
                     <div className="w-14 h-14 rounded-full bg-gold flex items-center justify-center transform scale-50 group-hover:scale-100 transition-transform duration-400 shadow-lg">
-                      <svg className="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                      <svg
+                        className="w-6 h-6 text-black"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"
+                        />
                       </svg>
                     </div>
                   </div>
@@ -267,7 +287,7 @@ export default function PostClient({ post, relatedPosts }: PostClientProps) {
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
                 >
-                  <Link href={`/news-and-events/${relatedPost.slug}`} className="group block">
+                  <Link href={`/${relatedPost.slug}`} className="group block">
                     <div className="relative aspect-[4/3] overflow-hidden mb-4">
                       {relatedPost.image ? (
                         <Image
@@ -294,7 +314,9 @@ export default function PostClient({ post, relatedPosts }: PostClientProps) {
                       {relatedPost.excerpt}
                     </p>
 
-                    <span className="text-cream/50 text-xs">{relatedPost.date}</span>
+                    <span className="text-cream/50 text-xs">
+                      {relatedPost.date}
+                    </span>
                   </Link>
                 </motion.div>
               ))}
@@ -316,7 +338,9 @@ export default function PostClient({ post, relatedPosts }: PostClientProps) {
             {/* Top Bar */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-cream/10">
               <div className="text-cream font-playfair text-sm">
-                <span className="text-gold font-semibold">{currentImageIndex + 1}</span>
+                <span className="text-gold font-semibold">
+                  {currentImageIndex + 1}
+                </span>
                 <span className="text-cream/50"> / {post.images.length}</span>
               </div>
               <div className="text-cream/50 text-xs hidden md:block">
@@ -332,7 +356,10 @@ export default function PostClient({ post, relatedPosts }: PostClientProps) {
             </div>
 
             {/* Main Image Area */}
-            <div className="flex-1 flex items-center justify-center relative px-16 py-8" onClick={(e) => e.stopPropagation()}>
+            <div
+              className="flex-1 flex items-center justify-center relative px-16 py-8"
+              onClick={(e) => e.stopPropagation()}
+            >
               {/* Navigation Buttons */}
               <button
                 onClick={(e) => {
@@ -342,7 +369,10 @@ export default function PostClient({ post, relatedPosts }: PostClientProps) {
                 className="absolute left-4 md:left-8 p-3 bg-black/50 hover:bg-gold/90 text-cream hover:text-black rounded-full transition-all duration-300 z-10 group"
                 aria-label="Previous image"
               >
-                <ChevronLeft size={28} className="group-hover:-translate-x-0.5 transition-transform" />
+                <ChevronLeft
+                  size={28}
+                  className="group-hover:-translate-x-0.5 transition-transform"
+                />
               </button>
 
               <button
@@ -353,7 +383,10 @@ export default function PostClient({ post, relatedPosts }: PostClientProps) {
                 className="absolute right-4 md:right-8 p-3 bg-black/50 hover:bg-gold/90 text-cream hover:text-black rounded-full transition-all duration-300 z-10 group"
                 aria-label="Next image"
               >
-                <ChevronRight size={28} className="group-hover:translate-x-0.5 transition-transform" />
+                <ChevronRight
+                  size={28}
+                  className="group-hover:translate-x-0.5 transition-transform"
+                />
               </button>
 
               {/* Main Image */}
@@ -379,7 +412,10 @@ export default function PostClient({ post, relatedPosts }: PostClientProps) {
             </div>
 
             {/* Thumbnail Strip */}
-            <div className="border-t border-cream/10 bg-black/50 backdrop-blur-sm" onClick={(e) => e.stopPropagation()}>
+            <div
+              className="border-t border-cream/10 bg-black/50 backdrop-blur-sm"
+              onClick={(e) => e.stopPropagation()}
+            >
               <div className="max-w-6xl mx-auto px-4 py-4">
                 <div className="flex gap-2 overflow-x-auto scrollbar-thin scrollbar-thumb-gold/30 scrollbar-track-transparent pb-2">
                   {post.images.map((image, index) => (
@@ -388,8 +424,8 @@ export default function PostClient({ post, relatedPosts }: PostClientProps) {
                       onClick={() => setCurrentImageIndex(index)}
                       className={`relative flex-shrink-0 w-16 h-16 md:w-20 md:h-20 overflow-hidden rounded transition-all duration-300 ${
                         currentImageIndex === index
-                          ? 'ring-2 ring-gold ring-offset-2 ring-offset-black scale-105'
-                          : 'opacity-50 hover:opacity-100 hover:ring-1 hover:ring-cream/30'
+                          ? "ring-2 ring-gold ring-offset-2 ring-offset-black scale-105"
+                          : "opacity-50 hover:opacity-100 hover:ring-1 hover:ring-cream/30"
                       }`}
                     >
                       <Image
@@ -403,7 +439,11 @@ export default function PostClient({ post, relatedPosts }: PostClientProps) {
                         <motion.div
                           layoutId="activeThumb"
                           className="absolute inset-0 border-2 border-gold rounded"
-                          transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                          transition={{
+                            type: "spring",
+                            stiffness: 500,
+                            damping: 30,
+                          }}
                         />
                       )}
                     </button>
@@ -476,7 +516,8 @@ export default function PostClient({ post, relatedPosts }: PostClientProps) {
           display: none;
         }
 
-        .prose-article ul, .prose-article ol {
+        .prose-article ul,
+        .prose-article ol {
           margin: 1.5rem 0;
           padding-left: 2rem;
           color: rgba(245, 245, 240, 0.9);

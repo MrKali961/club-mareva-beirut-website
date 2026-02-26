@@ -1,4 +1,4 @@
-import { stripHtml } from './news-adapter';
+import { stripHtml, normalizeWordPressHtml } from './news-adapter';
 
 interface ApiEvent {
   id: string;
@@ -14,6 +14,22 @@ interface ApiEvent {
     url: string;
     alt: string;
   };
+  imageUrls?: {
+    original: string | null;
+    medium: string | null;
+    thumb: string | null;
+  };
+  galleryImages?: Array<{
+    id: string;
+    mediaAssetId: string;
+    displayOrder: number;
+    createdAt: string;
+    imageUrls: {
+      original: string;
+      medium: string;
+      thumb: string;
+    };
+  }>;
 }
 
 // Extended UpcomingEvent with slug for routing
@@ -29,6 +45,17 @@ export interface UpcomingEventWithSlug {
   location?: string;
   maxVisitors?: number;
   body?: string; // raw HTML body for detail page
+  galleryImages?: Array<{
+    id: string;
+    mediaAssetId: string;
+    displayOrder: number;
+    createdAt: string;
+    imageUrls: {
+      original: string;
+      medium: string;
+      thumb: string;
+    };
+  }>;
 }
 
 export function apiEventToUpcomingEvent(event: ApiEvent): UpcomingEventWithSlug {
@@ -38,11 +65,15 @@ export function apiEventToUpcomingEvent(event: ApiEvent): UpcomingEventWithSlug 
     slug: event.slug,
     date: event.date,
     category: 'Event',
-    description: stripHtml(event.body),
-    image: event.image?.url || event.mainImageUrl || '',
+    description: (() => {
+      const text = stripHtml(event.body);
+      return text.length > 200 ? text.substring(0, 197).trimEnd() + '...' : text;
+    })(),
+    image: event.imageUrls?.original || event.image?.url || event.mainImageUrl || '',
     featured: event.isFeatured,
     location: event.location,
     maxVisitors: event.maxVisitors,
-    body: event.body,
+    body: normalizeWordPressHtml(event.body ?? ''),
+    galleryImages: event.galleryImages,
   };
 }

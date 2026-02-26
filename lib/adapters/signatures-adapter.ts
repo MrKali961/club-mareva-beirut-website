@@ -1,0 +1,124 @@
+import type { ApiCigar } from '../api/types';
+
+interface SignatureEnrichment {
+  category: string;
+  tagline: string;
+  description: string;
+  gallery: string[];
+  contentSections: Array<{
+    heading?: string;
+    text: string;
+    image?: string;
+    imageAlt?: string;
+  }>;
+  specs: { label: string; value: string }[];
+  collaborators: string;
+  postSlug: string;
+  order: number;
+}
+
+// The API only stores basic product fields for cigars. All rich marketing content
+// (tagline, gallery, contentSections, specs, collaborators) is maintained here.
+// Keyed by the API cigar slug.
+const SIGNATURE_ENRICHMENT: Record<string, SignatureEnrichment> = {
+  'club-mareva-beirut-origins': {
+    category: 'Exclusive Cigar',
+    tagline: 'Our first cigar. A blend born from friendship and devotion to the craft.',
+    description:
+      "A limited-edition cigar born from the combined creativity of founders Woody Ghsoubi and Najat Abdo, alongside Hendrik Kelner Jr. of Kelner Boutique Factory and Jeremy Casdagli of Casdagli Cigars. Launched in December 2020, the Origins is a Toro vitola (56 x 6\") from the Dominican Republic, with an Ecuador Corojo wrapper, Dominican Republic Cotui binder, and a filler blend of DR Kelner Family Reserve, Dominican San Vincente, Dominican Cotui Ligero, and Peruvian Pelo D'Oro. The cedar tree adorning its box symbolizes Lebanon. Selected for inclusion in LuxuryCigarClub's ultra-premium 'OMG WTF' sampler.",
+    gallery: [
+      '/images/clubmarevabeirut/2021/IMG_6521-768x1024.jpeg',
+      '/images/clubmarevabeirut/2021/IMG_3805-225x300.jpeg',
+      '/images/clubmarevabeirut/2021/IMG_3790.jpeg',
+    ],
+    contentSections: [
+      {
+        heading: 'A Celebration of Friendship',
+        text: "Born from the combined creativity of founders Woody Ghsoubi and Najat Abdo, alongside Hendrik Kelner Jr. of Kelner Boutique Factory and Jeremy Casdagli of Casdagli Cigars, the Origins represents the beginning of a remarkable journey. Launched in December 2020 to celebrate the opening of Club Mareva Beirut, this Toro vitola (56 x 6\") embodies the spirit of Lebanese craftsmanship meeting Dominican tradition.",
+        image: '/images/clubmarevabeirut/2021/IMG_6521-768x1024.jpeg',
+        imageAlt: 'Club Mareva Beirut Origins cigar close-up',
+      },
+      {
+        heading: 'The Blend',
+        text: "Crafted at the prestigious Kelner Boutique Factory in the Dominican Republic, the Origins features an Ecuador Corojo wrapper, Dominican Republic Cotui binder, and a carefully selected filler blend of DR Kelner Family Reserve, Dominican San Vincente, Dominican Cotui Ligero, and Peruvian Pelo D'Oro. The cedar tree adorning its box is a proud symbol of Lebanon.",
+        image: '/images/clubmarevabeirut/2021/IMG_3805-225x300.jpeg',
+        imageAlt: 'Origins cigar box with cedar tree emblem',
+      },
+      {
+        heading: 'Global Recognition',
+        text: "Limited to just 2,500 cigars across 250 hand-numbered boxes, the Origins quickly earned international acclaim. It was selected for inclusion in LuxuryCigarClub's ultra-premium 'OMG WTF' sampler — a distinction reserved for only the most exceptional cigars in the world.",
+        image: '/images/clubmarevabeirut/2021/IMG_3790.jpeg',
+        imageAlt: 'Origins cigar presentation and packaging',
+      },
+    ],
+    specs: [
+      { label: 'Vitola', value: 'Toro 56 x 6"' },
+      { label: 'Origin', value: 'Dominican Republic' },
+      { label: 'Limited To', value: '2,500 Cigars' },
+      { label: 'Year', value: '2020' },
+    ],
+    collaborators: 'Casdagli Cigars & Hendrik Kelner Jr.',
+    postSlug: 'club-mareva-origins-tasting-event',
+    order: 2,
+  },
+  'club-mareva-beirut-odyssey': {
+    category: 'Exclusive Cigar',
+    tagline: 'A celestial celebration. 2.5 hours of cosmic exploration in every draw.',
+    description:
+      "An extraordinary collaboration between Club Mareva Beirut and Casdagli Cigars, the Odyssey is a rare Gran Corona 'A' vitola (47 x 235mm) designed for at least 2.5 hours of celestial exploration. Crafted with precision at the IGM Boutique Factory in Costa Rica under master blender Jose Gonzalez Ferrer, it boasts an Ecuadorian Habano wrapper aged five years from the renowned Oliva plantations in the Los Rios region of Ecuador.",
+    gallery: [
+      '/images/clubmarevabeirut/2024/3-800x1056.jpeg',
+      '/images/clubmarevabeirut/2024/odyssey-casdagli-product.jpeg',
+    ],
+    contentSections: [
+      {
+        heading: 'A Cosmic Journey',
+        text: "The Odyssey is not merely a blend but an invitation to embark on an epic journey through the cosmos. This rare Gran Corona 'A' vitola (47 x 235mm) is meticulously designed to provide at least 2.5 hours of celestial exploration — a format revered in Cuban tradition yet exceedingly rare today. Each draw reveals complex layers of flavor that mirror the awe-inspiring vastness of space.",
+        image: '/images/clubmarevabeirut/2024/3-800x1056.jpeg',
+        imageAlt: 'The Odyssey cigar against a cosmic nebula backdrop',
+      },
+      {
+        heading: 'The Craft',
+        text: "Crafted with precision at the IGM Boutique Factory in Costa Rica under master blender Jose Gonzalez Ferrer — one of the most gifted agricultural engineers from Cuba — the Odyssey boasts an Ecuadorian Habano wrapper aged five years from the renowned Oliva plantations in the Los Rios region of Ecuador, a tobacco-growing legacy dating back to the 1970s. The binder and filler have been aged eight years, their origins shrouded in secrecy to maintain the blend's exclusive allure.",
+        image: '/images/clubmarevabeirut/2024/odyssey-casdagli-product.jpeg',
+        imageAlt: 'Odyssey box art featuring a smoker riding a cigar through space, with three Gran Corona cigars',
+      },
+      {
+        heading: 'The Experience',
+        text: 'Ranked #3 in the Top 10 Cigars of 2024, the Odyssey delivers notes of oak, medium-roast coffee, leather, butter, and cappuccino with hints of rosemary and green capsicum. The thick, creamy smoke unfolds gradually — like discovering a new star system, every note and nuance a planet to explore. Its dual-band design features a heraldic coat of arms with a two-headed phoenix above a black band inscribed with "Club Mareva Beirut" in gold.',
+        image: '/images/clubmarevabeirut/2024/JKP_4852-Edit-2-scaled.jpeg',
+        imageAlt: 'Odyssey cigars in their wooden box showing the dual-band design',
+      },
+      {
+        text: 'With only 200 numbered boxes of 15 cigars each — every box hand-signed by founders Najat Abdo and Woody Ghsoubi — the Club Mareva Beirut Odyssey is exceedingly rare. It invites you to pause, reflect, and voyage through a galaxy of sensory delights, making every smoker an astronaut of flavor on a mission to uncover the boundless complexities of tobacco.',
+      },
+    ],
+    specs: [
+      { label: 'Vitola', value: "Gran Corona 'A' 47 x 235mm" },
+      { label: 'Factory', value: 'IGM Boutique, Costa Rica' },
+      { label: 'Limited To', value: '3,000 Cigars' },
+      { label: 'Year', value: '2024' },
+    ],
+    collaborators: 'Casdagli Cigars & Jose Gonzalez Ferrer',
+    postSlug: 'club-mareva-beirut-odyssey',
+    order: 1,
+  },
+};
+
+const FALLBACK_IMAGE: Record<string, string> = {
+  'club-mareva-beirut-origins': '/images/clubmarevabeirut/2021/IMG_3994-scaled.jpeg',
+  'club-mareva-beirut-odyssey': '/images/clubmarevabeirut/2024/JKP_4852-Edit-2-scaled.jpeg',
+};
+
+export const SIGNATURE_SLUGS = Object.keys(SIGNATURE_ENRICHMENT);
+
+export function apiCigarToSignatureItem(cigar: ApiCigar) {
+  const enrichment = SIGNATURE_ENRICHMENT[cigar.slug];
+  if (!enrichment) return null;
+  return {
+    id: cigar.slug,
+    title: cigar.name,
+    image: cigar.image?.url || FALLBACK_IMAGE[cigar.slug] || '',
+    ...enrichment,
+  };
+}

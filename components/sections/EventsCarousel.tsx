@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { useCallback, useEffect, useState } from 'react';
-import useEmblaCarousel from 'embla-carousel-react';
-import Autoplay from 'embla-carousel-autoplay';
-import { motion } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Calendar, ArrowRight } from 'lucide-react';
-import Image from 'next/image';
-import Link from 'next/link';
+import { useCallback, useEffect, useState } from "react";
+import useEmblaCarousel from "embla-carousel-react";
+import Autoplay from "embla-carousel-autoplay";
+import { motion } from "framer-motion";
+import { ChevronLeft, ChevronRight, Calendar, ArrowRight } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 
 interface EventItem {
   id: number | string;
@@ -15,7 +15,7 @@ interface EventItem {
   category: string;
   image: string;
   slug: string;
-  type: 'upcoming' | 'event' | 'news';
+  type: "upcoming" | "event" | "news";
 }
 
 interface EventsCarouselProps {
@@ -24,13 +24,17 @@ interface EventsCarouselProps {
 
 const EventCard = ({ event, index }: { event: EventItem; index: number }) => {
   const [isHovered, setIsHovered] = useState(false);
-  const isUpcoming = event.type === 'upcoming';
+  const isUpcoming = event.type === "upcoming";
 
   const cardContent = (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      transition={{
+        delay: index * 0.1,
+        duration: 0.6,
+        ease: [0.22, 1, 0.36, 1],
+      }}
       className="relative h-full"
     >
       <div
@@ -43,7 +47,7 @@ const EventCard = ({ event, index }: { event: EventItem; index: number }) => {
           <motion.div
             animate={{
               scale: isHovered ? 1.12 : 1,
-              filter: isHovered ? 'brightness(1.1)' : 'brightness(1)'
+              filter: isHovered ? "brightness(1.1)" : "brightness(1)",
             }}
             transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
             className="relative w-full h-full"
@@ -133,7 +137,7 @@ const EventCard = ({ event, index }: { event: EventItem; index: number }) => {
             animate={{ scaleX: isHovered ? 1 : 0 }}
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
             className="absolute bottom-0 left-0 h-[2px] bg-gradient-to-r from-gold via-gold-light to-gold origin-left"
-            style={{ width: '100%' }}
+            style={{ width: "100%" }}
           />
         </div>
       </div>
@@ -141,40 +145,47 @@ const EventCard = ({ event, index }: { event: EventItem; index: number }) => {
   );
 
   if (isUpcoming) {
-    return (
-      <Link href={`/news-and-events/upcoming/${event.id}`}>
-        {cardContent}
-      </Link>
-    );
+    return <Link href={`/${event.slug}`}>{cardContent}</Link>;
   }
 
-  return (
-    <Link href={`/news-and-events/${event.slug}`}>
-      {cardContent}
-    </Link>
-  );
+  return <Link href={`/${event.slug}`}>{cardContent}</Link>;
 };
 
 const EventsCarousel = ({ events }: EventsCarouselProps) => {
   const [emblaRef, emblaApi] = useEmblaCarousel(
     {
       loop: true,
-      align: 'start',
+      align: "start",
       slidesToScroll: 1,
       breakpoints: {
-        '(min-width: 768px)': { slidesToScroll: 1 },
-        '(min-width: 1024px)': { slidesToScroll: 1 },
+        "(min-width: 768px)": { slidesToScroll: 1 },
+        "(min-width: 1024px)": { slidesToScroll: 1 },
       },
     },
-    [Autoplay({ delay: 5000, stopOnInteraction: false, stopOnMouseEnter: true })]
+    [
+      Autoplay({
+        delay: 5000,
+        stopOnInteraction: false,
+        stopOnMouseEnter: true,
+      }),
+    ],
   );
 
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
 
-  const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi]);
-  const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi]);
-  const scrollTo = useCallback((index: number) => emblaApi && emblaApi.scrollTo(index), [emblaApi]);
+  const scrollPrev = useCallback(
+    () => emblaApi && emblaApi.scrollPrev(),
+    [emblaApi],
+  );
+  const scrollNext = useCallback(
+    () => emblaApi && emblaApi.scrollNext(),
+    [emblaApi],
+  );
+  const scrollTo = useCallback(
+    (index: number) => emblaApi && emblaApi.scrollTo(index),
+    [emblaApi],
+  );
 
   const onSelect = useCallback(() => {
     if (!emblaApi) return;
@@ -184,7 +195,7 @@ const EventsCarousel = ({ events }: EventsCarouselProps) => {
   useEffect(() => {
     if (!emblaApi) return;
     setScrollSnaps(emblaApi.scrollSnapList());
-    emblaApi.on('select', onSelect);
+    emblaApi.on("select", onSelect);
     onSelect();
   }, [emblaApi, onSelect]);
 
@@ -192,8 +203,15 @@ const EventsCarousel = ({ events }: EventsCarouselProps) => {
     return (
       <section className="relative w-full bg-black py-20 md:py-28">
         <div className="max-w-xl mx-auto px-6 text-center">
-          <p className="font-playfair text-cream/60 text-lg mb-6">No upcoming events — check back soon</p>
-          <a href="/contact" className="font-playfair text-gold text-sm tracking-wider uppercase hover:text-gold-light transition-colors">Contact Us</a>
+          <p className="font-playfair text-cream/60 text-lg mb-6">
+            No upcoming events — check back soon
+          </p>
+          <a
+            href="/contact"
+            className="font-playfair text-gold text-sm tracking-wider uppercase hover:text-gold-light transition-colors"
+          >
+            Contact Us
+          </a>
         </div>
       </section>
     );
@@ -216,7 +234,7 @@ const EventsCarousel = ({ events }: EventsCarouselProps) => {
           transition={{ delay: 0.1, duration: 0.5 }}
           className="font-playfair text-xs tracking-[0.3em] uppercase text-gold mb-8 text-center"
         >
-          Latest Events
+          Latest News &amp; Events
         </motion.p>
 
         {/* Carousel Container */}
@@ -243,7 +261,7 @@ const EventsCarousel = ({ events }: EventsCarouselProps) => {
             <div className="flex gap-6 md:gap-8">
               {events.map((event, index) => (
                 <div
-                  key={event.id}
+                  key={`${event.id}-${index}`}
                   className="flex-[0_0_100%] md:flex-[0_0_calc(50%-16px)] lg:flex-[0_0_calc(33.333%-22px)] min-w-0"
                 >
                   <EventCard event={event} index={index} />
@@ -267,7 +285,8 @@ const EventsCarousel = ({ events }: EventsCarouselProps) => {
               <motion.div
                 animate={{
                   scale: selectedIndex === index ? 1 : 0.7,
-                  backgroundColor: selectedIndex === index ? '#C9A227' : '#404040',
+                  backgroundColor:
+                    selectedIndex === index ? "#C9A227" : "#404040",
                 }}
                 transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
                 className="w-2.5 h-2.5 rounded-full"
@@ -277,7 +296,7 @@ const EventsCarousel = ({ events }: EventsCarouselProps) => {
                   layoutId="activeIndicator"
                   className="absolute inset-0 rounded-full border-2 border-gold"
                   initial={false}
-                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 30 }}
                   style={{ scale: 1.8 }}
                 />
               )}
@@ -299,7 +318,7 @@ const EventsCarousel = ({ events }: EventsCarouselProps) => {
               whileTap={{ scale: 0.98 }}
               className="group inline-flex items-center gap-3 px-8 py-4 border border-gold/50 text-gold font-playfair font-medium tracking-wider uppercase text-sm transition-all duration-300 hover:border-gold hover:bg-gold/10"
             >
-              View All Events
+              View All News &amp; Events
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
             </motion.span>
           </Link>
