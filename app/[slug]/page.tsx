@@ -4,6 +4,7 @@ import {
   getPostBySlug,
   getLatestPosts,
   getAllPostSlugs,
+  getAllEventSlugs,
   getUpcomingEventBySlug,
   getUpcomingEvents,
 } from "@/lib/content";
@@ -38,6 +39,33 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
 
+  // Check events first: items in both tables should resolve as Events
+  const event = await getUpcomingEventBySlug(slug);
+  if (event) {
+    const imageUrl = resolveAbsoluteImageUrl(event.image);
+    const description = event.description || "";
+    return {
+      title: event.title,
+      description,
+      openGraph: {
+        title: event.title,
+        description,
+        url: `${SITE_URL}/${slug}`,
+        siteName: "Club Mareva Beirut",
+        type: "article",
+        images: imageUrl
+          ? [{ url: imageUrl, width: 1200, height: 630, alt: event.title }]
+          : [],
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: event.title,
+        description,
+        images: imageUrl ? [imageUrl] : [],
+      },
+    };
+  }
+
   const post = await getPostBySlug(slug);
   if (post) {
     const imageUrl = resolveAbsoluteImageUrl(
@@ -66,38 +94,16 @@ export async function generateMetadata({
     };
   }
 
-  const event = await getUpcomingEventBySlug(slug);
-  if (event) {
-    const imageUrl = resolveAbsoluteImageUrl(event.image);
-    const description = event.description || "";
-    return {
-      title: event.title,
-      description,
-      openGraph: {
-        title: event.title,
-        description,
-        url: `${SITE_URL}/${slug}`,
-        siteName: "Club Mareva Beirut",
-        type: "article",
-        images: imageUrl
-          ? [{ url: imageUrl, width: 1200, height: 630, alt: event.title }]
-          : [],
-      },
-      twitter: {
-        card: "summary_large_image",
-        title: event.title,
-        description,
-        images: imageUrl ? [imageUrl] : [],
-      },
-    };
-  }
-
   return { title: "Club Mareva Beirut" };
 }
 
 export async function generateStaticParams() {
-  const slugs = await getAllPostSlugs();
-  return slugs.map((slug) => ({ slug }));
+  const [newsSlugs, eventSlugs] = await Promise.all([
+    getAllPostSlugs(),
+    getAllEventSlugs(),
+  ]);
+  const allSlugs = [...new Set([...newsSlugs, ...eventSlugs])];
+  return allSlugs.map((slug) => ({ slug }));
 }
 
 export default async function PostPage({
@@ -106,112 +112,109 @@ export default async function PostPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const post = await getPostBySlug(slug);
 
-  if (!post) {
-    // The slug may belong to an event. Render it directly here so the
-    // canonical URL stays at /{slug} rather than /news-and-events/upcoming/{slug}.
-    const event = await getUpcomingEventBySlug(slug);
-    if (event) {
-      // Use strict past check: event happening today (not yet passed) stays as UpcomingEventDetail.
-      // event.date is an ISO 8601 string from the API (e.g. "2025-03-15T20:00:00.000Z").
-      const isPastEvent = new Date(event.date) < new Date();
+  // Check events first: items in both tables should resolve as Events
+  // (matches original WordPress categories and listing page behaviour)
+  const event = await getUpcomingEventBySlug(slug);
+  if (event) {
+    const isPastEvent = new Date(event.date) < new Date();
 
-      if (isPastEvent) {
-        const latestPosts = await getLatestPosts(4);
-        const relatedPosts = latestPosts
-          .filter((p) => p.slug !== event.slug)
-          .slice(0, 3)
-          .map((p) => ({
-            title: p.title,
-            slug: p.slug,
-            date: new Date(p.date_created).toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            }),
-            category: p.categories[0] || "Events",
-            image: resolveImagePath(
-              p.featured_image?.local_path || p.featured_image?.original_url,
-            ),
-            excerpt: p.content.text.substring(0, 120) + "...",
-          }));
-
-        const galleryImages = (event.galleryImages ?? [])
-          .sort((a, b) => a.displayOrder - b.displayOrder)
-          .map((gi) => resolveImagePath(gi.imageUrls.original));
-
-        const postData = {
-          title: event.title,
-          slug: event.slug,
-          date: new Date(event.date).toLocaleDateString("en-US", {
+    if (isPastEvent) {
+      const latestPosts = await getLatestPosts(4);
+      const relatedPosts = latestPosts
+        .filter((p) => p.slug !== event.slug)
+        .slice(0, 3)
+        .map((p) => ({
+          title: p.title,
+          slug: p.slug,
+          date: new Date(p.date_created).toLocaleDateString("en-US", {
             year: "numeric",
             month: "long",
             day: "numeric",
           }),
-          category: event.category || "Events",
-          featuredImage: resolveImagePath(event.image),
-          content: event.body || "",
-          images: galleryImages,
-        };
-
-        return <PostClient post={postData} relatedPosts={relatedPosts} />;
-      }
-
-      // Future event → UpcomingEventDetail (unchanged)
-      const allUpcoming = await getUpcomingEvents();
-      const otherEvents = allUpcoming
-        .filter((e) => e.id !== event.id)
-        .slice(0, 3)
-        .map((e) => ({
-          id: e.id,
-          slug: e.slug,
-          title: e.title,
-          category: e.category,
-          image: e.image,
-          month: new Date(e.date)
-            .toLocaleDateString("en-US", { month: "short" })
-            .toUpperCase(),
-          day: new Date(e.date).getDate().toString(),
-          displayDate: new Date(e.date).toLocaleDateString("en-US", {
-            weekday: "long",
-            month: "long",
-            day: "numeric",
-          }),
+          category: p.categories[0] || "Events",
+          image: resolveImagePath(
+            p.featured_image?.local_path || p.featured_image?.original_url,
+          ),
+          excerpt: p.content.text.substring(0, 120) + "...",
         }));
 
-      const eventData = {
-        id: event.id,
+      const galleryImages = (event.galleryImages ?? [])
+        .sort((a, b) => a.displayOrder - b.displayOrder)
+        .map((gi) => resolveImagePath(gi.imageUrls.original));
+
+      const postData = {
         title: event.title,
-        category: event.category,
-        description: event.description,
-        image: event.image,
-        body: event.body,
-        location: event.location,
-        month: new Date(event.date)
+        slug: event.slug,
+        date: new Date(event.date).toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        }),
+        category: event.category || "Events",
+        featuredImage: resolveImagePath(event.image),
+        content: event.body || "",
+        images: galleryImages,
+      };
+
+      return <PostClient post={postData} relatedPosts={relatedPosts} />;
+    }
+
+    // Future event → UpcomingEventDetail
+    const allUpcoming = await getUpcomingEvents();
+    const otherEvents = allUpcoming
+      .filter((e) => e.id !== event.id)
+      .slice(0, 3)
+      .map((e) => ({
+        id: e.id,
+        slug: e.slug,
+        title: e.title,
+        category: e.category,
+        image: e.image,
+        month: new Date(e.date)
           .toLocaleDateString("en-US", { month: "short" })
           .toUpperCase(),
-        day: new Date(event.date).getDate().toString(),
-        displayDate: new Date(event.date).toLocaleDateString("en-US", {
+        day: new Date(e.date).getDate().toString(),
+        displayDate: new Date(e.date).toLocaleDateString("en-US", {
           weekday: "long",
           month: "long",
           day: "numeric",
         }),
-        time: new Date(event.date).toLocaleTimeString("en-US", {
-          hour: "numeric",
-          minute: "2-digit",
-          hour12: true,
-        }),
-      };
+      }));
 
-      return (
-        <UpcomingEventDetail event={eventData} otherEvents={otherEvents} />
-      );
-    }
-    return notFound();
+    const eventData = {
+      id: event.id,
+      title: event.title,
+      category: event.category,
+      description: event.description,
+      image: event.image,
+      body: event.body,
+      location: event.location,
+      month: new Date(event.date)
+        .toLocaleDateString("en-US", { month: "short" })
+        .toUpperCase(),
+      day: new Date(event.date).getDate().toString(),
+      displayDate: new Date(event.date).toLocaleDateString("en-US", {
+        weekday: "long",
+        month: "long",
+        day: "numeric",
+      }),
+      time: new Date(event.date).toLocaleTimeString("en-US", {
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+      }),
+    };
+
+    return (
+      <UpcomingEventDetail event={eventData} otherEvents={otherEvents} />
+    );
   }
 
-  // Get related posts (latest 3, excluding current post)
+  // Fallback: news-only items (not in events table)
+  const post = await getPostBySlug(slug);
+  if (!post) return notFound();
+
   const latestPosts = await getLatestPosts(4);
   const relatedPosts = latestPosts
     .filter((p) => p.slug !== post.slug)
@@ -231,7 +234,6 @@ export default async function PostPage({
       excerpt: p.content.text.substring(0, 120) + "...",
     }));
 
-  // Map post to client-safe format
   const postData = {
     title: post.title,
     slug: post.slug,

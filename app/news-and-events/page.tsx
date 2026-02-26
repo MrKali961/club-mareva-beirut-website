@@ -27,15 +27,17 @@ export default async function NewsAndEventsPage() {
   type SortableEvent = { kind: "event"; data: ApiEvent; sortDate: number };
 
   const upcomingEventSlugs = new Set(upcomingEvents.map((e) => e.slug));
-  const newsSlugs = new Set(posts.map((p) => p.slug));
+  const allEventSlugs = new Set(eventsResponse.items.map((e) => e.slug));
+  // Events take priority: items in both news and events tables show as Events
+  // (matches original WordPress categories where tastings/masterclasses are Events)
+  const newsOnly = posts.filter((p) => !allEventSlugs.has(p.slug));
   const pastEvents = eventsResponse.items.filter(
     (e) =>
-      !newsSlugs.has(e.slug) &&
-      (new Date(e.date) < new Date() || !upcomingEventSlugs.has(e.slug)),
+      new Date(e.date) < new Date() || !upcomingEventSlugs.has(e.slug),
   );
 
   const combined: (SortableNews | SortableEvent)[] = [
-    ...posts.map((p) => ({
+    ...newsOnly.map((p) => ({
       kind: "news" as const,
       data: p,
       sortDate: new Date(p.date_created).getTime(),
