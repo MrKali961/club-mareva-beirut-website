@@ -47,17 +47,40 @@ export function stripHtml(html: string): string {
 }
 
 export function normalizeWordPressHtml(html: string): string {
-  // If content already has block-level HTML tags, return as-is.
-  // Known limitation: mixed content (some <p> tags, some bare text) is not handled.
-  if (/<(p|h[1-6]|ul|ol|li|blockquote|div|section|article)\b/i.test(html)) {
-    return html;
+  if (!html) return '';
+
+  // No block-level tags at all → plain text, wrap every paragraph in <p>.
+  if (!/<(p|h[1-6]|ul|ol|li|blockquote|div|section|article|table|figure|hr)\b/i.test(html)) {
+    return wrapBareText(html);
   }
-  // Wrap bare text blocks (separated by double newlines) in <p> tags.
-  return html
+
+  // Mixed content: block-level tags AND bare text between them.
+  // Walk through, keep block elements intact, wrap bare text in <p>.
+  const blockElementRegex =
+    /<(p|h[1-6]|blockquote|ul|ol|div|table|figure)(\s[^>]*)?>[\s\S]*?<\/\1>|<hr\s*\/?>/gi;
+  const parts: string[] = [];
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+
+  while ((match = blockElementRegex.exec(html)) !== null) {
+    const bare = html.slice(lastIndex, match.index);
+    if (bare.trim()) parts.push(wrapBareText(bare));
+    parts.push(match[0]);
+    lastIndex = match.index + match[0].length;
+  }
+
+  const trailing = html.slice(lastIndex);
+  if (trailing.trim()) parts.push(wrapBareText(trailing));
+
+  return parts.join('\n');
+}
+
+function wrapBareText(text: string): string {
+  return text
     .split(/\r?\n\r?\n/)
-    .map(block => block.trim())
+    .map((p) => p.trim())
     .filter(Boolean)
-    .map(block => `<p>${block.replace(/\r?\n/g, '<br />')}</p>`)
+    .map((p) => `<p>${p.replace(/\r?\n/g, '<br />')}</p>`)
     .join('\n');
 }
 
