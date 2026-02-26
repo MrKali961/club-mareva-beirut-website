@@ -145,9 +145,7 @@ const EventCard = ({ event, index }: { event: EventItem; index: number }) => {
   );
 
   if (isUpcoming) {
-    return (
-      <Link href={`/${event.slug}`}>{cardContent}</Link>
-    );
+    return <Link href={`/${event.slug}`}>{cardContent}</Link>;
   }
 
   return <Link href={`/${event.slug}`}>{cardContent}</Link>;
@@ -236,7 +234,7 @@ const EventsCarousel = ({ events }: EventsCarouselProps) => {
           transition={{ delay: 0.1, duration: 0.5 }}
           className="font-playfair text-xs tracking-[0.3em] uppercase text-gold mb-8 text-center"
         >
-          Latest Events
+          Latest News &amp; Events
         </motion.p>
 
         {/* Carousel Container */}

@@ -27,8 +27,11 @@ export default async function NewsAndEventsPage() {
   type SortableEvent = { kind: "event"; data: ApiEvent; sortDate: number };
 
   const upcomingEventSlugs = new Set(upcomingEvents.map((e) => e.slug));
+  const newsSlugs = new Set(posts.map((p) => p.slug));
   const pastEvents = eventsResponse.items.filter(
-    (e) => new Date(e.date) < new Date() || !upcomingEventSlugs.has(e.slug),
+    (e) =>
+      !newsSlugs.has(e.slug) &&
+      (new Date(e.date) < new Date() || !upcomingEventSlugs.has(e.slug)),
   );
 
   const combined: (SortableNews | SortableEvent)[] = [

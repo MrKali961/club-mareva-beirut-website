@@ -31,7 +31,6 @@ export type { UpcomingEventWithSlug } from "./adapters/events-adapter";
 const USE_API = process.env.USE_API === "true";
 
 const DATA_BASE = join(process.cwd(), "data");
-const POSTS_DIR = join(DATA_BASE, "posts");
 const PAGES_DIR = join(DATA_BASE, "pages");
 const METADATA_DIR = join(DATA_BASE, "metadata");
 
@@ -145,7 +144,6 @@ export interface ImageManifest {
 // Caches (filesystem mode)
 // ========================================
 
-let postsCache: Post[] | null = null;
 let pagesCache: Page[] | null = null;
 let categoriesCache: Category[] | null = null;
 let imageManifestCache: ImageManifest | null = null;
@@ -163,149 +161,62 @@ async function loadJSON<T>(filePath: string): Promise<T | null> {
 }
 
 // ========================================
-// Posts (News) — API-backed with filesystem fallback
+// Posts (News) — API-only
 // ========================================
 
-async function getAllPostsFromFilesystem(): Promise<Post[]> {
-  if (postsCache) return postsCache;
-
+export async function getAllPosts(): Promise<Post[]> {
   try {
-    const files = await readdir(POSTS_DIR);
-    const jsonFiles = files.filter((f) => f.endsWith(".json"));
-    const posts: Post[] = [];
-
-    for (const file of jsonFiles) {
-      const filePath = join(POSTS_DIR, file);
-      const post = await loadJSON<Post>(filePath);
-      if (post && post.status === "publish") {
-        posts.push(post);
-      }
-    }
-
-    posts.sort(
-      (a, b) =>
-        new Date(b.date_created).getTime() - new Date(a.date_created).getTime(),
-    );
-
-    postsCache = posts;
-    return posts;
+    const response = await fetchAllNews();
+    return response.items.map(apiNewsToPost);
   } catch (error) {
-    console.error("Error loading posts from filesystem:", error);
+    console.error("API error fetching all posts:", error);
     return [];
   }
 }
 
-export async function getAllPosts(): Promise<Post[]> {
-  if (USE_API) {
-    try {
-      const response = await fetchAllNews();
-      return response.items.map(apiNewsToPost);
-    } catch (error) {
-      console.error(
-        "API error fetching all posts, falling back to filesystem:",
-        error,
-      );
-    }
-  }
-  return getAllPostsFromFilesystem();
-}
-
 export async function getPostBySlug(slug: string): Promise<Post | null> {
-  // API-first: try the live API regardless of USE_API when looking up a single
-  // post by slug. Articles created through the dashboard have no local JSON file,
-  // so the filesystem alone is not sufficient.
-  if (USE_API) {
-    try {
-      const article = await fetchNewsBySlug(slug);
-      return apiNewsToPost(article);
-    } catch (error) {
-      const msg = error instanceof Error ? error.message : String(error);
-      // A 404 means this slug is not a news article (likely an event).
-      // Do not fall back to local filesystem files which may contain event
-      // recaps stored as posts — let the caller try getUpcomingEventBySlug.
-      if (msg.includes('404')) return null;
-      console.error(
-        `API error fetching post "${slug}", falling back to filesystem:`,
-        error,
-      );
-    }
+  try {
+    const article = await fetchNewsBySlug(slug);
+    return apiNewsToPost(article);
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : String(error);
+    if (msg.includes('404')) return null;
+    console.error(`API error fetching post "${slug}":`, error);
+    return null;
   }
-
-  // Filesystem lookup — covers the 49 legacy JSON articles
-  const posts = await getAllPostsFromFilesystem();
-  const fsPost = posts.find((p) => p.slug === slug);
-  if (fsPost) return fsPost;
-
-  // Last-resort API lookup when USE_API=false: the article may only exist in
-  // the database (e.g. published via the dashboard after the static files were
-  // generated). Silently try the API so those pages don't 404.
-  if (!USE_API) {
-    try {
-      const article = await fetchNewsBySlug(slug);
-      return apiNewsToPost(article);
-    } catch {
-      return null;
-    }
-  }
-
-  return null;
 }
 
 export async function getLatestPosts(count: number): Promise<Post[]> {
-  if (USE_API) {
-    try {
-      const response = await fetchLatestNews(count);
-      return response.items.map(apiNewsToPost);
-    } catch (error) {
-      console.error(
-        "API error fetching latest posts, falling back to filesystem:",
-        error,
-      );
-    }
+  try {
+    const response = await fetchLatestNews(count);
+    return response.items.map(apiNewsToPost);
+  } catch (error) {
+    console.error("API error fetching latest posts:", error);
+    return [];
   }
-  const posts = await getAllPostsFromFilesystem();
-  return posts.slice(0, count);
 }
 
 /**
- * Returns all known post slugs from both the API and the local filesystem,
- * deduplicated. Used by generateStaticParams to pre-build every article page.
+ * Returns all known post slugs from the API.
+ * Used by generateStaticParams to pre-build every article page.
  */
 export async function getAllPostSlugs(): Promise<string[]> {
   const slugs = new Set<string>();
 
-  if (!USE_API) {
-    // Filesystem-only mode: collect all local slugs
-    try {
-      const fsPosts = await getAllPostsFromFilesystem();
-      fsPosts.forEach((p) => slugs.add(p.slug));
-    } catch {
-      // ignore
-    }
-    return Array.from(slugs);
-  }
-
-  // API mode: collect slugs from API with full pagination
   try {
-    const first = await fetchAllNews(1, 500);
+    const first = await fetchAllNews(1, 50);
     first.items.forEach((item) => slugs.add(item.slug));
 
     if (first.pagination.totalPages > 1) {
       const pages = await Promise.all(
         Array.from({ length: first.pagination.totalPages - 1 }, (_, i) =>
-          fetchAllNews(i + 2, 500)
+          fetchAllNews(i + 2, 50)
         )
       );
       pages.forEach((page) => page.items.forEach((item) => slugs.add(item.slug)));
     }
-  } catch {
-    // API unavailable at build time — fall back to filesystem slugs
-    try {
-      const fsPosts = await getAllPostsFromFilesystem();
-      fsPosts.forEach((p) => slugs.add(p.slug));
-    } catch {
-      // ignore
-    }
+  } catch (error) {
+    console.error("API error fetching post slugs:", error);
   }
 
   return Array.from(slugs);
@@ -320,13 +231,13 @@ export async function getAllEventSlugs(): Promise<string[]> {
   const slugs = new Set<string>();
 
   try {
-    const first = await fetchAllEventsApi(1, 500);
+    const first = await fetchAllEventsApi(1, 50);
     first.items.forEach((item) => slugs.add(item.slug));
 
     if (first.pagination.totalPages > 1) {
       const pages = await Promise.all(
         Array.from({ length: first.pagination.totalPages - 1 }, (_, i) =>
-          fetchAllEventsApi(i + 2, 500)
+          fetchAllEventsApi(i + 2, 50)
         )
       );
       pages.forEach((page) => page.items.forEach((item) => slugs.add(item.slug)));
@@ -554,7 +465,6 @@ export async function getBrands(): Promise<ApiCigarBrand[]> {
 // ========================================
 
 export function clearCache(): void {
-  postsCache = null;
   pagesCache = null;
   categoriesCache = null;
   imageManifestCache = null;
