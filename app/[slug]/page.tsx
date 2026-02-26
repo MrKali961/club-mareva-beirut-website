@@ -8,6 +8,7 @@ import {
   getUpcomingEventBySlug,
   getUpcomingEvents,
 } from "@/lib/content";
+import { extractImagesFromHtml } from "@/lib/adapters";
 import PostClient from "./PostClient";
 import UpcomingEventDetail from "../news-and-events/upcoming/[slug]/UpcomingEventDetail";
 
@@ -139,9 +140,11 @@ export default async function PostPage({
           excerpt: p.content.text.substring(0, 120) + "...",
         }));
 
-      const galleryImages = (event.galleryImages ?? [])
-        .sort((a, b) => a.displayOrder - b.displayOrder)
-        .map((gi) => resolveImagePath(gi.imageUrls.original));
+      const galleryImages = (event.galleryImages ?? []).length > 0
+        ? (event.galleryImages ?? [])
+            .sort((a, b) => a.displayOrder - b.displayOrder)
+            .map((gi) => resolveImagePath(gi.imageUrls.original))
+        : extractImagesFromHtml(event.body || '');
 
       const postData = {
         title: event.title,

@@ -84,6 +84,17 @@ function wrapBareText(text: string): string {
     .join('\n');
 }
 
+export function extractImagesFromHtml(html: string): string[] {
+  if (!html) return [];
+  const imgRegex = /<img[^>]+src=["']([^"']+)["'][^>]*>/gi;
+  const urls: string[] = [];
+  let match: RegExpExecArray | null;
+  while ((match = imgRegex.exec(html)) !== null) {
+    urls.push(match[1]);
+  }
+  return urls;
+}
+
 export function apiNewsToPost(article: ApiNewsArticle): Post {
   const imageUrl = article.imageUrls?.original || article.image?.url || article.mainImageUrl || '';
 
@@ -108,10 +119,16 @@ export function apiNewsToPost(article: ApiNewsArticle): Post {
           alt_text: article.image?.alt || article.title,
         }
       : undefined,
-    images: (article.galleryImages ?? []).map((gi) => ({
-      original_url: gi.imageUrls.original,
-      local_path: gi.imageUrls.original,
-      alt_text: '',
-    })),
+    images: (article.galleryImages ?? []).length > 0
+      ? article.galleryImages!.map((gi) => ({
+          original_url: gi.imageUrls.original,
+          local_path: gi.imageUrls.original,
+          alt_text: '',
+        }))
+      : extractImagesFromHtml(article.body).map((url) => ({
+          original_url: url,
+          local_path: url,
+          alt_text: '',
+        })),
   };
 }
