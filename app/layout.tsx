@@ -3,6 +3,7 @@ import { Playfair_Display } from "next/font/google";
 import Navigation from "@/components/layout/Navigation";
 import Footer from "@/components/layout/Footer";
 import SmoothScroll from "@/components/SmoothScroll";
+import AnalyticsProvider from "@/components/AnalyticsProvider";
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -55,7 +56,7 @@ export default function RootLayout({
         <SmoothScroll />
         <div className="relative z-[1] bg-black min-h-screen mb-[100vh]">
           <Navigation />
-          <main>{children}</main>
+          <main><AnalyticsProvider>{children}</AnalyticsProvider></main>
         </div>
         <Footer />
       </body>
