@@ -16,6 +16,7 @@ interface EventData {
   image: string;
   body?: string;
   location?: string;
+  maxVisitors?: number;
   month: string;
   day: string;
   displayDate: string;
@@ -244,7 +245,7 @@ export default function UpcomingEventDetail({ event, otherEvents }: UpcomingEven
             </p>
           </motion.div>
 
-          <RegistrationForm eventId={event.id} />
+          <RegistrationForm eventId={event.id} maxVisitors={event.maxVisitors} />
 
           <motion.div
             initial={{ opacity: 0 }}
@@ -398,7 +399,7 @@ export default function UpcomingEventDetail({ event, otherEvents }: UpcomingEven
   );
 }
 
-function RegistrationForm({ eventId }: { eventId: string }) {
+function RegistrationForm({ eventId, maxVisitors }: { eventId: string; maxVisitors?: number }) {
   const [state, formAction, isPending] = useActionState(submitEventRegistration, {
     success: false,
     message: '',
@@ -477,6 +478,33 @@ function RegistrationForm({ eventId }: { eventId: string }) {
           <p className="text-red-400 text-xs mt-1 font-playfair">{state.errors.phone}</p>
         )}
       </div>
+
+      <div>
+        <label className="block font-playfair text-cream/60 text-xs tracking-wider uppercase mb-2">
+          Number of Guests
+        </label>
+        <select
+          name="numberOfGuests"
+          defaultValue="1"
+          className="w-full bg-black border border-gold/30 px-4 py-3 font-playfair text-cream text-sm focus:outline-none focus:border-gold transition-colors appearance-none cursor-pointer"
+          style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23C8A97E' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 16px center' }}
+        >
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
+            <option key={n} value={n} className="bg-black text-cream">
+              {n} {n === 1 ? 'guest' : 'guests'}
+            </option>
+          ))}
+        </select>
+        {state.errors?.numberOfGuests && (
+          <p className="text-red-400 text-xs mt-1 font-playfair">{state.errors.numberOfGuests}</p>
+        )}
+      </div>
+
+      {maxVisitors && (
+        <p className="text-cream/40 text-xs font-playfair text-center tracking-wider">
+          Limited capacity event
+        </p>
+      )}
 
       <motion.button
         type="submit"

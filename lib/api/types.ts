@@ -103,6 +103,7 @@ export interface ApiEventRegistration {
   name: string;
   email: string;
   phone: string;
+  numberOfGuests: number;
 }
 
 // Cigars list response (non-standard pagination shape from /cigars endpoint)

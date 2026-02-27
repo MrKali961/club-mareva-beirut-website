@@ -193,6 +193,7 @@ export default async function PostPage({
       image: event.image,
       body: event.body,
       location: event.location,
+      maxVisitors: event.maxVisitors,
       month: new Date(event.date)
         .toLocaleDateString("en-US", { month: "short" })
         .toUpperCase(),
