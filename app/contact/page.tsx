@@ -93,7 +93,7 @@ export default function ContactPage() {
             <div className="relative h-full w-full border border-gold/30 shadow-[0_0_60px_rgba(201,162,39,0.15)] overflow-hidden">
               {/* Google Maps Embed with Dark/Night Styling */}
               <iframe
-                src="https://maps.google.com/maps?q=WH5G%2B3P+Jal+El+Dib,+Lebanon&t=&z=17&ie=UTF8&iwloc=&output=embed"
+                src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d13245.189598584364!2d35.5767838!3d33.9077446!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x151f3fa4748cca47%3A0xab0866b20337ddff!2sClub%20Mareva%20Beirut!5e0!3m2!1sen!2slb!4v1686093070213!5m2!1sen!2slb"
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}
