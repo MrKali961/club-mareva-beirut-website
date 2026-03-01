@@ -44,24 +44,29 @@ export async function generateMetadata({
   const event = await getUpcomingEventBySlug(slug);
   if (event) {
     const imageUrl = resolveAbsoluteImageUrl(event.image);
-    const description = event.description || "";
+    const metaTitle = event.metaTitle || event.title;
+    const metaDescription = event.metaDescription || event.description || "";
+    const imageAlt = event.metaImageAlt || event.title;
     return {
-      title: event.title,
-      description,
+      title: metaTitle,
+      description: metaDescription,
+      ...(event.metaKeywords && {
+        keywords: event.metaKeywords.split(",").map((k: string) => k.trim()),
+      }),
       openGraph: {
-        title: event.title,
-        description,
+        title: metaTitle,
+        description: metaDescription,
         url: `${SITE_URL}/${slug}`,
         siteName: "Club Mareva Beirut",
         type: "article",
         images: imageUrl
-          ? [{ url: imageUrl, width: 1200, height: 630, alt: event.title }]
+          ? [{ url: imageUrl, width: 1200, height: 630, alt: imageAlt }]
           : [],
       },
       twitter: {
         card: "summary_large_image",
-        title: event.title,
-        description,
+        title: metaTitle,
+        description: metaDescription,
         images: imageUrl ? [imageUrl] : [],
       },
     };
@@ -72,24 +77,30 @@ export async function generateMetadata({
     const imageUrl = resolveAbsoluteImageUrl(
       post.featured_image?.local_path || post.featured_image?.original_url,
     );
-    const description = post.content.text.substring(0, 155);
+    const metaTitle = post.seo?.metaTitle || post.title;
+    const metaDescription =
+      post.seo?.metaDescription || post.content.text.substring(0, 155);
+    const imageAlt = post.seo?.metaImageAlt || post.title;
     return {
-      title: post.title,
-      description,
+      title: metaTitle,
+      description: metaDescription,
+      ...(post.seo?.metaKeywords && {
+        keywords: post.seo.metaKeywords.split(",").map((k: string) => k.trim()),
+      }),
       openGraph: {
-        title: post.title,
-        description,
+        title: metaTitle,
+        description: metaDescription,
         url: `${SITE_URL}/${slug}`,
         siteName: "Club Mareva Beirut",
         type: "article",
         images: imageUrl
-          ? [{ url: imageUrl, width: 1200, height: 630, alt: post.title }]
+          ? [{ url: imageUrl, width: 1200, height: 630, alt: imageAlt }]
           : [],
       },
       twitter: {
         card: "summary_large_image",
-        title: post.title,
-        description,
+        title: metaTitle,
+        description: metaDescription,
         images: imageUrl ? [imageUrl] : [],
       },
     };

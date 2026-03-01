@@ -70,6 +70,12 @@ export interface Post {
     youtube: string[];
     instagram: string[];
   };
+  seo?: {
+    metaTitle: string | null;
+    metaDescription: string | null;
+    metaKeywords: string | null;
+    metaImageAlt: string | null;
+  };
 }
 
 export interface Page {

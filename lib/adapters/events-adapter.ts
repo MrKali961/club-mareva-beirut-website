@@ -10,6 +10,10 @@ interface ApiEvent {
   body: string;
   isFeatured: boolean;
   maxVisitors?: number;
+  metaTitle?: string | null;
+  metaDescription?: string | null;
+  metaKeywords?: string | null;
+  metaImageAlt?: string | null;
   image?: {
     url: string;
     alt: string;
@@ -56,6 +60,10 @@ export interface UpcomingEventWithSlug {
       thumb: string;
     };
   }>;
+  metaTitle?: string | null;
+  metaDescription?: string | null;
+  metaKeywords?: string | null;
+  metaImageAlt?: string | null;
 }
 
 export function apiEventToUpcomingEvent(event: ApiEvent): UpcomingEventWithSlug {
@@ -75,5 +83,9 @@ export function apiEventToUpcomingEvent(event: ApiEvent): UpcomingEventWithSlug 
     maxVisitors: event.maxVisitors,
     body: normalizeWordPressHtml(event.body ?? ''),
     galleryImages: event.galleryImages,
+    metaTitle: event.metaTitle || null,
+    metaDescription: event.metaDescription || null,
+    metaKeywords: event.metaKeywords || null,
+    metaImageAlt: event.metaImageAlt || null,
   };
 }

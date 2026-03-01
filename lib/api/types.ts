@@ -41,6 +41,10 @@ export interface ApiNewsArticle {
   }>;
   createdAt: string;
   updatedAt: string;
+  metaTitle?: string | null;
+  metaDescription?: string | null;
+  metaKeywords?: string | null;
+  metaImageAlt?: string | null;
 }
 
 // Event
@@ -54,6 +58,10 @@ export interface ApiEvent {
   body: string;
   isFeatured: boolean;
   maxVisitors?: number;
+  metaTitle?: string | null;
+  metaDescription?: string | null;
+  metaKeywords?: string | null;
+  metaImageAlt?: string | null;
   image?: {
     url: string;
     alt: string;

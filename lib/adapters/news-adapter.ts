@@ -31,6 +31,10 @@ interface ApiNewsArticle {
   }>;
   createdAt: string;
   updatedAt: string;
+  metaTitle?: string | null;
+  metaDescription?: string | null;
+  metaKeywords?: string | null;
+  metaImageAlt?: string | null;
 }
 
 export function stripHtml(html: string): string {
@@ -130,5 +134,11 @@ export function apiNewsToPost(article: ApiNewsArticle): Post {
           local_path: url,
           alt_text: '',
         })),
+    seo: {
+      metaTitle: article.metaTitle || null,
+      metaDescription: article.metaDescription || null,
+      metaKeywords: article.metaKeywords || null,
+      metaImageAlt: article.metaImageAlt || null,
+    },
   };
 }
