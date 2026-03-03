@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'ik.imagekit.io',
+        hostname: 'club-mareva.s3.eu-west-2.amazonaws.com',
         pathname: '/**',
       },
       {
