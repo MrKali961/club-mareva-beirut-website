@@ -189,6 +189,7 @@ export interface ApiMenuItem {
   slug: string;
   description?: string;
   price?: string;
+  abv?: string;
   details?: string;
   displayOrder: number;
   image?: { url: string; alt: string };
