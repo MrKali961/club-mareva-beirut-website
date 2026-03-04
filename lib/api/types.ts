@@ -185,17 +185,30 @@ export interface ApiAccessory {
 // Menu item
 export interface ApiMenuItem {
   id: string;
+  familyId?: string | null;
   name: string;
+  displayName: string;
   slug: string;
   description?: string;
   price?: string;
   abv?: string;
   details?: string;
   displayOrder: number;
-  image?: { url: string; alt: string };
+  imageUrls: {
+    original: string | null;
+    medium: string | null;
+    thumb: string | null;
+  };
 }
 
-// Menu section (with nested items)
+// Menu group (family or standalone items)
+export interface ApiMenuGroup {
+  type: 'family' | 'standalone';
+  family?: { id: string; name: string };
+  items: ApiMenuItem[];
+}
+
+// Menu section (with grouped items)
 export interface ApiMenuSection {
   id: string;
   name: string;
@@ -203,5 +216,5 @@ export interface ApiMenuSection {
   description?: string;
   icon?: string;
   displayOrder: number;
-  items: ApiMenuItem[];
+  groups: ApiMenuGroup[];
 }
