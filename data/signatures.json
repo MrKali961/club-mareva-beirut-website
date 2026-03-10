@@ -32,10 +32,26 @@
       }
     ],
     "specs": [
-      { "label": "Vitola", "value": "Toro 56 x 6\"" },
-      { "label": "Origin", "value": "Dominican Republic" },
-      { "label": "Limited To", "value": "2,500 Cigars" },
-      { "label": "Year", "value": "2020" }
+      {
+        "label": "Vitola",
+        "value": "Toro 56 x 6\""
+      },
+      {
+        "label": "Factory",
+        "value": "Dominican Republic"
+      },
+      {
+        "label": "Limited To",
+        "value": "250 Boxes"
+      },
+      {
+        "label": "Presentation",
+        "value": "Box of 10"
+      },
+      {
+        "label": "Year Released",
+        "value": "2020"
+      }
     ],
     "collaborators": "Casdagli Cigars & Hendrik Kelner Jr.",
     "postSlug": "club-mareva-origins-tasting-event",
@@ -76,10 +92,30 @@
       }
     ],
     "specs": [
-      { "label": "Vitola", "value": "Gran Corona 'A' 47 x 235mm" },
-      { "label": "Factory", "value": "IGM Boutique, Costa Rica" },
-      { "label": "Limited To", "value": "3,000 Cigars" },
-      { "label": "Year", "value": "2024" }
+      {
+        "label": "Vitola",
+        "value": "Gran Corona 'A' 47 x 235mm"
+      },
+      {
+        "label": "Origin",
+        "value": "Costa Rica"
+      },
+      {
+        "label": "Factory",
+        "value": "IGM Boutique, Costa Rica"
+      },
+      {
+        "label": "Limited To",
+        "value": "200 Boxes"
+      },
+      {
+        "label": "Presentation",
+        "value": "Box of 15"
+      },
+      {
+        "label": "Year Released",
+        "value": "2024"
+      }
     ],
     "collaborators": "Casdagli Cigars & Jose Gonzalez Ferrer",
     "postSlug": "club-mareva-beirut-odyssey",
