@@ -208,6 +208,38 @@ export interface ApiMenuGroup {
   items: ApiMenuItem[];
 }
 
+// Reservation settings (public)
+export interface ApiReservationSettings {
+  isEnabled: boolean;
+  maxGuestsPerBooking: number;
+  advanceBookingDays: number;
+  timeSlots: string[];
+  closedDays: number[];
+  sectionTitle: string;
+  sectionSubtitle: string;
+  sectionDescription: string;
+}
+
+// Availability response for a specific date
+export interface ApiAvailability {
+  available: boolean;
+  timeSlots?: { time: string; available: boolean; remainingSlots: number }[];
+  maxGuests?: number;
+  message?: string;
+}
+
+// Reservation creation result
+export interface ApiReservationResult {
+  id: string;
+  name: string;
+  email: string;
+  date: string;
+  time: string;
+  numberOfGuests: number;
+  status: string;
+  confirmationMessage: string;
+}
+
 // Menu section (with grouped items)
 export interface ApiMenuSection {
   id: string;

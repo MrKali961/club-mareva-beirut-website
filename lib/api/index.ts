@@ -8,3 +8,4 @@ export * from './cigars';
 export * from './alcohol';
 export * from './accessories';
 export * from './menu';
+export * from './reservations';

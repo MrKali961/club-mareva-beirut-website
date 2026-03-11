@@ -107,7 +107,7 @@ function NavigationInner() {
 
             {/* Reserve CTA (Desktop) */}
             <div className="hidden lg:flex items-center gap-4">
-              <Link href="/contact">
+              <Link href="/reserve">
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
