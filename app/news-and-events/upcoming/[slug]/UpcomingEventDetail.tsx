@@ -379,7 +379,11 @@ export default function UpcomingEventDetail({ event, otherEvents }: UpcomingEven
         }
 
         .prose-article img {
-          display: none;
+          max-width: 100%;
+          height: auto;
+          display: block;
+          margin: 1.5rem auto;
+          border-radius: 0.5rem;
         }
 
         .prose-article ul,
