@@ -19,12 +19,14 @@ export async function submitReserveForm(
   const time = formData.get('time') as string;
   const numberOfGuests = Number(formData.get('numberOfGuests'));
   const specialRequests = formData.get('specialRequests') as string;
+  const tableId = formData.get('tableId') as string;
 
   const errors: Record<string, string> = {};
   if (!name || name.trim().length < 2) errors.name = 'Name is required (min 2 characters)';
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.email = 'Valid email is required';
   if (!date) errors.date = 'Please select a date';
   if (!time) errors.time = 'Please select a time slot';
+  if (!tableId) errors.tableId = 'Please select a table';
   if (!numberOfGuests || numberOfGuests < 1) errors.numberOfGuests = 'Number of guests is required';
 
   if (Object.keys(errors).length > 0) {
@@ -39,6 +41,7 @@ export async function submitReserveForm(
       date,
       time,
       numberOfGuests,
+      tableId,
       specialRequests: specialRequests?.trim() || undefined,
     });
     return { success: true, message: result.confirmationMessage || 'Your reservation has been received.' };

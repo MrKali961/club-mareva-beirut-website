@@ -218,6 +218,20 @@ export interface ApiReservationSettings {
   sectionTitle: string;
   sectionSubtitle: string;
   sectionDescription: string;
+  tables: { id: string; name: string; capacity: number; label: string | null }[];
+}
+
+// Table availability response for a specific date+time
+export interface ApiTableAvailability {
+  available: boolean;
+  tables: {
+    id: string;
+    name: string;
+    capacity: number;
+    label: string | null;
+    available: boolean;
+  }[];
+  message?: string;
 }
 
 // Availability response for a specific date
@@ -236,6 +250,7 @@ export interface ApiReservationResult {
   date: string;
   time: string;
   numberOfGuests: number;
+  tableId: string;
   status: string;
   confirmationMessage: string;
 }

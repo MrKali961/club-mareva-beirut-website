@@ -2,10 +2,10 @@
 
 import { useActionState, useState, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Calendar, Clock, Users, User, Mail, Phone, MessageSquare, Check, ChevronLeft, ChevronRight, Minus, Plus, Loader2 } from 'lucide-react';
+import { Calendar, Clock, Users, User, Mail, Phone, MessageSquare, Check, ChevronLeft, ChevronRight, Minus, Plus, Loader2, Armchair } from 'lucide-react';
 import Link from 'next/link';
 import { submitReserveForm } from './actions';
-import type { ApiReservationSettings, ApiAvailability } from '@/lib/api/types';
+import type { ApiReservationSettings, ApiAvailability, ApiTableAvailability } from '@/lib/api/types';
 
 interface Props {
   settings: ApiReservationSettings | null;
@@ -117,16 +117,62 @@ function ReservationForm({ settings }: { settings: ApiReservationSettings }) {
 
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [selectedTime, setSelectedTime] = useState<string>('');
+  const [selectedTableId, setSelectedTableId] = useState<string>('');
+  const [selectedTableCapacity, setSelectedTableCapacity] = useState<number>(0);
   const [guestCount, setGuestCount] = useState(2);
   const [availability, setAvailability] = useState<ApiAvailability | null>(null);
+  const [tableAvailability, setTableAvailability] = useState<ApiTableAvailability | null>(null);
   const [loadingAvailability, setLoadingAvailability] = useState(false);
+  const [loadingTables, setLoadingTables] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
+
+  // Fetch table availability when time is selected
+  const fetchTableAvailability = useCallback(async (date: string, time: string) => {
+    setLoadingTables(true);
+    setTableAvailability(null);
+    setSelectedTableId('');
+    setSelectedTableCapacity(0);
+    setGuestCount(2);
+
+    try {
+      const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL;
+      const res = await fetch(`${apiBase}/reservations/availability/tables?date=${date}&time=${time}`);
+      const json = await res.json();
+
+      if (json.success) {
+        setTableAvailability(json.data);
+      } else {
+        setTableAvailability({ available: false, tables: [], message: json.error?.message || 'Could not load tables.' });
+      }
+    } catch {
+      setTableAvailability({ available: false, tables: [], message: 'Could not load table availability.' });
+    } finally {
+      setLoadingTables(false);
+    }
+  }, []);
+
+  const handleTimeSelect = useCallback((time: string) => {
+    setSelectedTime(time);
+    if (selectedDate) {
+      fetchTableAvailability(selectedDate, time);
+    }
+  }, [selectedDate, fetchTableAvailability]);
+
+  const handleTableSelect = useCallback((tableId: string, capacity: number) => {
+    setSelectedTableId(tableId);
+    setSelectedTableCapacity(capacity);
+    // Reset guest count if it exceeds new table capacity
+    setGuestCount((prev) => Math.min(prev, capacity));
+  }, []);
 
   // Fetch availability when date changes
   const fetchAvailabilityForDate = useCallback(async (date: string) => {
     setLoadingAvailability(true);
     setAvailability(null);
     setSelectedTime('');
+    setSelectedTableId('');
+    setSelectedTableCapacity(0);
+    setTableAvailability(null);
 
     try {
       const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -248,6 +294,7 @@ function ReservationForm({ settings }: { settings: ApiReservationSettings }) {
             {/* Hidden fields for selected values */}
             <input type="hidden" name="date" value={selectedDate} />
             <input type="hidden" name="time" value={selectedTime} />
+            <input type="hidden" name="tableId" value={selectedTableId} />
             <input type="hidden" name="numberOfGuests" value={guestCount} />
 
             {/* Step 1: Date Selection */}
@@ -276,7 +323,7 @@ function ReservationForm({ settings }: { settings: ApiReservationSettings }) {
                     availability={availability}
                     loading={loadingAvailability}
                     selectedTime={selectedTime}
-                    onSelect={setSelectedTime}
+                    onSelect={handleTimeSelect}
                     allSlots={settings.timeSlots}
                   />
                   {state.errors?.time && <FieldError message={state.errors.time} />}
@@ -284,9 +331,30 @@ function ReservationForm({ settings }: { settings: ApiReservationSettings }) {
               )}
             </AnimatePresence>
 
-            {/* Step 3: Guest Count */}
+            {/* Step 3: Table Selection */}
             <AnimatePresence>
               {selectedTime && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.5, ease: EASE }}
+                >
+                  <SectionLabel icon={Armchair} label="Select Your Table" />
+                  <TableSelector
+                    availability={tableAvailability}
+                    loading={loadingTables}
+                    selectedTableId={selectedTableId}
+                    onSelect={handleTableSelect}
+                  />
+                  {state.errors?.tableId && <FieldError message={state.errors.tableId} />}
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Step 4: Guest Count */}
+            <AnimatePresence>
+              {selectedTableId && (
                 <motion.div
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
@@ -297,16 +365,16 @@ function ReservationForm({ settings }: { settings: ApiReservationSettings }) {
                   <GuestCounter
                     count={guestCount}
                     onChange={setGuestCount}
-                    max={settings.maxGuestsPerBooking}
+                    max={selectedTableCapacity || settings.maxGuestsPerBooking}
                   />
                   {state.errors?.numberOfGuests && <FieldError message={state.errors.numberOfGuests} />}
                 </motion.div>
               )}
             </AnimatePresence>
 
-            {/* Step 4: Personal Info */}
+            {/* Step 5: Personal Info */}
             <AnimatePresence>
-              {selectedTime && (
+              {selectedTableId && (
                 <motion.div
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
@@ -375,7 +443,7 @@ function ReservationForm({ settings }: { settings: ApiReservationSettings }) {
                   {/* Submit */}
                   <motion.button
                     type="submit"
-                    disabled={isPending || !selectedDate || !selectedTime}
+                    disabled={isPending || !selectedDate || !selectedTime || !selectedTableId}
                     whileHover={{ scale: 1.01 }}
                     whileTap={{ scale: 0.99 }}
                     className="group relative w-full bg-gold text-black py-4 font-playfair font-semibold tracking-[0.15em] uppercase text-sm disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden shadow-[0_0_20px_rgba(201,162,39,0.2)] transition-shadow duration-300 hover:shadow-[0_0_40px_rgba(201,162,39,0.35)]"
@@ -632,6 +700,112 @@ function formatTimeDisplay(time: string): string {
   const period = h >= 12 ? 'PM' : 'AM';
   const hour = h > 12 ? h - 12 : h === 0 ? 12 : h;
   return `${hour}:${String(m).padStart(2, '0')} ${period}`;
+}
+
+// ─── Table Selector ─────────────────────────────────────────────
+
+function TableSelector({
+  availability,
+  loading,
+  selectedTableId,
+  onSelect,
+}: {
+  availability: ApiTableAvailability | null;
+  loading: boolean;
+  selectedTableId: string;
+  onSelect: (tableId: string, capacity: number) => void;
+}) {
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-10 border border-gold/15 bg-black/30">
+        <Loader2 className="w-6 h-6 text-gold animate-spin" />
+        <span className="ml-3 font-playfair text-sm text-cream/50">Loading tables...</span>
+      </div>
+    );
+  }
+
+  if (availability && !availability.available) {
+    return (
+      <div className="py-8 text-center border border-gold/15 bg-black/30">
+        <p className="font-playfair text-cream/50 text-sm">
+          {availability.message || 'No tables available for this time.'}
+        </p>
+      </div>
+    );
+  }
+
+  if (!availability) {
+    return null;
+  }
+
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      {availability.tables.map((table, index) => {
+        const isSelected = selectedTableId === table.id;
+        const isAvailable = table.available;
+
+        return (
+          <motion.button
+            key={table.id}
+            type="button"
+            disabled={!isAvailable}
+            onClick={() => onSelect(table.id, table.capacity)}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: index * 0.05 }}
+            whileHover={isAvailable ? { scale: 1.02 } : undefined}
+            whileTap={isAvailable ? { scale: 0.98 } : undefined}
+            className={`
+              relative p-4 text-left transition-all duration-200 border
+              ${!isAvailable
+                ? 'border-cream/10 bg-black/20 cursor-not-allowed'
+                : isSelected
+                  ? 'border-gold bg-gold/10 shadow-[0_0_20px_rgba(201,162,39,0.15)]'
+                  : 'border-gold/25 hover:border-gold/60 hover:bg-gold/5'
+              }
+            `}
+          >
+            <div className="flex items-start justify-between gap-2">
+              <div>
+                <p className={`font-playfair text-sm tracking-wider ${
+                  !isAvailable ? 'text-cream/20' : isSelected ? 'text-gold font-semibold' : 'text-cream/90'
+                }`}>
+                  {table.name}
+                </p>
+                {table.label && (
+                  <p className={`font-playfair text-xs mt-0.5 ${
+                    !isAvailable ? 'text-cream/10' : 'text-gold/60'
+                  }`}>
+                    {table.label}
+                  </p>
+                )}
+              </div>
+              <div className={`flex items-center gap-1 ${
+                !isAvailable ? 'text-cream/15' : isSelected ? 'text-gold' : 'text-cream/50'
+              }`}>
+                <Users className="w-3.5 h-3.5" />
+                <span className="font-playfair text-xs">{table.capacity}</span>
+              </div>
+            </div>
+
+            {!isAvailable && (
+              <p className="font-playfair text-[10px] text-cream/20 mt-2 uppercase tracking-wider">Reserved</p>
+            )}
+
+            {isSelected && (
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                className="absolute top-2 right-2"
+              >
+                <Check className="w-4 h-4 text-gold" />
+              </motion.div>
+            )}
+          </motion.button>
+        );
+      })}
+    </div>
+  );
 }
 
 // ─── Guest Counter ───────────────────────────────────────────────

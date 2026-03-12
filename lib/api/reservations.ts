@@ -20,6 +20,7 @@ export async function submitReservation(data: {
   date: string;
   time: string;
   numberOfGuests: number;
+  tableId: string;
   specialRequests?: string;
 }): Promise<ApiReservationResult> {
   return apiPost<ApiReservationResult>('/reservations', data);
