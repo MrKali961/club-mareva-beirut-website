@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback, useMemo } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { motion, useScroll, AnimatePresence } from "framer-motion";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
@@ -69,34 +69,6 @@ export default function PostClient({ post, relatedPosts }: PostClientProps) {
     setLightboxOpen(true);
   };
 
-  // Split content into blocks and distribute images evenly between them
-  const contentSegments = useMemo(() => {
-    const blockRegex =
-      /<(?:p|h[1-6]|blockquote|ul|ol|div|table|figure|hr)[^>]*>[\s\S]*?<\/(?:p|h[1-6]|blockquote|ul|ol|div|table|figure|hr)>|<hr\s*\/?>/gi;
-    const blocks = post.content.match(blockRegex) || [post.content];
-    const totalBlocks = blocks.length;
-    const totalImages = post.images.length;
-
-    const segments: {
-      html: string;
-      images: { src: string; index: number }[];
-    }[] = [];
-    let imageIdx = 0;
-
-    for (let i = 0; i < totalBlocks; i++) {
-      const targetImages = Math.round(((i + 1) / totalBlocks) * totalImages);
-      const segmentImages: { src: string; index: number }[] = [];
-
-      while (imageIdx < targetImages) {
-        segmentImages.push({ src: post.images[imageIdx], index: imageIdx });
-        imageIdx++;
-      }
-
-      segments.push({ html: blocks[i], images: segmentImages });
-    }
-
-    return segments;
-  }, [post.content, post.images]);
 
   return (
     <main className="min-h-screen bg-black pt-24">
@@ -148,52 +120,17 @@ export default function PostClient({ post, relatedPosts }: PostClientProps) {
         </div>
       </section>
 
-      {/* Article Content with Interspersed Images */}
+      {/* Article Content */}
       <motion.article
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6, delay: 0.4 }}
         className="max-w-[800px] mx-auto px-6 py-20"
       >
-        {contentSegments.map((segment, segIdx) => (
-          <div key={segIdx}>
-            <div
-              className="prose-article"
-              dangerouslySetInnerHTML={{ __html: segment.html }}
-            />
-            {segment.images.length > 0 &&
-              segIdx > 0 &&
-              segIdx < contentSegments.length - 1 && (
-                <div
-                  className={`my-10 ${segment.images.length === 1 ? "" : "grid grid-cols-1 sm:grid-cols-2 gap-3"}`}
-                >
-                  {segment.images.map(({ src, index }) => (
-                    <motion.button
-                      key={index}
-                      initial={{ opacity: 0, y: 20 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true, margin: "-50px" }}
-                      transition={{ duration: 0.5 }}
-                      onClick={() => openLightbox(index)}
-                      className="relative w-full overflow-hidden group cursor-pointer block"
-                    >
-                      <div className="relative overflow-hidden">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={src}
-                          alt={`${post.title} - Image ${index + 1}`}
-                          className="w-full h-auto block transition-transform duration-700 group-hover:scale-105"
-                          loading="lazy"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400" />
-                        <div className="absolute inset-0 border border-gold/0 group-hover:border-gold/40 transition-all duration-400" />
-                      </div>
-                    </motion.button>
-                  ))}
-                </div>
-              )}
-          </div>
-        ))}
+        <div
+          className="prose-article"
+          dangerouslySetInnerHTML={{ __html: post.content }}
+        />
       </motion.article>
 
       {/* Image Gallery - Masonry Layout */}
