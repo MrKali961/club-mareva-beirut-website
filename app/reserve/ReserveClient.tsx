@@ -126,6 +126,11 @@ function ReservationForm({ settings }: { settings: ApiReservationSettings }) {
   const [loadingTables, setLoadingTables] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
 
+  // Derive closed days from operating hours (days not present = closed)
+  const closedDays = settings.operatingHours
+    ? [0, 1, 2, 3, 4, 5, 6].filter((d) => !(String(d) in settings.operatingHours!))
+    : settings.closedDays;
+
   // Fetch table availability when time is selected
   const fetchTableAvailability = useCallback(async (date: string, time: string) => {
     setLoadingTables(true);
@@ -303,7 +308,7 @@ function ReservationForm({ settings }: { settings: ApiReservationSettings }) {
               <DatePicker
                 selectedDate={selectedDate}
                 onSelect={handleDateSelect}
-                closedDays={settings.closedDays}
+                closedDays={closedDays}
                 advanceBookingDays={settings.advanceBookingDays}
               />
               {state.errors?.date && <FieldError message={state.errors.date} />}
@@ -324,7 +329,6 @@ function ReservationForm({ settings }: { settings: ApiReservationSettings }) {
                     loading={loadingAvailability}
                     selectedTime={selectedTime}
                     onSelect={handleTimeSelect}
-                    allSlots={settings.timeSlots}
                   />
                   {state.errors?.time && <FieldError message={state.errors.time} />}
                 </motion.div>
@@ -628,13 +632,11 @@ function TimeSlotGrid({
   loading,
   selectedTime,
   onSelect,
-  allSlots,
 }: {
   availability: ApiAvailability | null;
   loading: boolean;
   selectedTime: string;
   onSelect: (time: string) => void;
-  allSlots: string[];
 }) {
   if (loading) {
     return (
@@ -657,13 +659,13 @@ function TimeSlotGrid({
     return null;
   }
 
-  const slotMap = new Map(availability.timeSlots?.map((s) => [s.time, s]) || []);
+  const slots = availability.timeSlots || [];
 
   return (
     <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
-      {allSlots.map((slot, index) => {
-        const info = slotMap.get(slot);
-        const isAvailable = info?.available ?? false;
+      {slots.map((info, index) => {
+        const slot = info.time;
+        const isAvailable = info.available;
         const isSelected = selectedTime === slot;
 
         return (

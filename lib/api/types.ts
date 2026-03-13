@@ -225,6 +225,8 @@ export interface ApiReservationSettings {
   advanceBookingDays: number;
   timeSlots: string[];
   closedDays: number[];
+  operatingHours: Record<string, { open: string; close: string }> | null;
+  slotDurationMinutes: number;
   sectionTitle: string;
   sectionSubtitle: string;
   sectionDescription: string;
