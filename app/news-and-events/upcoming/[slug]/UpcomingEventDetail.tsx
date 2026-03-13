@@ -386,6 +386,74 @@ export default function UpcomingEventDetail({ event, otherEvents }: UpcomingEven
           border-radius: 0.5rem;
         }
 
+        /* Inline image alignment */
+        .prose-article img[data-align="left"] {
+          margin: 1.5rem auto 1.5rem 0;
+        }
+
+        .prose-article img[data-align="center"] {
+          margin: 1.5rem auto;
+        }
+
+        .prose-article img[data-align="right"] {
+          margin: 1.5rem 0 1.5rem auto;
+        }
+
+        /* Image grid layouts */
+        .prose-article [data-image-layout] {
+          display: grid;
+          gap: 0.5rem;
+          margin: 1.5rem 0;
+          border-radius: 0.5rem;
+          overflow: hidden;
+        }
+
+        .prose-article [data-image-layout] img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          margin: 0;
+          border-radius: 0;
+        }
+
+        .prose-article [data-image-layout="two-equal"] {
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .prose-article [data-image-layout="three-equal"] {
+          grid-template-columns: 1fr 1fr 1fr;
+        }
+
+        .prose-article [data-image-layout="left-large"] {
+          grid-template-columns: 2fr 1fr;
+        }
+
+        .prose-article [data-image-layout="right-large"] {
+          grid-template-columns: 1fr 2fr;
+        }
+
+        .prose-article [data-image-layout="four-grid"] {
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .prose-article [data-image-layout="top-hero"] {
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .prose-article [data-image-layout="top-hero"] img:first-child {
+          grid-column: 1 / -1;
+        }
+
+        /* Responsive: collapse grids on mobile */
+        @media (max-width: 640px) {
+          .prose-article [data-image-layout] {
+            grid-template-columns: 1fr !important;
+          }
+          .prose-article [data-image-layout="top-hero"] img:first-child {
+            grid-column: 1;
+          }
+        }
+
         .prose-article ul,
         .prose-article ol {
           margin: 1.5rem 0;
