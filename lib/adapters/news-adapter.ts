@@ -29,6 +29,11 @@ interface ApiNewsArticle {
       thumb: string;
     };
   }>;
+  galleryLayout?: Array<{
+    id: string;
+    type: string;
+    imageIds: string[];
+  }> | null;
   createdAt: string;
   updatedAt: string;
   metaTitle?: string | null;
@@ -140,5 +145,10 @@ export function apiNewsToPost(article: ApiNewsArticle): Post {
       metaKeywords: article.metaKeywords || null,
       metaImageAlt: article.metaImageAlt || null,
     },
+    galleryLayout: article.galleryLayout ?? null,
+    imageIdMap: (article.galleryImages ?? []).reduce((acc, gi) => {
+      acc[gi.id] = gi.imageUrls.original;
+      return acc;
+    }, {} as Record<string, string>),
   };
 }

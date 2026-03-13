@@ -39,6 +39,11 @@ export interface ApiNewsArticle {
       thumb: string;
     };
   }>;
+  galleryLayout?: Array<{
+    id: string;
+    type: string;
+    imageIds: string[];
+  }> | null;
   createdAt: string;
   updatedAt: string;
   metaTitle?: string | null;
@@ -82,6 +87,11 @@ export interface ApiEvent {
       thumb: string;
     };
   }>;
+  galleryLayout?: Array<{
+    id: string;
+    type: string;
+    imageIds: string[];
+  }> | null;
 }
 
 // Cigar Brand

@@ -157,6 +157,12 @@ export default async function PostPage({
             .map((gi) => resolveImagePath(gi.imageUrls.original))
         : extractImagesFromHtml(event.body || '');
 
+      // Build imageIdMap from gallery images (maps junction-table ID → URL)
+      const imageIdMap: Record<string, string> = {};
+      for (const gi of event.galleryImages ?? []) {
+        imageIdMap[gi.id] = resolveImagePath(gi.imageUrls.original);
+      }
+
       const postData = {
         title: event.title,
         slug: event.slug,
@@ -169,6 +175,8 @@ export default async function PostPage({
         featuredImage: resolveImagePath(event.image),
         content: event.body || "",
         images: galleryImages,
+        galleryLayout: event.galleryLayout ?? null,
+        imageIdMap,
       };
 
       return <PostClient post={postData} relatedPosts={relatedPosts} />;
@@ -265,6 +273,8 @@ export default async function PostPage({
     images: post.images
       .filter((img) => img.local_path || img.original_url)
       .map((img) => resolveImagePath(img.local_path || img.original_url)),
+    galleryLayout: post.galleryLayout ?? null,
+    imageIdMap: post.imageIdMap ?? {},
   };
 
   return <PostClient post={postData} relatedPosts={relatedPosts} />;

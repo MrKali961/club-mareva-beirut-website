@@ -7,6 +7,12 @@ import Link from "next/link";
 import Image from "next/image";
 import Masonry from "react-masonry-css";
 
+export interface GalleryLayoutRow {
+  id: string;
+  type: string;
+  imageIds: string[];
+}
+
 export interface PostData {
   title: string;
   slug: string;
@@ -15,6 +21,8 @@ export interface PostData {
   featuredImage: string;
   content: string;
   images: string[];
+  galleryLayout?: GalleryLayoutRow[] | null;
+  imageIdMap?: Record<string, string>;
 }
 
 export interface RelatedPostData {
@@ -29,6 +37,57 @@ export interface RelatedPostData {
 interface PostClientProps {
   post: PostData;
   relatedPosts: RelatedPostData[];
+}
+
+function GalleryImage({ src, index, title, onOpen }: { src: string; index: number; title: string; onOpen: (i: number) => void }) {
+  return (
+    <motion.button
+      initial={{ opacity: 0, scale: 0.95 }}
+      whileInView={{ opacity: 1, scale: 1 }}
+      viewport={{ once: true, margin: "-20px" }}
+      transition={{ duration: 0.4 }}
+      onClick={() => onOpen(index)}
+      className="relative w-full overflow-hidden group cursor-pointer block"
+    >
+      <div className="relative overflow-hidden">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={src}
+          alt={`${title} - Image ${index + 1}`}
+          className="w-full h-auto block transition-transform duration-700 group-hover:scale-110"
+          loading="lazy"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400" />
+        <div className="absolute inset-0 border-2 border-gold/0 group-hover:border-gold/80 transition-all duration-400" />
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-400">
+          <div className="w-14 h-14 rounded-full bg-gold flex items-center justify-center transform scale-50 group-hover:scale-100 transition-transform duration-400 shadow-lg">
+            <svg className="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+            </svg>
+          </div>
+        </div>
+        <div className="absolute bottom-3 right-3 px-2.5 py-1 bg-black/70 backdrop-blur-sm text-gold text-xs font-playfair font-medium rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          {index + 1}
+        </div>
+      </div>
+    </motion.button>
+  );
+}
+
+function getLayoutGridStyle(type: string): React.CSSProperties {
+  switch (type) {
+    case 'two-equal':
+      return { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' };
+    case 'three-equal':
+      return { display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px' };
+    case 'left-large':
+      return { display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '8px' };
+    case 'right-large':
+      return { display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '8px' };
+    case 'full':
+    default:
+      return { display: 'grid', gridTemplateColumns: '1fr', gap: '8px' };
+  }
 }
 
 export default function PostClient({ post, relatedPosts }: PostClientProps) {
@@ -68,6 +127,45 @@ export default function PostClient({ post, relatedPosts }: PostClientProps) {
     setCurrentImageIndex(index);
     setLightboxOpen(true);
   };
+
+  // Resolve layout rows: map imageIds → URLs, compute remaining images for masonry
+  const { layoutRows, remainingImages } = useMemo(() => {
+    const layout = post.galleryLayout;
+    const idMap = post.imageIdMap ?? {};
+
+    if (!layout || layout.length === 0) {
+      return { layoutRows: [], remainingImages: post.images };
+    }
+
+    const usedUrls = new Set<string>();
+    const rows = layout.map((row) => {
+      let images: { url: string; globalIndex: number }[];
+
+      if (row.type === 'top-hero') {
+        // top-hero: first image full-width, rest in equal columns below
+        images = row.imageIds
+          .map((id) => idMap[id])
+          .filter(Boolean)
+          .map((url) => {
+            usedUrls.add(url);
+            return { url, globalIndex: post.images.indexOf(url) };
+          });
+      } else {
+        images = row.imageIds
+          .map((id) => idMap[id])
+          .filter(Boolean)
+          .map((url) => {
+            usedUrls.add(url);
+            return { url, globalIndex: post.images.indexOf(url) };
+          });
+      }
+
+      return { ...row, resolvedImages: images };
+    }).filter((row) => row.resolvedImages.length > 0);
+
+    const remaining = post.images.filter((url) => !usedUrls.has(url));
+    return { layoutRows: rows, remainingImages: remaining };
+  }, [post.galleryLayout, post.imageIdMap, post.images]);
 
   // Check if the user manually placed images in the body HTML
   const hasInlineImages = useMemo(
@@ -213,7 +311,7 @@ export default function PostClient({ post, relatedPosts }: PostClientProps) {
         )}
       </motion.article>
 
-      {/* Image Gallery - Masonry Layout */}
+      {/* Image Gallery */}
       {post.images.length > 0 && (
         <section className="max-w-[1400px] mx-auto px-6 py-20">
           <motion.div
@@ -229,61 +327,81 @@ export default function PostClient({ post, relatedPosts }: PostClientProps) {
             <div className="w-24 h-[2px] bg-gold mx-auto" />
           </motion.div>
 
-          <Masonry
-            breakpointCols={{
-              default: 3,
-              1280: 3,
-              1024: 2,
-              768: 2,
-              480: 1,
-            }}
-            className="masonry-grid"
-            columnClassName="masonry-grid-column"
-          >
-            {post.images.map((image, index) => (
-              <motion.button
-                key={index}
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true, margin: "-20px" }}
-                transition={{ duration: 0.4, delay: (index % 3) * 0.05 }}
-                onClick={() => openLightbox(index)}
-                className="relative w-full overflow-hidden group cursor-pointer block"
-              >
-                <div className="relative overflow-hidden">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={image}
-                    alt={`Gallery image ${index + 1}`}
-                    className="w-full h-auto block transition-transform duration-700 group-hover:scale-110"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400" />
-                  <div className="absolute inset-0 border-2 border-gold/0 group-hover:border-gold/80 transition-all duration-400" />
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-400">
-                    <div className="w-14 h-14 rounded-full bg-gold flex items-center justify-center transform scale-50 group-hover:scale-100 transition-transform duration-400 shadow-lg">
-                      <svg
-                        className="w-6 h-6 text-black"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"
-                        />
-                      </svg>
+          {/* Layout Rows (if configured) */}
+          {layoutRows.length > 0 && (
+            <div className="space-y-2 mb-8">
+              {layoutRows.map((row) => {
+                if (row.type === 'top-hero' && row.resolvedImages.length > 0) {
+                  const [hero, ...rest] = row.resolvedImages;
+                  return (
+                    <div key={row.id}>
+                      <GalleryImage
+                        src={hero.url}
+                        index={hero.globalIndex}
+                        title={post.title}
+                        onOpen={openLightbox}
+                      />
+                      {rest.length > 0 && (
+                        <div style={{ display: 'grid', gridTemplateColumns: `repeat(${rest.length}, 1fr)`, gap: '8px', marginTop: '8px' }}>
+                          {rest.map((img) => (
+                            <GalleryImage
+                              key={img.url}
+                              src={img.url}
+                              index={img.globalIndex}
+                              title={post.title}
+                              onOpen={openLightbox}
+                            />
+                          ))}
+                        </div>
+                      )}
                     </div>
+                  );
+                }
+
+                return (
+                  <div key={row.id} style={getLayoutGridStyle(row.type)}>
+                    {row.resolvedImages.map((img) => (
+                      <GalleryImage
+                        key={img.url}
+                        src={img.url}
+                        index={img.globalIndex}
+                        title={post.title}
+                        onOpen={openLightbox}
+                      />
+                    ))}
                   </div>
-                  <div className="absolute bottom-3 right-3 px-2.5 py-1 bg-black/70 backdrop-blur-sm text-gold text-xs font-playfair font-medium rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    {index + 1}
-                  </div>
-                </div>
-              </motion.button>
-            ))}
-          </Masonry>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Remaining images in masonry */}
+          {remainingImages.length > 0 && (
+            <Masonry
+              breakpointCols={{
+                default: 3,
+                1280: 3,
+                1024: 2,
+                768: 2,
+                480: 1,
+              }}
+              className="masonry-grid"
+              columnClassName="masonry-grid-column"
+            >
+              {remainingImages.map((image) => {
+                const globalIndex = post.images.indexOf(image);
+                return (
+                  <GalleryImage
+                    key={globalIndex}
+                    src={image}
+                    index={globalIndex}
+                    title={post.title}
+                    onOpen={openLightbox}
+                  />
+                );
+              })}
+            </Masonry>
+          )}
         </section>
       )}
 

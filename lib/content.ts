@@ -50,6 +50,12 @@ export interface PostImage {
   alt_text?: string;
 }
 
+export interface GalleryLayoutRow {
+  id: string;
+  type: string;
+  imageIds: string[];
+}
+
 export interface Post {
   id: number;
   title: string;
@@ -76,6 +82,8 @@ export interface Post {
     metaKeywords: string | null;
     metaImageAlt: string | null;
   };
+  galleryLayout?: GalleryLayoutRow[] | null;
+  imageIdMap?: Record<string, string>;
 }
 
 export interface Page {

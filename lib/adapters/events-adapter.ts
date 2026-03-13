@@ -23,6 +23,11 @@ interface ApiEvent {
     medium: string | null;
     thumb: string | null;
   };
+  galleryLayout?: Array<{
+    id: string;
+    type: string;
+    imageIds: string[];
+  }> | null;
   galleryImages?: Array<{
     id: string;
     mediaAssetId: string;
@@ -60,6 +65,11 @@ export interface UpcomingEventWithSlug {
       thumb: string;
     };
   }>;
+  galleryLayout?: Array<{
+    id: string;
+    type: string;
+    imageIds: string[];
+  }> | null;
   metaTitle?: string | null;
   metaDescription?: string | null;
   metaKeywords?: string | null;
@@ -83,6 +93,7 @@ export function apiEventToUpcomingEvent(event: ApiEvent): UpcomingEventWithSlug 
     maxVisitors: event.maxVisitors,
     body: normalizeWordPressHtml(event.body ?? ''),
     galleryImages: event.galleryImages,
+    galleryLayout: event.galleryLayout ?? null,
     metaTitle: event.metaTitle || null,
     metaDescription: event.metaDescription || null,
     metaKeywords: event.metaKeywords || null,
