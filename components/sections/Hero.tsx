@@ -9,19 +9,18 @@
  * - Smooth scroll-based fade out
  */
 
-'use client';
+"use client";
 
-import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
-import { useRef } from 'react';
-import VideoBackground from '@/components/ui/VideoBackground';
-import ScrollIndicator from '@/components/ui/ScrollIndicator';
-
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { useRef } from "react";
+import VideoBackground from "@/components/ui/VideoBackground";
+import ScrollIndicator from "@/components/ui/ScrollIndicator";
 
 export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ['start start', 'end start'],
+    offset: ["start start", "end start"],
   });
 
   // Smooth spring-based opacity for scroll fade
@@ -33,7 +32,7 @@ export default function Hero() {
   });
 
   // Parallax effect for background
-  const backgroundY = useTransform(scrollYProgress, [0, 1], ['0%', '20%']);
+  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
 
   return (
     <section
@@ -57,7 +56,7 @@ export default function Hero() {
             background: `
               linear-gradient(180deg, rgba(3,3,3,0.9) 0%, rgba(3,3,3,0.4) 40%, rgba(3,3,3,0.3) 60%, rgba(3,3,3,0.8) 100%),
               radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.4) 100%)
-            `
+            `,
           }}
         />
       </motion.div>
@@ -81,7 +80,6 @@ export default function Hero() {
 
         {/* Content Column */}
         <div className="w-full max-w-3xl text-center">
-
           {/* Eyebrow Text */}
           <motion.p
             initial={{ opacity: 0, y: 10 }}
@@ -119,7 +117,9 @@ export default function Hero() {
             transition={{ duration: 0.8, delay: 1.4, ease: [0.22, 1, 0.36, 1] }}
             className="font-playfair text-sm font-light leading-relaxed text-cream/80 md:text-base lg:text-lg max-w-2xl mx-auto"
           >
-            Club Mareva Beirut transcends the conventional notion of a cigar club. It is a sanctuary that ignites the senses and elicits an unparalleled level of stimulation.
+            Club Mareva Beirut transcends the conventional notion of a cigar
+            club. It is a sanctuary that ignites the senses and elicits an
+            unparalleled level of stimulation.
           </motion.p>
 
           {/* CTA Buttons */}
@@ -130,7 +130,7 @@ export default function Hero() {
             className="flex flex-col sm:flex-row gap-4 justify-center mt-10"
           >
             <motion.a
-              href="/contact"
+              href="/reserve"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className="group relative px-8 py-4 bg-gold text-black font-playfair font-medium tracking-wider uppercase text-sm overflow-hidden transition-all duration-300 hover:shadow-[0_0_40px_rgba(201,162,39,0.4)]"
@@ -139,14 +139,17 @@ export default function Hero() {
               <motion.span
                 className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent"
                 whileHover={{
-                  x: '200%',
-                  transition: { duration: 0.6, ease: 'easeInOut' },
+                  x: "200%",
+                  transition: { duration: 0.6, ease: "easeInOut" },
                 }}
               />
             </motion.a>
             <motion.a
               href="#experience"
-              whileHover={{ scale: 1.02, backgroundColor: 'rgba(201, 162, 39, 0.1)' }}
+              whileHover={{
+                scale: 1.02,
+                backgroundColor: "rgba(201, 162, 39, 0.1)",
+              }}
               whileTap={{ scale: 0.98 }}
               className="px-8 py-4 bg-transparent border border-gold/50 text-gold font-playfair font-medium tracking-wider uppercase text-sm transition-all duration-300 hover:border-gold"
             >
