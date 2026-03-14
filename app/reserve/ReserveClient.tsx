@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState, useCallback, useRef } from "react";
+import { useActionState, useState, useCallback, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Calendar,
@@ -155,6 +155,11 @@ function ReservationForm({ settings }: { settings: ApiReservationSettings }) {
   const [loadingAvailability, setLoadingAvailability] = useState(false);
   const [loadingTables, setLoadingTables] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
+  const timeSectionRef = useRef<HTMLDivElement>(null);
+  const durationSectionRef = useRef<HTMLDivElement>(null);
+  const tableSectionRef = useRef<HTMLDivElement>(null);
+  const guestSectionRef = useRef<HTMLDivElement>(null);
+  const detailsSectionRef = useRef<HTMLDivElement>(null);
 
   // Derive closed days from operating hours (days not present = closed)
   const closedDays = settings.operatingHours
@@ -273,6 +278,34 @@ function ReservationForm({ settings }: { settings: ApiReservationSettings }) {
     },
     [fetchAvailabilityForDate],
   );
+
+  // Auto-scroll to next section on mobile after selection
+  const scrollToSection = useCallback(
+    (ref: React.RefObject<HTMLDivElement | null>) => {
+      if (typeof window === "undefined" || window.innerWidth > 768) return;
+      setTimeout(() => {
+        ref.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 400);
+    },
+    [],
+  );
+
+  useEffect(() => {
+    if (selectedDate) scrollToSection(timeSectionRef);
+  }, [selectedDate, scrollToSection]);
+
+  useEffect(() => {
+    if (selectedTime) scrollToSection(durationSectionRef);
+  }, [selectedTime, scrollToSection]);
+
+  useEffect(() => {
+    if (tableAvailability && !loadingTables)
+      scrollToSection(tableSectionRef);
+  }, [tableAvailability, loadingTables, scrollToSection]);
+
+  useEffect(() => {
+    if (selectedTableId) scrollToSection(guestSectionRef);
+  }, [selectedTableId, scrollToSection]);
 
   // Success state
   if (state.success) {
@@ -406,10 +439,12 @@ function ReservationForm({ settings }: { settings: ApiReservationSettings }) {
             <AnimatePresence>
               {selectedDate && (
                 <motion.div
+                  ref={timeSectionRef}
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
                   transition={{ duration: 0.5, ease: EASE }}
+                  className="scroll-mt-24"
                 >
                   <SectionLabel icon={Clock} label="Select Time" />
                   <TimeSlotGrid
@@ -429,10 +464,12 @@ function ReservationForm({ settings }: { settings: ApiReservationSettings }) {
             <AnimatePresence>
               {selectedTime && (
                 <motion.div
+                  ref={durationSectionRef}
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
                   transition={{ duration: 0.5, ease: EASE }}
+                  className="scroll-mt-24"
                 >
                   <SectionLabel icon={Timer} label="Select Duration" />
                   <DurationSelector
@@ -452,10 +489,12 @@ function ReservationForm({ settings }: { settings: ApiReservationSettings }) {
             <AnimatePresence>
               {selectedTime && (
                 <motion.div
+                  ref={tableSectionRef}
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
                   transition={{ duration: 0.5, ease: EASE }}
+                  className="scroll-mt-24"
                 >
                   <SectionLabel icon={Armchair} label="Select Your Table" />
                   <TableSelector
@@ -475,10 +514,12 @@ function ReservationForm({ settings }: { settings: ApiReservationSettings }) {
             <AnimatePresence>
               {selectedTableId && (
                 <motion.div
+                  ref={guestSectionRef}
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
                   transition={{ duration: 0.5, ease: EASE }}
+                  className="scroll-mt-24"
                 >
                   <SectionLabel icon={Users} label="Number of Guests" />
                   <GuestCounter
@@ -497,11 +538,12 @@ function ReservationForm({ settings }: { settings: ApiReservationSettings }) {
             <AnimatePresence>
               {selectedTableId && (
                 <motion.div
+                  ref={detailsSectionRef}
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
                   transition={{ duration: 0.5, ease: EASE }}
-                  className="space-y-5"
+                  className="space-y-5 scroll-mt-24"
                 >
                   {/* Gold divider */}
                   <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-gold/20 to-transparent" />
