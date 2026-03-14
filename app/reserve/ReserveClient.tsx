@@ -2,7 +2,7 @@
 
 import { useActionState, useState, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Calendar, Clock, Users, User, Mail, Phone, MessageSquare, Check, ChevronLeft, ChevronRight, Minus, Plus, Loader2, Armchair } from 'lucide-react';
+import { Calendar, Clock, Timer, Users, User, Mail, Phone, MessageSquare, Check, ChevronLeft, ChevronRight, Minus, Plus, Loader2, Armchair } from 'lucide-react';
 import Link from 'next/link';
 import { submitReserveForm } from './actions';
 import type { ApiReservationSettings, ApiAvailability, ApiTableAvailability } from '@/lib/api/types';
@@ -120,6 +120,7 @@ function ReservationForm({ settings }: { settings: ApiReservationSettings }) {
   const [selectedTableId, setSelectedTableId] = useState<string>('');
   const [selectedTableCapacity, setSelectedTableCapacity] = useState<number>(0);
   const [guestCount, setGuestCount] = useState(2);
+  const [durationMinutes, setDurationMinutes] = useState(settings.slotDurationMinutes);
   const [availability, setAvailability] = useState<ApiAvailability | null>(null);
   const [tableAvailability, setTableAvailability] = useState<ApiTableAvailability | null>(null);
   const [loadingAvailability, setLoadingAvailability] = useState(false);
@@ -132,7 +133,7 @@ function ReservationForm({ settings }: { settings: ApiReservationSettings }) {
     : settings.closedDays;
 
   // Fetch table availability when time is selected
-  const fetchTableAvailability = useCallback(async (date: string, time: string) => {
+  const fetchTableAvailability = useCallback(async (date: string, time: string, duration: number) => {
     setLoadingTables(true);
     setTableAvailability(null);
     setSelectedTableId('');
@@ -141,7 +142,7 @@ function ReservationForm({ settings }: { settings: ApiReservationSettings }) {
 
     try {
       const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL;
-      const res = await fetch(`${apiBase}/reservations/availability/tables?date=${date}&time=${time}`);
+      const res = await fetch(`${apiBase}/reservations/availability/tables?date=${date}&time=${time}&durationMinutes=${duration}`);
       const json = await res.json();
 
       if (json.success) {
@@ -158,10 +159,20 @@ function ReservationForm({ settings }: { settings: ApiReservationSettings }) {
 
   const handleTimeSelect = useCallback((time: string) => {
     setSelectedTime(time);
-    if (selectedDate) {
-      fetchTableAvailability(selectedDate, time);
+    setDurationMinutes(settings.slotDurationMinutes);
+    // Reset downstream selections
+    setSelectedTableId('');
+    setSelectedTableCapacity(0);
+    setTableAvailability(null);
+    setGuestCount(2);
+  }, [settings.slotDurationMinutes]);
+
+  const handleDurationSelect = useCallback((duration: number) => {
+    setDurationMinutes(duration);
+    if (selectedDate && selectedTime) {
+      fetchTableAvailability(selectedDate, selectedTime, duration);
     }
-  }, [selectedDate, fetchTableAvailability]);
+  }, [selectedDate, selectedTime, fetchTableAvailability]);
 
   const handleTableSelect = useCallback((tableId: string, capacity: number) => {
     setSelectedTableId(tableId);
@@ -175,6 +186,7 @@ function ReservationForm({ settings }: { settings: ApiReservationSettings }) {
     setLoadingAvailability(true);
     setAvailability(null);
     setSelectedTime('');
+    setDurationMinutes(settings.slotDurationMinutes);
     setSelectedTableId('');
     setSelectedTableCapacity(0);
     setTableAvailability(null);
@@ -301,6 +313,7 @@ function ReservationForm({ settings }: { settings: ApiReservationSettings }) {
             <input type="hidden" name="time" value={selectedTime} />
             <input type="hidden" name="tableId" value={selectedTableId} />
             <input type="hidden" name="numberOfGuests" value={guestCount} />
+            <input type="hidden" name="durationMinutes" value={durationMinutes} />
 
             {/* Step 1: Date Selection */}
             <motion.div custom={0} variants={fadeUp} initial="hidden" animate="visible">
@@ -331,6 +344,29 @@ function ReservationForm({ settings }: { settings: ApiReservationSettings }) {
                     onSelect={handleTimeSelect}
                   />
                   {state.errors?.time && <FieldError message={state.errors.time} />}
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Step 2.5: Duration Selection */}
+            <AnimatePresence>
+              {selectedTime && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.5, ease: EASE }}
+                >
+                  <SectionLabel icon={Timer} label="Select Duration" />
+                  <DurationSelector
+                    selectedDuration={durationMinutes}
+                    onSelect={handleDurationSelect}
+                    minDuration={settings.slotDurationMinutes}
+                    maxDuration={settings.maxDurationMinutes}
+                    selectedTime={selectedTime}
+                    operatingHours={settings.operatingHours}
+                    selectedDate={selectedDate}
+                  />
                 </motion.div>
               )}
             </AnimatePresence>
@@ -702,6 +738,108 @@ function formatTimeDisplay(time: string): string {
   const period = h >= 12 ? 'PM' : 'AM';
   const hour = h > 12 ? h - 12 : h === 0 ? 12 : h;
   return `${hour}:${String(m).padStart(2, '0')} ${period}`;
+}
+
+// ─── Duration Selector ──────────────────────────────────────────
+
+function DurationSelector({
+  selectedDuration,
+  onSelect,
+  minDuration,
+  maxDuration,
+  selectedTime,
+  operatingHours,
+  selectedDate,
+}: {
+  selectedDuration: number;
+  onSelect: (duration: number) => void;
+  minDuration: number;
+  maxDuration: number;
+  selectedTime: string;
+  operatingHours: Record<string, { open: string; close: string }> | null;
+  selectedDate: string;
+}) {
+  // Calculate max available duration based on closing time
+  let maxAvailable = maxDuration;
+
+  if (operatingHours && selectedDate) {
+    const date = new Date(selectedDate + 'T00:00:00');
+    const dayOfWeek = date.getDay();
+    const dayKey = String(dayOfWeek);
+    const dayHours = operatingHours[dayKey];
+
+    if (dayHours) {
+      const [closeH, closeM] = dayHours.close.split(':').map(Number);
+      const closeMinutes = closeH * 60 + closeM;
+      const [startH, startM] = selectedTime.split(':').map(Number);
+      const startMinutes = startH * 60 + startM;
+      const timeUntilClose = closeMinutes - startMinutes;
+
+      if (timeUntilClose > 0) {
+        maxAvailable = Math.min(maxDuration, timeUntilClose);
+      }
+    }
+  }
+
+  // Generate duration options in 30-minute increments
+  const options: number[] = [];
+  for (let d = minDuration; d <= maxAvailable; d += 30) {
+    options.push(d);
+  }
+
+  // If only the default duration is available, auto-select and fetch tables
+  if (options.length <= 1) {
+    // Just show a note and auto-trigger
+    if (selectedDuration === minDuration) {
+      // Auto-select on mount
+      setTimeout(() => onSelect(minDuration), 0);
+    }
+    return (
+      <div className="py-4 text-center border border-gold/15 bg-black/30">
+        <p className="font-playfair text-cream/60 text-sm">
+          {formatDurationDisplay(minDuration)} reservation
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
+      {options.map((duration, index) => {
+        const isSelected = selectedDuration === duration;
+
+        return (
+          <motion.button
+            key={duration}
+            type="button"
+            onClick={() => onSelect(duration)}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3, delay: index * 0.03 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className={`
+              relative py-3 px-2 font-playfair text-sm tracking-wider text-center transition-all duration-200 border
+              ${isSelected
+                ? 'border-gold bg-gold text-black font-semibold shadow-[0_0_15px_rgba(201,162,39,0.25)]'
+                : 'border-gold/30 text-cream/80 hover:border-gold hover:text-gold hover:bg-gold/5'
+              }
+            `}
+          >
+            {formatDurationDisplay(duration)}
+          </motion.button>
+        );
+      })}
+    </div>
+  );
+}
+
+function formatDurationDisplay(minutes: number): string {
+  const hours = Math.floor(minutes / 60);
+  const mins = minutes % 60;
+  if (hours === 0) return `${mins}m`;
+  if (mins === 0) return `${hours}h`;
+  return `${hours}h ${mins}m`;
 }
 
 // ─── Table Selector ─────────────────────────────────────────────

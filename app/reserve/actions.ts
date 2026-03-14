@@ -20,6 +20,7 @@ export async function submitReserveForm(
   const numberOfGuests = Number(formData.get('numberOfGuests'));
   const specialRequests = formData.get('specialRequests') as string;
   const tableId = formData.get('tableId') as string;
+  const durationMinutes = Number(formData.get('durationMinutes')) || undefined;
 
   const errors: Record<string, string> = {};
   if (!name || name.trim().length < 2) errors.name = 'Name is required (min 2 characters)';
@@ -40,6 +41,7 @@ export async function submitReserveForm(
       phone: phone?.trim() || undefined,
       date,
       time,
+      durationMinutes,
       numberOfGuests,
       tableId,
       specialRequests: specialRequests?.trim() || undefined,

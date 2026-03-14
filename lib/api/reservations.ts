@@ -19,6 +19,7 @@ export async function submitReservation(data: {
   phone?: string;
   date: string;
   time: string;
+  durationMinutes?: number;
   numberOfGuests: number;
   tableId: string;
   specialRequests?: string;

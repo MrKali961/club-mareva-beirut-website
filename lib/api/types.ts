@@ -227,6 +227,7 @@ export interface ApiReservationSettings {
   closedDays: number[];
   operatingHours: Record<string, { open: string; close: string }> | null;
   slotDurationMinutes: number;
+  maxDurationMinutes: number;
   sectionTitle: string;
   sectionSubtitle: string;
   sectionDescription: string;
@@ -261,6 +262,7 @@ export interface ApiReservationResult {
   email: string;
   date: string;
   time: string;
+  durationMinutes: number;
   numberOfGuests: number;
   tableId: string;
   status: string;
