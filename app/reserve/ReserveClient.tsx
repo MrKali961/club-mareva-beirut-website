@@ -307,6 +307,13 @@ function ReservationForm({ settings }: { settings: ApiReservationSettings }) {
     if (selectedTableId) scrollToSection(guestSectionRef);
   }, [selectedTableId, scrollToSection]);
 
+  // Scroll to top on success
+  useEffect(() => {
+    if (state.success) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [state.success]);
+
   // Success state
   if (state.success) {
     return (
