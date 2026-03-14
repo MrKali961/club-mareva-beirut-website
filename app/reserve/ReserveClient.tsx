@@ -953,13 +953,15 @@ function DurationSelector({
     options.push(d);
   }
 
-  // If only the default duration is available, auto-select and fetch tables
-  if (options.length <= 1) {
-    // Just show a note and auto-trigger
-    if (selectedDuration === minDuration) {
-      // Auto-select on mount
-      setTimeout(() => onSelect(minDuration), 0);
+  // Auto-select when only one duration option available
+  const singleOption = options.length <= 1;
+  useEffect(() => {
+    if (singleOption) {
+      onSelect(minDuration);
     }
+  }, [singleOption, minDuration, onSelect]);
+
+  if (singleOption) {
     return (
       <div className="py-4 text-center border border-gold/15 bg-black/30">
         <p className="font-playfair text-cream/60 text-sm">
