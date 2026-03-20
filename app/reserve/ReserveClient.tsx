@@ -901,9 +901,7 @@ function TimeSlotGrid({
 
 function formatTimeDisplay(time: string): string {
   const [h, m] = time.split(":").map(Number);
-  const period = h >= 12 ? "PM" : "AM";
-  const hour = h > 12 ? h - 12 : h === 0 ? 12 : h;
-  return `${hour}:${String(m).padStart(2, "0")} ${period}`;
+  return `${h}H${String(m).padStart(2, "0")}`;
 }
 
 // ─── Duration Selector ──────────────────────────────────────────
@@ -1006,9 +1004,9 @@ function DurationSelector({
 function formatDurationDisplay(minutes: number): string {
   const hours = Math.floor(minutes / 60);
   const mins = minutes % 60;
-  if (hours === 0) return `${mins}m`;
-  if (mins === 0) return `${hours}h`;
-  return `${hours}h ${mins}m`;
+  if (hours === 0) return `${mins}M`;
+  if (mins === 0) return `${hours}H`;
+  return `${hours}H ${mins}M`;
 }
 
 // ─── Table Selector ─────────────────────────────────────────────
