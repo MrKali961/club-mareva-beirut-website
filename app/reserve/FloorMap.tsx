@@ -11,6 +11,9 @@ interface TableData {
   name: string;
   capacity: number;
   label: string | null;
+  positionX: number | null;
+  positionY: number | null;
+  tableShape: string;
   available: boolean;
 }
 
@@ -21,11 +24,8 @@ interface FloorMapProps {
 }
 
 // ─── Table Position Config ───────────────────────────────────────
-// Tables are mapped to these fixed positions by their array index.
-// The API returns tables ordered by `displayOrder` (ascending),
-// so index 0 = lowest displayOrder = position 0 on the map, etc.
-// If the admin reorders tables in the dashboard, the visual
-// positions on the map shift accordingly.
+// Tables use server-stored positions (positionX/positionY) when available.
+// Falls back to default positions by array index for tables without positions.
 
 interface TablePosition {
   x: number;
@@ -36,13 +36,22 @@ interface TablePosition {
   radius?: number;
 }
 
-const TABLE_POSITIONS: TablePosition[] = [
-  { x: 130, y: 290, type: "round", radius: 28 },
-  { x: 330, y: 230, type: "rect", width: 72, height: 42 },
-  { x: 480, y: 155, type: "rect", width: 72, height: 42 },
-  { x: 620, y: 350, type: "rect", width: 72, height: 42 },
-  { x: 340, y: 390, type: "rect", width: 72, height: 42 },
+const DEFAULT_POSITIONS: { x: number; y: number }[] = [
+  { x: 130, y: 290 },
+  { x: 330, y: 230 },
+  { x: 480, y: 155 },
+  { x: 620, y: 350 },
+  { x: 340, y: 390 },
 ];
+
+function getTablePosition(table: TableData, index: number): TablePosition {
+  const x = table.positionX ?? DEFAULT_POSITIONS[index]?.x ?? 400;
+  const y = table.positionY ?? DEFAULT_POSITIONS[index]?.y ?? 260;
+  const shape = table.tableShape === "round" ? "round" : "rect";
+  return shape === "round"
+    ? { x, y, type: "round", radius: 28 }
+    : { x, y, type: "rect", width: 72, height: 42 };
+}
 
 const CHAIR_RADIUS = 8;
 const CHAIR_GAP = 6;
@@ -586,95 +595,6 @@ function getChairPositions(
   ];
 }
 
-// ─── Card Fallback (mobile) ─────────────────────────────────────
-
-function TableCard({
-  table,
-  isSelected,
-  onSelect,
-}: {
-  table: TableData;
-  isSelected: boolean;
-  onSelect: (tableId: string, capacity: number) => void;
-}) {
-  const isAvailable = table.available;
-
-  return (
-    <motion.button
-      type="button"
-      disabled={!isAvailable}
-      onClick={() => onSelect(table.id, table.capacity)}
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      whileHover={isAvailable ? { scale: 1.02 } : undefined}
-      whileTap={isAvailable ? { scale: 0.98 } : undefined}
-      className={`
-        relative p-4 text-left transition-all duration-200 border
-        ${
-          !isAvailable
-            ? "border-cream/10 bg-black/20 cursor-not-allowed"
-            : isSelected
-              ? "border-gold bg-gold/10 shadow-[0_0_20px_rgba(201,162,39,0.15)]"
-              : "border-gold/25 hover:border-gold/60 hover:bg-gold/5"
-        }
-      `}
-    >
-      <div className="flex items-start justify-between gap-2">
-        <div>
-          <p
-            className={`font-playfair text-sm tracking-wider ${
-              !isAvailable
-                ? "text-cream/20"
-                : isSelected
-                  ? "text-gold font-semibold"
-                  : "text-cream/90"
-            }`}
-          >
-            {table.name}
-          </p>
-          {table.label && (
-            <p
-              className={`font-playfair text-xs mt-0.5 ${
-                !isAvailable ? "text-cream/10" : "text-gold/60"
-              }`}
-            >
-              {table.label}
-            </p>
-          )}
-        </div>
-        <div
-          className={`flex items-center gap-1 ${
-            !isAvailable
-              ? "text-cream/15"
-              : isSelected
-                ? "text-gold"
-                : "text-cream/50"
-          }`}
-        >
-          <Users className="w-3.5 h-3.5" />
-          <span className="font-playfair text-xs">{table.capacity}</span>
-        </div>
-      </div>
-
-      {!isAvailable && (
-        <p className="font-playfair text-[10px] text-cream/20 mt-2 uppercase tracking-wider">
-          Reserved
-        </p>
-      )}
-
-      {isSelected && (
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          className="absolute top-2 right-2"
-        >
-          <Check className="w-4 h-4 text-gold" />
-        </motion.div>
-      )}
-    </motion.button>
-  );
-}
-
 // ─── Main Floor Map Component ───────────────────────────────────
 
 export default function FloorMap({
@@ -682,9 +602,6 @@ export default function FloorMap({
   selectedTableId,
   onSelect,
 }: FloorMapProps) {
-  const mappedTables = tables.slice(0, TABLE_POSITIONS.length);
-  const overflowTables = tables.slice(TABLE_POSITIONS.length);
-
   const selectedTable = useMemo(
     () => tables.find((t) => t.id === selectedTableId) ?? null,
     [tables, selectedTableId],
@@ -692,83 +609,50 @@ export default function FloorMap({
 
   return (
     <div className="space-y-4">
-      {/* Desktop: SVG Floor Map (hidden on small screens) */}
-      <div className="hidden sm:block">
-        <div className="relative border border-gold/20 bg-black/60 overflow-hidden">
-          {/* Legend */}
-          <div className="flex items-center justify-center gap-6 py-2.5 px-4 border-b border-gold/10 bg-black/40">
-            <div className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-full border border-gold/50 bg-gold/10" />
-              <span className="font-playfair text-[10px] text-cream/50 tracking-wider uppercase">
-                Available
-              </span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-full border-2 border-gold bg-gold/25 shadow-[0_0_6px_rgba(201,162,39,0.4)]" />
-              <span className="font-playfair text-[10px] text-cream/50 tracking-wider uppercase">
-                Selected
-              </span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-full border border-cream/15 bg-cream/5" />
-              <span className="font-playfair text-[10px] text-cream/50 tracking-wider uppercase">
-                Reserved
-              </span>
-            </div>
+      {/* SVG Floor Map - visible on all screen sizes */}
+      <div className="relative border border-gold/20 bg-black/60 overflow-hidden">
+        {/* Legend */}
+        <div className="flex items-center justify-center gap-4 sm:gap-6 py-2.5 px-3 sm:px-4 border-b border-gold/10 bg-black/40">
+          <div className="flex items-center gap-1.5">
+            <span className="w-2.5 sm:w-3 h-2.5 sm:h-3 rounded-full border border-gold/50 bg-gold/10" />
+            <span className="font-playfair text-[9px] sm:text-[10px] text-cream/50 tracking-wider uppercase">
+              Available
+            </span>
           </div>
-
-          {/* SVG Map */}
-          <svg
-            viewBox="0 0 800 520"
-            className="w-full h-auto"
-            style={{ minHeight: "280px", maxHeight: "450px" }}
-            role="group"
-            aria-label="Restaurant floor plan - select your table"
-          >
-            <FloorBackground />
-            <Furniture />
-            {mappedTables.map((table, index) => (
-              <TableElement
-                key={table.id}
-                table={table}
-                position={TABLE_POSITIONS[index]}
-                isSelected={selectedTableId === table.id}
-                onSelect={onSelect}
-              />
-            ))}
-          </svg>
+          <div className="flex items-center gap-1.5">
+            <span className="w-2.5 sm:w-3 h-2.5 sm:h-3 rounded-full border-2 border-gold bg-gold/25 shadow-[0_0_6px_rgba(201,162,39,0.4)]" />
+            <span className="font-playfair text-[9px] sm:text-[10px] text-cream/50 tracking-wider uppercase">
+              Selected
+            </span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="w-2.5 sm:w-3 h-2.5 sm:h-3 rounded-full border border-cream/15 bg-cream/5" />
+            <span className="font-playfair text-[9px] sm:text-[10px] text-cream/50 tracking-wider uppercase">
+              Reserved
+            </span>
+          </div>
         </div>
 
-        {/* Overflow tables for desktop */}
-        {overflowTables.length > 0 && (
-          <div className="mt-3 space-y-2">
-            <p className="font-playfair text-xs text-cream/40 tracking-wider uppercase">
-              Additional Tables
-            </p>
-            <div className="grid grid-cols-2 gap-2">
-              {overflowTables.map((table) => (
-                <TableCard
-                  key={table.id}
-                  table={table}
-                  isSelected={selectedTableId === table.id}
-                  onSelect={onSelect}
-                />
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Mobile: Card grid fallback (shown on small screens) */}
-      <div className="sm:hidden grid grid-cols-1 gap-3">
-        {tables.map((table) => (
-          <TableCard
-            key={table.id}
-            table={table}
-            isSelected={selectedTableId === table.id}
-            onSelect={onSelect}
-          />
-        ))}
+        {/* SVG Map */}
+        <svg
+          viewBox="0 0 800 520"
+          className="w-full h-auto"
+          style={{ minHeight: "220px", maxHeight: "450px" }}
+          role="group"
+          aria-label="Restaurant floor plan - select your table"
+        >
+          <FloorBackground />
+          <Furniture />
+          {tables.map((table, index) => (
+            <TableElement
+              key={table.id}
+              table={table}
+              position={getTablePosition(table, index)}
+              isSelected={selectedTableId === table.id}
+              onSelect={onSelect}
+            />
+          ))}
+        </svg>
       </div>
 
       {/* Selected table info bar */}

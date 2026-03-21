@@ -684,8 +684,12 @@ function DatePicker({
   closedDays: number[];
   advanceBookingDays: number;
 }) {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  const beirutParts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Beirut',
+    year: 'numeric', month: '2-digit', day: '2-digit',
+  }).formatToParts(new Date());
+  const bGet = (type: string) => Number(beirutParts.find(p => p.type === type)!.value);
+  const today = new Date(bGet('year'), bGet('month') - 1, bGet('day'));
 
   const [viewMonth, setViewMonth] = useState(today.getMonth());
   const [viewYear, setViewYear] = useState(today.getFullYear());
@@ -912,11 +916,17 @@ function formatTimeDisplay(time: string): string {
 
 function isTimeSlotPast(selectedDate: string, time: string): boolean {
   const now = new Date();
-  const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Beirut',
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: 'numeric', minute: 'numeric', hour12: false,
+  }).formatToParts(now);
+  const get = (type: string) => parts.find(p => p.type === type)!.value;
+  const todayStr = `${get('year')}-${get('month')}-${get('day')}`;
   if (selectedDate !== todayStr) return false;
   const [h, m] = time.split(':').map(Number);
   const slotMinutes = h * 60 + m;
-  const nowMinutes = now.getHours() * 60 + now.getMinutes();
+  const nowMinutes = Number(get('hour')) * 60 + Number(get('minute'));
   return slotMinutes <= nowMinutes;
 }
 

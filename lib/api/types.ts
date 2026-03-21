@@ -231,7 +231,7 @@ export interface ApiReservationSettings {
   sectionTitle: string;
   sectionSubtitle: string;
   sectionDescription: string;
-  tables: { id: string; name: string; capacity: number; label: string | null }[];
+  tables: { id: string; name: string; capacity: number; label: string | null; positionX: number | null; positionY: number | null; tableShape: string }[];
 }
 
 // Table availability response for a specific date+time
@@ -242,6 +242,9 @@ export interface ApiTableAvailability {
     name: string;
     capacity: number;
     label: string | null;
+    positionX: number | null;
+    positionY: number | null;
+    tableShape: string;
     available: boolean;
   }[];
   message?: string;
