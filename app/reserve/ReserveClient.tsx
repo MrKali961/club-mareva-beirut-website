@@ -458,6 +458,7 @@ function ReservationForm({ settings }: { settings: ApiReservationSettings }) {
                     availability={availability}
                     loading={loadingAvailability}
                     selectedTime={selectedTime}
+                    selectedDate={selectedDate}
                     onSelect={handleTimeSelect}
                   />
                   {state.errors?.time && (
@@ -828,11 +829,13 @@ function TimeSlotGrid({
   availability,
   loading,
   selectedTime,
+  selectedDate,
   onSelect,
 }: {
   availability: ApiAvailability | null;
   loading: boolean;
   selectedTime: string;
+  selectedDate: string;
   onSelect: (time: string) => void;
 }) {
   if (loading) {
@@ -873,7 +876,7 @@ function TimeSlotGrid({
           <motion.button
             key={slot}
             type="button"
-            disabled={!isAvailable}
+            disabled={!isAvailable || isTimeSlotPast(selectedDate, slot)}
             onClick={() => onSelect(slot)}
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -901,7 +904,19 @@ function TimeSlotGrid({
 
 function formatTimeDisplay(time: string): string {
   const [h, m] = time.split(":").map(Number);
-  return `${h}H${String(m).padStart(2, "0")}`;
+  const period = h >= 12 ? 'PM' : 'AM';
+  const hour12 = h % 12 || 12;
+  return `${hour12}:${String(m).padStart(2, '0')}${period}`;
+}
+
+function isTimeSlotPast(selectedDate: string, time: string): boolean {
+  const now = new Date();
+  const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+  if (selectedDate !== todayStr) return false;
+  const [h, m] = time.split(':').map(Number);
+  const slotMinutes = h * 60 + m;
+  const nowMinutes = now.getHours() * 60 + now.getMinutes();
+  return slotMinutes <= nowMinutes;
 }
 
 // ─── Duration Selector ──────────────────────────────────────────
