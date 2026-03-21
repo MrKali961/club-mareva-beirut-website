@@ -279,3 +279,12 @@ export interface ApiMenuSection {
   displayOrder: number;
   groups: ApiMenuGroup[];
 }
+
+// Public menu settings (WiFi, Google Reviews)
+export interface ApiPublicMenuSettings {
+  wifiSsid: string;
+  wifiPassword: string;
+  wifiEnabled: boolean;
+  googleReviewUrl: string;
+  googleReviewEnabled: boolean;
+}
