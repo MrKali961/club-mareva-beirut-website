@@ -19,6 +19,7 @@ import {
   Loader2,
   Armchair,
 } from "lucide-react";
+import FloorMap from "./FloorMap";
 import Link from "next/link";
 import { submitReserveForm } from "./actions";
 import type {
@@ -1063,89 +1064,11 @@ function TableSelector({
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-      {availability.tables.map((table, index) => {
-        const isSelected = selectedTableId === table.id;
-        const isAvailable = table.available;
-
-        return (
-          <motion.button
-            key={table.id}
-            type="button"
-            disabled={!isAvailable}
-            onClick={() => onSelect(table.id, table.capacity)}
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: index * 0.05 }}
-            whileHover={isAvailable ? { scale: 1.02 } : undefined}
-            whileTap={isAvailable ? { scale: 0.98 } : undefined}
-            className={`
-              relative p-4 text-left transition-all duration-200 border
-              ${
-                !isAvailable
-                  ? "border-cream/10 bg-black/20 cursor-not-allowed"
-                  : isSelected
-                    ? "border-gold bg-gold/10 shadow-[0_0_20px_rgba(201,162,39,0.15)]"
-                    : "border-gold/25 hover:border-gold/60 hover:bg-gold/5"
-              }
-            `}
-          >
-            <div className="flex items-start justify-between gap-2">
-              <div>
-                <p
-                  className={`font-playfair text-sm tracking-wider ${
-                    !isAvailable
-                      ? "text-cream/20"
-                      : isSelected
-                        ? "text-gold font-semibold"
-                        : "text-cream/90"
-                  }`}
-                >
-                  {table.name}
-                </p>
-                {table.label && (
-                  <p
-                    className={`font-playfair text-xs mt-0.5 ${
-                      !isAvailable ? "text-cream/10" : "text-gold/60"
-                    }`}
-                  >
-                    {table.label}
-                  </p>
-                )}
-              </div>
-              <div
-                className={`flex items-center gap-1 ${
-                  !isAvailable
-                    ? "text-cream/15"
-                    : isSelected
-                      ? "text-gold"
-                      : "text-cream/50"
-                }`}
-              >
-                <Users className="w-3.5 h-3.5" />
-                <span className="font-playfair text-xs">{table.capacity}</span>
-              </div>
-            </div>
-
-            {!isAvailable && (
-              <p className="font-playfair text-[10px] text-cream/20 mt-2 uppercase tracking-wider">
-                Reserved
-              </p>
-            )}
-
-            {isSelected && (
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                className="absolute top-2 right-2"
-              >
-                <Check className="w-4 h-4 text-gold" />
-              </motion.div>
-            )}
-          </motion.button>
-        );
-      })}
-    </div>
+    <FloorMap
+      tables={availability.tables}
+      selectedTableId={selectedTableId}
+      onSelect={onSelect}
+    />
   );
 }
 
