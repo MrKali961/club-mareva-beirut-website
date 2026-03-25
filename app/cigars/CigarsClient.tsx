@@ -315,10 +315,10 @@ export default function CigarsClient({ brands }: CigarsClientProps) {
           ================================================================ */}
       <section className="relative h-[60vh] md:h-[70vh] flex items-center justify-center overflow-hidden">
         <VideoBackground
-          posterSrc="/images/clubmarevabeirut/2025/Delamain-Sig-Cigar-Bottles-at-Club-Mareva-Beirut-scaled.jpg"
-          fallbackImageSrc="/images/clubmarevabeirut/2025/Delamain-Sig-Cigar-Bottles-at-Club-Mareva-Beirut-scaled.jpg"
-          alt="Club Mareva Beirut Cigars"
-          overlayClassName="bg-black/70"
+          posterSrc="/images/clubmarevabeirut/2025/CigarHumidorMareva.webp"
+          fallbackImageSrc="/images/clubmarevabeirut/2025/CigarHumidorMareva.webp"
+          alt="Club Mareva Beirut Cigar Humidor"
+          overlayClassName="bg-black/60"
           enableKenBurns={true}
         />
 
