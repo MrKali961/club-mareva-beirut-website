@@ -42,8 +42,8 @@ export default function Hero() {
       {/* Video/Image Background with parallax */}
       <motion.div style={{ y: backgroundY }} className="absolute inset-0 -z-10">
         <VideoBackground
-          posterSrc="/images/clubmarevabeirut/2023/Pictures-4.jpg"
-          fallbackImageSrc="/images/clubmarevabeirut/2023/Pictures-4.jpg"
+          posterSrc="/images/clubmarevabeirut/2026/Hero.webp"
+          fallbackImageSrc="/images/clubmarevabeirut/2026/Hero.webp"
           alt="Club Mareva Beirut interior"
           enableKenBurns={true}
           priority={true}
