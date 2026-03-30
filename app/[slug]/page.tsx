@@ -33,6 +33,21 @@ function resolveAbsoluteImageUrl(path: string | undefined): string {
   return path.startsWith("/") ? `${SITE_URL}${path}` : `${SITE_URL}/${path}`;
 }
 
+/**
+ * Build an OG-friendly image URL. For S3-hosted images, use the medium
+ * variant (~800px, <200KB) instead of the full-size original (often 2-3MB).
+ * WhatsApp and Messenger struggle with large images in link previews.
+ */
+function resolveOgImageUrl(path: string | undefined): string {
+  const url = resolveAbsoluteImageUrl(path);
+  if (!url) return "";
+  // S3 images have -medium.webp variants generated on upload
+  if (url.includes("club-mareva.s3.")) {
+    return url.replace(/\.[^.]+$/, "-medium.webp");
+  }
+  return url;
+}
+
 export async function generateMetadata({
   params,
 }: {
@@ -43,7 +58,7 @@ export async function generateMetadata({
   // Check events first: items in both tables should resolve as Events
   const event = await getUpcomingEventBySlug(slug);
   if (event) {
-    const imageUrl = resolveAbsoluteImageUrl(event.image);
+    const ogImage = resolveOgImageUrl(event.image);
     const metaTitle = event.metaTitle || event.title;
     const metaDescription = event.metaDescription || event.description || "";
     const imageAlt = event.metaImageAlt || event.title;
@@ -59,22 +74,22 @@ export async function generateMetadata({
         url: `${SITE_URL}/${slug}`,
         siteName: "Club Mareva Beirut",
         type: "article",
-        images: imageUrl
-          ? [{ url: imageUrl, width: 1200, height: 630, alt: imageAlt }]
+        images: ogImage
+          ? [{ url: ogImage, width: 800, height: 420, alt: imageAlt }]
           : [],
       },
       twitter: {
         card: "summary_large_image",
         title: metaTitle,
         description: metaDescription,
-        images: imageUrl ? [imageUrl] : [],
+        images: ogImage ? [ogImage] : [],
       },
     };
   }
 
   const post = await getPostBySlug(slug);
   if (post) {
-    const imageUrl = resolveAbsoluteImageUrl(
+    const ogImage = resolveOgImageUrl(
       post.featured_image?.local_path || post.featured_image?.original_url,
     );
     const metaTitle = post.seo?.metaTitle || post.title;
@@ -93,15 +108,15 @@ export async function generateMetadata({
         url: `${SITE_URL}/${slug}`,
         siteName: "Club Mareva Beirut",
         type: "article",
-        images: imageUrl
-          ? [{ url: imageUrl, width: 1200, height: 630, alt: imageAlt }]
+        images: ogImage
+          ? [{ url: ogImage, width: 800, height: 420, alt: imageAlt }]
           : [],
       },
       twitter: {
         card: "summary_large_image",
         title: metaTitle,
         description: metaDescription,
-        images: imageUrl ? [imageUrl] : [],
+        images: ogImage ? [ogImage] : [],
       },
     };
   }
