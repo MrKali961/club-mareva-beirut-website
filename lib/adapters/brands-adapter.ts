@@ -154,17 +154,17 @@ export const BRAND_ENRICHMENT: Record<string, BrandEnrichment> = {
 };
 
 export function apiBrandToLocalBrand(apiBrand: ApiCigarBrand): Brand {
-  const enrichment = BRAND_ENRICHMENT[apiBrand.title] ?? { origin: 'Unknown' };
+  const enrichment = BRAND_ENRICHMENT[apiBrand.title];
 
   return {
     name: apiBrand.title,
-    origin: enrichment.origin,
-    established: enrichment.established,
+    origin: apiBrand.origin || enrichment?.origin || 'Unknown',
+    established: apiBrand.established || enrichment?.established,
     description: apiBrand.description || '',
     logo: resolveBrandLogo(apiBrand),
-    hashtags: enrichment.hashtags,
-    testimonial: enrichment.testimonial,
-    website: enrichment.website,
+    hashtags: enrichment?.hashtags,
+    testimonial: enrichment?.testimonial,
+    website: apiBrand.website || enrichment?.website,
   };
 }
 

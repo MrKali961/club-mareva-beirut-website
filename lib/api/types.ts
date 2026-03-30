@@ -101,6 +101,9 @@ export interface ApiCigarBrand {
   description: string | null;
   isFeatured: boolean;
   displayOrder: number;
+  origin: string | null;
+  established: string | null;
+  website: string | null;
   logoUrls: {
     original: string | null;
     medium: string | null;
