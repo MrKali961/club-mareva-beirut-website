@@ -1,21 +1,33 @@
-'use client';
+"use client";
 
-import { useRef, useState, useEffect } from 'react';
-import { motion, useInView } from 'framer-motion';
-import { MapPin, Clock, Phone, Instagram, Facebook, MessageCircle } from 'lucide-react';
-import Link from 'next/link';
+import { useRef, useState, useEffect } from "react";
+import { motion, useInView } from "framer-motion";
+import {
+  MapPin,
+  Clock,
+  Phone,
+  Instagram,
+  Facebook,
+  MessageCircle,
+} from "lucide-react";
+import Link from "next/link";
 
 export default function CTASection() {
   const sectionRef = useRef<HTMLElement>(null);
-  const isInView = useInView(sectionRef, { once: true, margin: '-100px' });
+  const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
   const [showMap, setShowMap] = useState(false);
   const mapContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!mapContainerRef.current) return;
     const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { setShowMap(true); observer.disconnect(); } },
-      { rootMargin: '200px' }
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShowMap(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "200px" },
     );
     observer.observe(mapContainerRef.current);
     return () => observer.disconnect();
@@ -51,7 +63,10 @@ export default function CTASection() {
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           >
             {/* Map Preview */}
-            <div ref={mapContainerRef} className="relative aspect-[4/3] w-full mb-8 border border-gold/30 overflow-hidden group">
+            <div
+              ref={mapContainerRef}
+              className="relative aspect-[4/3] w-full mb-8 border border-gold/30 overflow-hidden group"
+            >
               {/* Google Maps Embed */}
               {showMap ? (
                 <iframe
@@ -102,7 +117,9 @@ export default function CTASection() {
               {/* Address */}
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
-                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+                animate={
+                  isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }
+                }
                 transition={{ duration: 0.5, delay: 0.2 }}
                 className="flex items-start gap-4"
               >
@@ -110,16 +127,24 @@ export default function CTASection() {
                   <MapPin className="w-5 h-5 text-gold" />
                 </div>
                 <div>
-                  <p className="font-playfair text-xs tracking-[0.2em] uppercase text-gold mb-1">Address</p>
-                  <p className="font-playfair text-cream/90">Sea Side Rd, Jal El Dib</p>
-                  <p className="font-playfair text-cream/60 text-sm">Beirut, Lebanon</p>
+                  <p className="font-playfair text-xs tracking-[0.2em] uppercase text-gold mb-1">
+                    Address
+                  </p>
+                  <p className="font-playfair text-cream/90">
+                    Sea Side Rd, Jal El Dib
+                  </p>
+                  <p className="font-playfair text-cream/60 text-sm">
+                    Beirut, Lebanon
+                  </p>
                 </div>
               </motion.div>
 
               {/* Hours */}
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
-                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+                animate={
+                  isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }
+                }
                 transition={{ duration: 0.5, delay: 0.3 }}
                 className="flex items-start gap-4"
               >
@@ -127,16 +152,34 @@ export default function CTASection() {
                   <Clock className="w-5 h-5 text-gold" />
                 </div>
                 <div>
-                  <p className="font-playfair text-xs tracking-[0.2em] uppercase text-gold mb-1">Opening Hours</p>
-                  <p className="font-playfair text-cream/90">Open Daily</p>
-                  <p className="font-playfair text-cream/60 text-sm">5:00 PM - Late</p>
+                  <p className="font-playfair text-xs tracking-[0.2em] uppercase text-gold mb-1">
+                    Opening Hours
+                  </p>
+                  <div>
+                    <p className="font-playfair text-cream/90 text-sm md:text-base">
+                      Mon &ndash; Sat
+                    </p>
+                    <p className="font-playfair text-cream/60 text-sm">
+                      11:00 AM &ndash; 11:00 PM
+                    </p>
+                  </div>
+                  <div>
+                    <p className="font-playfair text-cream/90 text-sm md:text-base">
+                      Sunday
+                    </p>
+                    <p className="font-playfair text-cream/60 text-sm">
+                      5:00 PM &ndash; 11:00 PM
+                    </p>
+                  </div>
                 </div>
               </motion.div>
 
               {/* Phone */}
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
-                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+                animate={
+                  isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }
+                }
                 transition={{ duration: 0.5, delay: 0.4 }}
                 className="flex items-start gap-4"
               >
@@ -144,7 +187,9 @@ export default function CTASection() {
                   <Phone className="w-5 h-5 text-gold" />
                 </div>
                 <div>
-                  <p className="font-playfair text-xs tracking-[0.2em] uppercase text-gold mb-1">Reservations</p>
+                  <p className="font-playfair text-xs tracking-[0.2em] uppercase text-gold mb-1">
+                    Reservations
+                  </p>
                   <a
                     href="tel:+96179117997"
                     className="font-playfair text-cream/90 hover:text-gold transition-colors duration-200"
@@ -198,7 +243,8 @@ export default function CTASection() {
               transition={{ duration: 0.6, delay: 0.5 }}
               className="font-playfair text-cream/80 text-lg mb-8 max-w-md mx-auto lg:mx-0"
             >
-              Experience the finest cigars and spirits in Beirut&apos;s most distinguished lounge. Reserve your table today.
+              Experience the finest cigars and spirits in Beirut&apos;s most
+              distinguished lounge. Reserve your table today.
             </motion.p>
 
             {/* CTA Buttons */}
@@ -223,8 +269,8 @@ export default function CTASection() {
                 <motion.span
                   className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent"
                   whileHover={{
-                    x: '200%',
-                    transition: { duration: 0.6, ease: 'easeInOut' },
+                    x: "200%",
+                    transition: { duration: 0.6, ease: "easeInOut" },
                   }}
                 />
               </motion.a>
@@ -232,7 +278,10 @@ export default function CTASection() {
               {/* Contact Page Link */}
               <Link href="/contact">
                 <motion.span
-                  whileHover={{ scale: 1.02, backgroundColor: 'rgba(201, 162, 39, 0.1)' }}
+                  whileHover={{
+                    scale: 1.02,
+                    backgroundColor: "rgba(201, 162, 39, 0.1)",
+                  }}
                   whileTap={{ scale: 0.98 }}
                   className="inline-flex items-center justify-center px-8 py-4 bg-transparent border border-gold/50 text-gold font-playfair font-medium tracking-wider uppercase text-sm transition-all duration-300 hover:border-gold w-full sm:w-auto"
                 >
