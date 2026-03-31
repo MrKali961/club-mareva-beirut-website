@@ -602,7 +602,30 @@ function ReservationForm({ settings }: { settings: ApiReservationSettings }) {
                           className="w-full bg-transparent border border-gold/30 pl-11 pr-4 py-3.5 font-playfair text-cream text-sm placeholder:text-cream/40 focus:outline-none focus:border-gold transition-colors"
                         />
                       </div>
+                      {state.errors?.phone && (
+                        <FieldError message={state.errors.phone} />
+                      )}
                     </div>
+                  </div>
+
+                  <div>
+                    <label className="flex items-start gap-3 cursor-pointer group">
+                      <input
+                        type="checkbox"
+                        name="whatsappOptIn"
+                        className="mt-1 w-4 h-4 accent-gold bg-transparent border border-gold/30 rounded focus:ring-gold/50"
+                      />
+                      <div>
+                        <span className="font-playfair text-cream text-sm group-hover:text-gold transition-colors">
+                          Receive reservation updates via WhatsApp
+                        </span>
+                        <p className="text-cream/40 text-xs mt-0.5 font-playfair">
+                          We&apos;ll send your confirmation and status updates to this number
+                          <br />
+                          <span dir="rtl" className="inline-block mt-0.5">استلم تحديثات عبر واتساب</span>
+                        </p>
+                      </div>
+                    </label>
                   </div>
 
                   <div>

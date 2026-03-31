@@ -21,10 +21,12 @@ export async function submitReserveForm(
   const specialRequests = formData.get('specialRequests') as string;
   const tableId = formData.get('tableId') as string;
   const durationMinutes = Number(formData.get('durationMinutes')) || undefined;
+  const whatsappOptIn = formData.get('whatsappOptIn') === 'on';
 
   const errors: Record<string, string> = {};
   if (!name || name.trim().length < 2) errors.name = 'Name is required (min 2 characters)';
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.email = 'Valid email is required';
+  if (!phone || phone.trim().length < 8) errors.phone = 'Phone number is required';
   if (!date) errors.date = 'Please select a date';
   if (!time) errors.time = 'Please select a time slot';
   if (!tableId) errors.tableId = 'Please select a table';
@@ -38,13 +40,14 @@ export async function submitReserveForm(
     const result = await submitReservation({
       name: name.trim(),
       email: email.trim(),
-      phone: phone?.trim() || undefined,
+      phone: phone.trim(),
       date,
       time,
       durationMinutes,
       numberOfGuests,
       tableId,
       specialRequests: specialRequests?.trim() || undefined,
+      whatsappOptIn,
     });
     return { success: true, message: result.confirmationMessage || 'Your reservation has been received.' };
   } catch (error: unknown) {

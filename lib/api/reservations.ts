@@ -16,13 +16,14 @@ export async function fetchAvailability(date: string): Promise<ApiAvailability> 
 export async function submitReservation(data: {
   name: string;
   email: string;
-  phone?: string;
+  phone: string;
   date: string;
   time: string;
   durationMinutes?: number;
   numberOfGuests: number;
   tableId: string;
   specialRequests?: string;
+  whatsappOptIn?: boolean;
 }): Promise<ApiReservationResult> {
   return apiPost<ApiReservationResult>('/reservations', data);
 }
