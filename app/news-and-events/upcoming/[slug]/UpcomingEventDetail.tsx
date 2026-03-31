@@ -61,6 +61,7 @@ export default function UpcomingEventDetail({ event, otherEvents }: UpcomingEven
               className="object-cover"
               priority
               sizes="100vw"
+              quality={85}
             />
           ) : (
             <>

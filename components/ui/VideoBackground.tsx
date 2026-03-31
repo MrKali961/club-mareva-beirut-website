@@ -102,6 +102,7 @@ export default function VideoBackground({
             className="object-cover"
             priority={priority}
             sizes="100vw"
+            quality={85}
           />
         </motion.div>
       )}

@@ -50,12 +50,13 @@ function GalleryImage({ src, index, title, onOpen }: { src: string; index: numbe
       className="relative w-full overflow-hidden group cursor-pointer block"
     >
       <div className="relative overflow-hidden">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <Image
           src={src}
           alt={`${title} - Image ${index + 1}`}
+          width={1200}
+          height={800}
+          sizes="(max-width: 480px) 100vw, (max-width: 1024px) 50vw, 33vw"
           className="w-full h-auto block transition-transform duration-700 group-hover:scale-110"
-          loading="lazy"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400" />
         <div className="absolute inset-0 border-2 border-gold/0 group-hover:border-gold/80 transition-all duration-400" />
@@ -222,6 +223,8 @@ export default function PostClient({ post, relatedPosts }: PostClientProps) {
               fill
               className="object-cover"
               priority
+              sizes="100vw"
+              quality={85}
             />
           ) : (
             <div className="absolute inset-0 bg-gradient-to-br from-black via-green-dark/40 to-black">
@@ -292,12 +295,13 @@ export default function PostClient({ post, relatedPosts }: PostClientProps) {
                         className="relative w-full overflow-hidden group cursor-pointer block"
                       >
                         <div className="relative overflow-hidden">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
+                          <Image
                             src={src}
                             alt={`${post.title} - Image ${index + 1}`}
+                            width={1200}
+                            height={800}
+                            sizes="(max-width: 640px) 100vw, 400px"
                             className="w-full h-auto block transition-transform duration-700 group-hover:scale-105"
-                            loading="lazy"
                           />
                           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400" />
                           <div className="absolute inset-0 border border-gold/0 group-hover:border-gold/40 transition-all duration-400" />
@@ -430,6 +434,7 @@ export default function PostClient({ post, relatedPosts }: PostClientProps) {
                           alt={relatedPost.title}
                           fill
                           className="object-cover transition-transform duration-700 group-hover:scale-110"
+                          sizes="(max-width: 768px) 100vw, 33vw"
                         />
                       ) : (
                         <div className="absolute inset-0 bg-gradient-to-br from-green-dark via-black-800 to-black" />
@@ -541,6 +546,7 @@ export default function PostClient({ post, relatedPosts }: PostClientProps) {
                     className="object-contain"
                     sizes="(max-width: 768px) 100vw, 80vw"
                     priority
+                    quality={85}
                   />
                 </motion.div>
               </AnimatePresence>

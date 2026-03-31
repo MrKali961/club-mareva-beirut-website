@@ -87,6 +87,7 @@ export default function OurSignatureClient({ items }: OurSignatureClientProps) {
             className="object-cover"
             priority
             sizes="100vw"
+            quality={85}
           />
           <div className="absolute inset-0 bg-black/65" />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_40%,rgba(201,162,39,0.08),transparent_70%)]" />
@@ -272,6 +273,7 @@ const VaultSection = forwardRef<HTMLElement, VaultSectionProps>(
               className="object-cover"
               priority={isFirst}
               sizes="100vw"
+              quality={85}
             />
           </motion.div>
 

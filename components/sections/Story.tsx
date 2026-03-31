@@ -86,7 +86,7 @@ export default function Story() {
             fill
             className="object-cover"
             sizes="100vw"
-            priority={false}
+            quality={85}
           />
           {/* Dark overlay for text readability */}
           <div className="absolute inset-0 bg-black/75" />
