@@ -37,20 +37,22 @@ interface TablePosition {
 }
 
 const DEFAULT_POSITIONS: { x: number; y: number }[] = [
-  { x: 130, y: 290 },
-  { x: 330, y: 230 },
-  { x: 480, y: 155 },
-  { x: 620, y: 350 },
-  { x: 340, y: 390 },
+  { x: 130, y: 470 },
+  { x: 330, y: 410 },
+  { x: 480, y: 335 },
+  { x: 620, y: 530 },
+  { x: 340, y: 570 },
+  { x: 400, y: 90 },
 ];
 
 function getTablePosition(table: TableData, index: number): TablePosition {
   const x = table.positionX ?? DEFAULT_POSITIONS[index]?.x ?? 400;
   const y = table.positionY ?? DEFAULT_POSITIONS[index]?.y ?? 260;
   const shape = table.tableShape === "round" ? "round" : "rect";
+  const isLarge = table.capacity >= 5;
   return shape === "round"
-    ? { x, y, type: "round", radius: 28 }
-    : { x, y, type: "rect", width: 72, height: 42 };
+    ? { x, y, type: "round", radius: isLarge ? 38 : 28 }
+    : { x, y, type: "rect", width: isLarge ? 90 : 72, height: isLarge ? 52 : 42 };
 }
 
 const CHAIR_RADIUS = 8;
@@ -72,7 +74,7 @@ function FloorBackground() {
         x="0"
         y="0"
         width="800"
-        height="520"
+        height="700"
         rx="6"
         fill="#111111"
         stroke="rgba(201,162,39,0.15)"
@@ -116,7 +118,7 @@ function FloorBackground() {
         x="1"
         y="1"
         width="798"
-        height="518"
+        height="698"
         rx="5"
         fill="url(#floorPattern)"
       />
@@ -127,10 +129,103 @@ function FloorBackground() {
 function Furniture() {
   return (
     <>
-      {/* Green accent wall (top-left) */}
+      {/* ── Upper Floor Section ── */}
       <rect
         x="10"
         y="10"
+        width="780"
+        height="145"
+        rx="4"
+        fill="rgba(201,162,39,0.02)"
+        stroke="rgba(201,162,39,0.08)"
+        strokeWidth="1"
+        strokeDasharray="8 4"
+      />
+      <text
+        x="400"
+        y="30"
+        textAnchor="middle"
+        fill="rgba(201,162,39,0.3)"
+        fontSize="10"
+        fontFamily="'Playfair Display', serif"
+        letterSpacing="0.2em"
+      >
+        UPPER FLOOR
+      </text>
+
+      {/* ── Staircase Separator ── */}
+      <g>
+        {/* Stair background */}
+        <rect
+          x="310"
+          y="158"
+          width="180"
+          height="36"
+          rx="3"
+          fill="rgba(245,245,240,0.04)"
+          stroke="rgba(245,245,240,0.12)"
+          strokeWidth="1"
+        />
+        {/* Stair steps */}
+        {[0, 1, 2, 3, 4, 5, 6].map((i) => (
+          <line
+            key={`stair-${i}`}
+            x1={320 + i * 23}
+            y1="162"
+            x2={320 + i * 23}
+            y2="190"
+            stroke="rgba(245,245,240,0.1)"
+            strokeWidth="1"
+          />
+        ))}
+        {/* Upward arrow */}
+        <polyline
+          points="390,180 400,165 410,180"
+          stroke="rgba(201,162,39,0.4)"
+          strokeWidth="1.5"
+          fill="none"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <line
+          x1="400"
+          y1="165"
+          x2="400"
+          y2="190"
+          stroke="rgba(201,162,39,0.4)"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+        />
+        <text
+          x="400"
+          y="200"
+          textAnchor="middle"
+          fill="rgba(245,245,240,0.2)"
+          fontSize="8"
+          fontFamily="'Playfair Display', serif"
+          letterSpacing="0.15em"
+        >
+          STAIRS
+        </text>
+      </g>
+
+      {/* ── Ground Floor Section ── */}
+      <text
+        x="400"
+        y="218"
+        textAnchor="middle"
+        fill="rgba(245,245,240,0.15)"
+        fontSize="10"
+        fontFamily="'Playfair Display', serif"
+        letterSpacing="0.2em"
+      >
+        GROUND FLOOR
+      </text>
+
+      {/* Green accent wall */}
+      <rect
+        x="10"
+        y="190"
         width="200"
         height="8"
         rx="2"
@@ -142,7 +237,7 @@ function Furniture() {
       <g opacity="0.4">
         <rect
           x="50"
-          y="50"
+          y="230"
           width="120"
           height="70"
           rx="4"
@@ -153,7 +248,7 @@ function Furniture() {
         />
         <text
           x="110"
-          y="90"
+          y="270"
           textAnchor="middle"
           fill="rgba(245,245,240,0.25)"
           fontSize="11"
@@ -164,47 +259,11 @@ function Furniture() {
         </text>
       </g>
 
-      {/* Staircase */}
-      <g opacity="0.35">
-        <rect
-          x="280"
-          y="38"
-          width="140"
-          height="50"
-          rx="3"
-          fill="none"
-          stroke="rgba(245,245,240,0.18)"
-          strokeWidth="1.5"
-        />
-        {[0, 1, 2, 3, 4].map((i) => (
-          <line
-            key={`stair-${i}`}
-            x1={295 + i * 25}
-            y1="45"
-            x2={295 + i * 25}
-            y2="81"
-            stroke="rgba(245,245,240,0.1)"
-            strokeWidth="1"
-          />
-        ))}
-        <text
-          x="350"
-          y="68"
-          textAnchor="middle"
-          fill="rgba(245,245,240,0.2)"
-          fontSize="9"
-          fontFamily="'Playfair Display', serif"
-          letterSpacing="0.15em"
-        >
-          STAIRS
-        </text>
-      </g>
-
       {/* Bookshelf / Library */}
       <g opacity="0.35">
         <rect
           x="570"
-          y="38"
+          y="218"
           width="180"
           height="50"
           rx="3"
@@ -216,7 +275,7 @@ function Furniture() {
           <rect
             key={`book-${i}`}
             x={582 + i * 26}
-            y="48"
+            y="228"
             width="18"
             height="30"
             rx="1"
@@ -227,7 +286,7 @@ function Furniture() {
         ))}
         <text
           x="660"
-          y="88"
+          y="268"
           textAnchor="middle"
           fill="rgba(245,245,240,0.18)"
           fontSize="9"
@@ -242,7 +301,7 @@ function Furniture() {
       <g opacity="0.35">
         <rect
           x="650"
-          y="215"
+          y="395"
           width="70"
           height="55"
           rx="4"
@@ -252,7 +311,7 @@ function Furniture() {
         />
         <text
           x="685"
-          y="248"
+          y="428"
           textAnchor="middle"
           fill="rgba(201,162,39,0.25)"
           fontSize="9"
@@ -267,23 +326,23 @@ function Furniture() {
       <g>
         <line
           x1="300"
-          y1="518"
+          y1="698"
           x2="300"
-          y2="490"
+          y2="670"
           stroke="rgba(201,162,39,0.3)"
           strokeWidth="1.5"
         />
         <line
           x1="500"
-          y1="518"
+          y1="698"
           x2="500"
-          y2="490"
+          y2="670"
           stroke="rgba(201,162,39,0.3)"
           strokeWidth="1.5"
         />
         <text
           x="400"
-          y="510"
+          y="690"
           textAnchor="middle"
           fill="rgba(201,162,39,0.35)"
           fontSize="10"
@@ -298,35 +357,35 @@ function Furniture() {
       <g opacity="0.5">
         <circle
           cx="85"
-          cy="385"
+          cy="565"
           r="10"
           fill="rgba(39,83,62,0.3)"
           stroke="rgba(39,83,62,0.4)"
           strokeWidth="1"
         />
-        <circle cx="85" cy="385" r="5" fill="rgba(39,83,62,0.5)" />
+        <circle cx="85" cy="565" r="5" fill="rgba(39,83,62,0.5)" />
       </g>
       <g opacity="0.5">
         <circle
           cx="710"
-          cy="425"
+          cy="605"
           r="10"
           fill="rgba(39,83,62,0.3)"
           stroke="rgba(39,83,62,0.4)"
           strokeWidth="1"
         />
-        <circle cx="710" cy="425" r="5" fill="rgba(39,83,62,0.5)" />
+        <circle cx="710" cy="605" r="5" fill="rgba(39,83,62,0.5)" />
       </g>
       <g opacity="0.4">
         <circle
           cx="220"
-          cy="445"
+          cy="625"
           r="8"
           fill="rgba(39,83,62,0.25)"
           stroke="rgba(39,83,62,0.35)"
           strokeWidth="1"
         />
-        <circle cx="220" cy="445" r="4" fill="rgba(39,83,62,0.45)" />
+        <circle cx="220" cy="625" r="4" fill="rgba(39,83,62,0.45)" />
       </g>
     </>
   );
@@ -350,7 +409,7 @@ function TableElement({
   const isAvailable = table.available;
 
   const colors = getTableColors(isAvailable, isSelected, isHighlighted);
-  const chairs = getChairPositions(position);
+  const chairs = getChairPositions(position, table.capacity);
   const displayName = truncateLabel(table.name, 10);
 
   return (
@@ -574,25 +633,30 @@ function getTableColors(
 
 function getChairPositions(
   position: TablePosition,
+  capacity: number,
 ): { cx: number; cy: number }[] {
   const { x, y, type } = position;
+  const count = Math.max(2, Math.min(capacity, 10));
   if (type === "round") {
     const r = (position.radius || 28) + CHAIR_GAP + CHAIR_RADIUS;
-    return [
-      { cx: x, cy: y - r },
-      { cx: x + r, cy: y },
-      { cx: x, cy: y + r },
-      { cx: x - r, cy: y },
-    ];
+    return Array.from({ length: count }, (_, i) => {
+      const angle = (2 * Math.PI * i) / count - Math.PI / 2;
+      return { cx: x + r * Math.cos(angle), cy: y + r * Math.sin(angle) };
+    });
   }
   const hw = (position.width || 72) / 2 + CHAIR_GAP + CHAIR_RADIUS;
-  const qh = (position.height || 42) / 4;
-  return [
-    { cx: x - hw, cy: y - qh },
-    { cx: x - hw, cy: y + qh },
-    { cx: x + hw, cy: y - qh },
-    { cx: x + hw, cy: y + qh },
-  ];
+  const perSide = Math.ceil(count / 2);
+  const totalH = (position.height || 42) * 0.8;
+  const step = perSide > 1 ? totalH / (perSide - 1) : 0;
+  const startY = y - totalH / 2;
+  const chairs: { cx: number; cy: number }[] = [];
+  for (let i = 0; i < perSide; i++) {
+    chairs.push({ cx: x - hw, cy: startY + i * step });
+  }
+  for (let i = 0; i < count - perSide; i++) {
+    chairs.push({ cx: x + hw, cy: startY + i * step });
+  }
+  return chairs;
 }
 
 // ─── Main Floor Map Component ───────────────────────────────────
@@ -635,9 +699,9 @@ export default function FloorMap({
 
         {/* SVG Map */}
         <svg
-          viewBox="0 0 800 520"
+          viewBox="0 0 800 700"
           className="w-full h-auto"
-          style={{ minHeight: "220px", maxHeight: "450px" }}
+          style={{ minHeight: "300px", maxHeight: "600px" }}
           role="group"
           aria-label="Restaurant floor plan - select your table"
         >
