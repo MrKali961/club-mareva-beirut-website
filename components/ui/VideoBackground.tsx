@@ -14,6 +14,8 @@ interface VideoBackgroundProps {
   overlayClassName?: string;
   enableKenBurns?: boolean;
   priority?: boolean;
+  quality?: number;
+  sizes?: string;
 }
 
 export default function VideoBackground({
@@ -26,6 +28,8 @@ export default function VideoBackground({
   overlayClassName = '',
   enableKenBurns = true,
   priority = true,
+  quality = 90,
+  sizes = '100vw',
 }: VideoBackgroundProps) {
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const [useVideoFallback, setUseVideoFallback] = useState(false);
@@ -101,8 +105,8 @@ export default function VideoBackground({
             fill
             className="object-cover"
             priority={priority}
-            sizes="100vw"
-            quality={95}
+            sizes={sizes}
+            quality={quality}
           />
         </motion.div>
       )}
