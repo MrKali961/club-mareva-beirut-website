@@ -42,8 +42,8 @@ function parseDateBadge(dateStr: string): { month: string; day: string } | null 
     const d = new Date(dateStr);
     if (isNaN(d.getTime())) return null;
     return {
-      month: d.toLocaleString("en-US", { month: "short" }).toUpperCase(),
-      day: String(d.getDate()),
+      month: d.toLocaleString("en-US", { month: "short", timeZone: "UTC" }).toUpperCase(),
+      day: new Intl.DateTimeFormat("en-US", { day: "numeric", timeZone: "UTC" }).format(d),
     };
   } catch {
     return null;

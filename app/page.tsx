@@ -111,6 +111,7 @@ export default async function Home() {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
+      timeZone: 'UTC',
     }),
   }));
 

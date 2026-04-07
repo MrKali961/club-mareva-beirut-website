@@ -158,6 +158,7 @@ export default async function PostPage({
             year: "numeric",
             month: "long",
             day: "numeric",
+            timeZone: "UTC",
           }),
           category: p.categories[0] || "Events",
           image: resolveImagePath(
@@ -185,6 +186,7 @@ export default async function PostPage({
           year: "numeric",
           month: "long",
           day: "numeric",
+          timeZone: "UTC",
         }),
         category: event.category || "Events",
         featuredImage: resolveImagePath(event.image),
@@ -209,13 +211,14 @@ export default async function PostPage({
         category: e.category,
         image: e.image,
         month: new Date(e.date)
-          .toLocaleDateString("en-US", { month: "short" })
+          .toLocaleDateString("en-US", { month: "short", timeZone: "UTC" })
           .toUpperCase(),
-        day: new Date(e.date).getDate().toString(),
+        day: new Intl.DateTimeFormat("en-US", { day: "numeric", timeZone: "UTC" }).format(new Date(e.date)),
         displayDate: new Date(e.date).toLocaleDateString("en-US", {
           weekday: "long",
           month: "long",
           day: "numeric",
+          timeZone: "UTC",
         }),
       }));
 
@@ -229,18 +232,20 @@ export default async function PostPage({
       location: event.location,
       maxVisitors: event.maxVisitors,
       month: new Date(event.date)
-        .toLocaleDateString("en-US", { month: "short" })
+        .toLocaleDateString("en-US", { month: "short", timeZone: "UTC" })
         .toUpperCase(),
-      day: new Date(event.date).getDate().toString(),
+      day: new Intl.DateTimeFormat("en-US", { day: "numeric", timeZone: "UTC" }).format(new Date(event.date)),
       displayDate: new Date(event.date).toLocaleDateString("en-US", {
         weekday: "long",
         month: "long",
         day: "numeric",
+        timeZone: "UTC",
       }),
       time: new Date(event.date).toLocaleTimeString("en-US", {
         hour: "numeric",
         minute: "2-digit",
         hour12: true,
+        timeZone: "UTC",
       }),
     };
 
@@ -264,6 +269,7 @@ export default async function PostPage({
         year: "numeric",
         month: "long",
         day: "numeric",
+        timeZone: "UTC",
       }),
       category: p.categories[0] || "Events",
       image: resolveImagePath(
@@ -279,6 +285,7 @@ export default async function PostPage({
       year: "numeric",
       month: "long",
       day: "numeric",
+      timeZone: "UTC",
     }),
     category: post.categories[0] || "Events",
     featuredImage: resolveImagePath(

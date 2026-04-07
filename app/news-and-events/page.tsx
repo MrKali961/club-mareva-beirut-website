@@ -59,6 +59,7 @@ export default async function NewsAndEventsPage() {
           year: "numeric",
           month: "long",
           day: "numeric",
+          timeZone: "UTC",
         }),
         category: "News",
         image: resolveImagePath(
@@ -81,6 +82,7 @@ export default async function NewsAndEventsPage() {
         year: "numeric",
         month: "long",
         day: "numeric",
+        timeZone: "UTC",
       }),
       category: "Events",
       image: resolveImagePath(imageUrl),
@@ -101,13 +103,14 @@ export default async function NewsAndEventsPage() {
     image: event.image,
     featured: event.featured,
     month: new Date(event.date)
-      .toLocaleDateString("en-US", { month: "short" })
+      .toLocaleDateString("en-US", { month: "short", timeZone: "UTC" })
       .toUpperCase(),
-    day: new Date(event.date).getDate().toString(),
+    day: new Intl.DateTimeFormat("en-US", { day: "numeric", timeZone: "UTC" }).format(new Date(event.date)),
     displayDate: new Date(event.date).toLocaleDateString("en-US", {
       weekday: "long",
       month: "long",
       day: "numeric",
+      timeZone: "UTC",
     }),
   }));
 

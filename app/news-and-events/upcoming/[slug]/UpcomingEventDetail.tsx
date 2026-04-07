@@ -162,27 +162,26 @@ export default function UpcomingEventDetail({
               {event.description}
             </motion.p> */}
 
-            {/* CTA Button */}
-            {/* <motion.div
+            {/* Reserve CTA */}
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.6, ease }}
             >
-              <a
-                href="https://wa.me/96179117997"
-                target="_blank"
-                rel="noopener noreferrer"
+              <motion.button
+                onClick={() =>
+                  document
+                    .getElementById("reserve-section")
+                    ?.scrollIntoView({ behavior: "smooth" })
+                }
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="inline-flex items-center gap-3 px-8 sm:px-10 py-3.5 sm:py-4 bg-gold text-black font-playfair font-semibold text-sm sm:text-base uppercase tracking-[0.15em] overflow-hidden group relative cursor-pointer"
               >
-                <motion.span
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="inline-flex items-center gap-3 px-8 sm:px-10 py-3.5 sm:py-4 bg-gold text-black font-playfair font-semibold text-sm sm:text-base uppercase tracking-[0.15em] overflow-hidden group relative"
-                >
-                  <span className="relative z-10">Reserve via WhatsApp</span>
-                  <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/30 to-transparent" />
-                </motion.span>
-              </a>
-            </motion.div> */}
+                <span className="relative z-10">Reserve</span>
+                <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+              </motion.button>
+            </motion.div>
           </div>
         </div>
 
@@ -229,7 +228,7 @@ export default function UpcomingEventDetail({
       )}
 
       {/* Event Registration */}
-      <section className="relative bg-black py-16 sm:py-20 lg:py-24 overflow-hidden">
+      <section id="reserve-section" className="relative bg-black py-16 sm:py-20 lg:py-24 overflow-hidden">
         <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/20 to-transparent" />
         <div className="absolute top-1/2 left-1/4 w-80 h-80 bg-gold/5 rounded-full blur-[100px] pointer-events-none" />
 
