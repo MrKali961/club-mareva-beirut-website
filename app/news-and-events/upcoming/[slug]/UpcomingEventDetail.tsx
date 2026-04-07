@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useActionState } from 'react';
-import { motion } from 'framer-motion';
-import { Calendar, ChevronDown, ArrowLeft, ArrowRight } from 'lucide-react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { submitEventRegistration } from '../actions';
+import { useState } from "react";
+import { useActionState } from "react";
+import { motion } from "framer-motion";
+import { Calendar, ChevronDown, ArrowLeft, ArrowRight } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { submitEventRegistration } from "../actions";
 
 interface EventData {
   id: string;
@@ -41,7 +41,10 @@ interface UpcomingEventDetailProps {
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
-export default function UpcomingEventDetail({ event, otherEvents }: UpcomingEventDetailProps) {
+export default function UpcomingEventDetail({
+  event,
+  otherEvents,
+}: UpcomingEventDetailProps) {
   return (
     <main className="min-h-screen bg-black">
       {/* Cinema Hero - Full Viewport */}
@@ -50,7 +53,7 @@ export default function UpcomingEventDetail({ event, otherEvents }: UpcomingEven
         <motion.div
           initial={{ scale: 1.05 }}
           animate={{ scale: 1 }}
-          transition={{ duration: 10, ease: 'easeOut' }}
+          transition={{ duration: 10, ease: "easeOut" }}
           className="absolute inset-0"
         >
           {event.image ? (
@@ -160,7 +163,7 @@ export default function UpcomingEventDetail({ event, otherEvents }: UpcomingEven
             </motion.p>
 
             {/* CTA Button */}
-            <motion.div
+            {/* <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.6, ease }}
@@ -179,7 +182,7 @@ export default function UpcomingEventDetail({ event, otherEvents }: UpcomingEven
                   <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/30 to-transparent" />
                 </motion.span>
               </a>
-            </motion.div>
+            </motion.div> */}
           </div>
         </div>
 
@@ -193,7 +196,11 @@ export default function UpcomingEventDetail({ event, otherEvents }: UpcomingEven
           >
             <motion.div
               animate={{ y: [0, 6, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+              transition={{
+                duration: 1.5,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
             >
               <ChevronDown className="w-5 h-5 text-cream/40" />
             </motion.div>
@@ -242,11 +249,15 @@ export default function UpcomingEventDetail({ event, otherEvents }: UpcomingEven
             </h2>
             <div className="w-16 h-[1px] bg-gradient-to-r from-transparent via-gold to-transparent mx-auto mb-4" />
             <p className="font-playfair text-cream/60 text-sm leading-relaxed">
-              Register below to confirm your attendance. We will reach out with further details.
+              Register below to confirm your attendance. We will reach out with
+              further details.
             </p>
           </motion.div>
 
-          <RegistrationForm eventId={event.id} maxVisitors={event.maxVisitors} />
+          <RegistrationForm
+            eventId={event.id}
+            maxVisitors={event.maxVisitors}
+          />
 
           <motion.div
             initial={{ opacity: 0 }}
@@ -256,7 +267,7 @@ export default function UpcomingEventDetail({ event, otherEvents }: UpcomingEven
             className="mt-6 text-center"
           >
             <p className="font-playfair text-cream/40 text-xs tracking-wider">
-              Prefer WhatsApp?{' '}
+              Prefer WhatsApp?{" "}
               <a
                 href="https://wa.me/96179117997"
                 target="_blank"
@@ -295,7 +306,11 @@ export default function UpcomingEventDetail({ event, otherEvents }: UpcomingEven
             {/* Events Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
               {otherEvents.map((otherEvent, index) => (
-                <OtherEventCard key={otherEvent.id} event={otherEvent} index={index} />
+                <OtherEventCard
+                  key={otherEvent.id}
+                  event={otherEvent}
+                  index={index}
+                />
               ))}
             </div>
 
@@ -472,11 +487,20 @@ export default function UpcomingEventDetail({ event, otherEvents }: UpcomingEven
   );
 }
 
-function RegistrationForm({ eventId, maxVisitors }: { eventId: string; maxVisitors?: number }) {
-  const [state, formAction, isPending] = useActionState(submitEventRegistration, {
-    success: false,
-    message: '',
-  });
+function RegistrationForm({
+  eventId,
+  maxVisitors,
+}: {
+  eventId: string;
+  maxVisitors?: number;
+}) {
+  const [state, formAction, isPending] = useActionState(
+    submitEventRegistration,
+    {
+      success: false,
+      message: "",
+    },
+  );
 
   if (state.success) {
     return (
@@ -486,11 +510,23 @@ function RegistrationForm({ eventId, maxVisitors }: { eventId: string; maxVisito
         className="text-center py-12 px-6 border border-gold/30 bg-black/60"
       >
         <div className="w-14 h-14 mx-auto mb-4 border border-gold/30 flex items-center justify-center">
-          <svg className="w-7 h-7 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+          <svg
+            className="w-7 h-7 text-gold"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={1.5}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M4.5 12.75l6 6 9-13.5"
+            />
           </svg>
         </div>
-        <p className="font-playfair text-gold text-lg mb-2 tracking-wider">Registration Confirmed</p>
+        <p className="font-playfair text-gold text-lg mb-2 tracking-wider">
+          Registration Confirmed
+        </p>
         <p className="font-playfair text-cream/70 text-sm">{state.message}</p>
       </motion.div>
     );
@@ -522,7 +558,9 @@ function RegistrationForm({ eventId, maxVisitors }: { eventId: string; maxVisito
           className="w-full bg-transparent border border-gold/30 px-4 py-3 font-playfair text-cream text-sm placeholder:text-cream/40 focus:outline-none focus:border-gold transition-colors"
         />
         {state.errors?.name && (
-          <p className="text-red-400 text-xs mt-1 font-playfair">{state.errors.name}</p>
+          <p className="text-red-400 text-xs mt-1 font-playfair">
+            {state.errors.name}
+          </p>
         )}
       </div>
 
@@ -535,7 +573,9 @@ function RegistrationForm({ eventId, maxVisitors }: { eventId: string; maxVisito
           className="w-full bg-transparent border border-gold/30 px-4 py-3 font-playfair text-cream text-sm placeholder:text-cream/40 focus:outline-none focus:border-gold transition-colors"
         />
         {state.errors?.email && (
-          <p className="text-red-400 text-xs mt-1 font-playfair">{state.errors.email}</p>
+          <p className="text-red-400 text-xs mt-1 font-playfair">
+            {state.errors.email}
+          </p>
         )}
       </div>
 
@@ -548,7 +588,9 @@ function RegistrationForm({ eventId, maxVisitors }: { eventId: string; maxVisito
           className="w-full bg-transparent border border-gold/30 px-4 py-3 font-playfair text-cream text-sm placeholder:text-cream/40 focus:outline-none focus:border-gold transition-colors"
         />
         {state.errors?.phone && (
-          <p className="text-red-400 text-xs mt-1 font-playfair">{state.errors.phone}</p>
+          <p className="text-red-400 text-xs mt-1 font-playfair">
+            {state.errors.phone}
+          </p>
         )}
       </div>
 
@@ -557,19 +599,26 @@ function RegistrationForm({ eventId, maxVisitors }: { eventId: string; maxVisito
           Number of Guests
         </label>
         <select
+          title="Number of Guests"
           name="numberOfGuests"
           defaultValue="1"
           className="w-full bg-black border border-gold/30 px-4 py-3 font-playfair text-cream text-sm focus:outline-none focus:border-gold transition-colors appearance-none cursor-pointer"
-          style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23C8A97E' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 16px center' }}
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23C8A97E' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`,
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "right 16px center",
+          }}
         >
           {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
             <option key={n} value={n} className="bg-black text-cream">
-              {n} {n === 1 ? 'guest' : 'guests'}
+              {n} {n === 1 ? "guest" : "guests"}
             </option>
           ))}
         </select>
         {state.errors?.numberOfGuests && (
-          <p className="text-red-400 text-xs mt-1 font-playfair">{state.errors.numberOfGuests}</p>
+          <p className="text-red-400 text-xs mt-1 font-playfair">
+            {state.errors.numberOfGuests}
+          </p>
         )}
       </div>
 
@@ -586,13 +635,19 @@ function RegistrationForm({ eventId, maxVisitors }: { eventId: string; maxVisito
         whileTap={{ scale: 0.98 }}
         className="w-full bg-gold text-black py-3.5 font-playfair font-semibold tracking-wider uppercase text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-opacity"
       >
-        {isPending ? 'Registering...' : 'Register for This Event'}
+        {isPending ? "Registering..." : "Register for This Event"}
       </motion.button>
     </motion.form>
   );
 }
 
-function OtherEventCard({ event, index }: { event: OtherEvent; index: number }) {
+function OtherEventCard({
+  event,
+  index,
+}: {
+  event: OtherEvent;
+  index: number;
+}) {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -613,7 +668,7 @@ function OtherEventCard({ event, index }: { event: OtherEvent; index: number }) 
             <motion.div
               animate={{
                 scale: isHovered ? 1.12 : 1,
-                filter: isHovered ? 'brightness(1.1)' : 'brightness(1)',
+                filter: isHovered ? "brightness(1.1)" : "brightness(1)",
               }}
               transition={{ duration: 0.7, ease }}
               className="relative w-full h-full"
@@ -703,7 +758,7 @@ function OtherEventCard({ event, index }: { event: OtherEvent; index: number }) 
               animate={{ scaleX: isHovered ? 1 : 0 }}
               transition={{ duration: 0.5, ease }}
               className="absolute bottom-0 left-0 h-[2px] bg-gradient-to-r from-gold via-gold-light to-gold origin-left"
-              style={{ width: '100%' }}
+              style={{ width: "100%" }}
             />
           </div>
         </div>
