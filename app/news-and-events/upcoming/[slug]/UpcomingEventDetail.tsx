@@ -259,7 +259,7 @@ export default function UpcomingEventDetail({
             maxVisitors={event.maxVisitors}
           />
 
-          <motion.div
+          {/* <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
@@ -277,7 +277,7 @@ export default function UpcomingEventDetail({
                 Reserve directly
               </a>
             </p>
-          </motion.div>
+          </motion.div> */}
         </div>
 
         <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/20 to-transparent" />
