@@ -41,12 +41,19 @@ export async function submitEventRegistration(
       message: 'You have been registered successfully! A confirmation email has been sent to your inbox.',
     };
   } catch (error: any) {
-    const message = error?.message || '';
+    // ApiError stores the server message in details.message, not in error.message
+    const message = error?.details?.message || error?.message || '';
     if (message.includes('already registered')) {
       return { success: false, message: 'You have already registered for this event.' };
     }
-    if (message.includes('maximum capacity')) {
+    if (message.includes('maximum capacity') || message.includes('EVENT_FULL')) {
       return { success: false, message: 'Sorry, this event has reached maximum capacity.' };
+    }
+    if (message.includes('past events')) {
+      return { success: false, message: 'Registration is no longer available for this event.' };
+    }
+    if (message.includes('unpublished')) {
+      return { success: false, message: 'This event is not currently accepting registrations.' };
     }
     return { success: false, message: 'Registration failed. Please try again later.' };
   }
