@@ -153,14 +153,14 @@ export default function UpcomingEventDetail({
             </motion.div>
 
             {/* Description */}
-            <motion.p
+            {/* <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.5, ease }}
               className="font-playfair text-cream/80 text-base sm:text-lg max-w-2xl leading-relaxed mb-8 sm:mb-10"
             >
               {event.description}
-            </motion.p>
+            </motion.p> */}
 
             {/* CTA Button */}
             {/* <motion.div
