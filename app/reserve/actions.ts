@@ -36,6 +36,30 @@ export async function submitReserveForm(
     return { success: false, message: 'Please fix the errors below.', errors };
   }
 
+  // Verify reCAPTCHA v3 token
+  const recaptchaSecret = process.env.RECAPTCHA_SECRET_KEY;
+  if (recaptchaSecret) {
+    const recaptchaToken = formData.get('recaptchaToken') as string;
+    if (!recaptchaToken) {
+      return { success: false, message: 'Security verification failed. Please refresh the page and try again.' };
+    }
+
+    try {
+      const verifyRes = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ secret: recaptchaSecret, response: recaptchaToken }),
+      });
+      const verifyData = await verifyRes.json();
+
+      if (!verifyData.success || verifyData.score < 0.5) {
+        return { success: false, message: 'Security verification failed. Please try again.' };
+      }
+    } catch {
+      return { success: false, message: 'Security verification failed. Please try again.' };
+    }
+  }
+
   try {
     const result = await submitReservation({
       name: name.trim(),

@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState, useCallback, useRef, useEffect } from "react";
+import { useActionState, useState, useCallback, useRef, useEffect, startTransition } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Calendar,
@@ -22,6 +22,7 @@ import {
 import FloorMap from "./FloorMap";
 import Link from "next/link";
 import { submitReserveForm } from "./actions";
+import { GoogleReCaptchaProvider, useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import type {
   ApiReservationSettings,
   ApiAvailability,
@@ -58,77 +59,80 @@ export default function ReserveClient({ settings }: Props) {
   }
 
   return (
-    <main className="relative z-20 w-full overflow-hidden">
-      {/* Noise texture */}
-      <div
-        className="fixed inset-0 opacity-[0.06] pointer-events-none z-0"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-          backgroundRepeat: "repeat",
-        }}
-      />
-
-      {/* Hero Header */}
-      <section className="relative pt-32 pb-16 md:pt-40 md:pb-20 px-6">
-        {/* Decorative radial glow */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,rgba(201,162,39,0.12)_0%,transparent_60%)]" />
-
-        {/* Corner accents */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1, delay: 0.6 }}
-          className="absolute top-24 left-6 w-20 h-20 border-t-2 border-l-2 border-gold/30"
-        />
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1, delay: 0.8 }}
-          className="absolute top-24 right-6 w-20 h-20 border-t-2 border-r-2 border-gold/30"
+    <GoogleReCaptchaProvider reCaptchaKey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ?? ''}>
+      <style>{`.grecaptcha-badge { visibility: hidden !important; }`}</style>
+      <main className="relative z-20 w-full overflow-hidden">
+        {/* Noise texture */}
+        <div
+          className="fixed inset-0 opacity-[0.06] pointer-events-none z-0"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+            backgroundRepeat: "repeat",
+          }}
         />
 
-        <div className="relative z-10 max-w-3xl mx-auto text-center">
-          <motion.p
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: EASE }}
-            className="font-playfair text-xs tracking-[0.3em] uppercase text-gold/80 mb-4"
-          >
-            {settings.sectionSubtitle}
-          </motion.p>
+        {/* Hero Header */}
+        <section className="relative pt-32 pb-16 md:pt-40 md:pb-20 px-6">
+          {/* Decorative radial glow */}
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,rgba(201,162,39,0.12)_0%,transparent_60%)]" />
 
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.1, ease: EASE }}
-            className="font-playfair text-4xl md:text-5xl lg:text-6xl font-bold text-cream tracking-wider mb-6"
-          >
-            {settings.sectionTitle}
-          </motion.h1>
-
+          {/* Corner accents */}
           <motion.div
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{ duration: 1, delay: 0.3 }}
-            className="w-24 h-[1px] bg-gradient-to-r from-transparent via-gold to-transparent mx-auto mb-6 origin-center"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1, delay: 0.6 }}
+            className="absolute top-24 left-6 w-20 h-20 border-t-2 border-l-2 border-gold/30"
+          />
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1, delay: 0.8 }}
+            className="absolute top-24 right-6 w-20 h-20 border-t-2 border-r-2 border-gold/30"
           />
 
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4, ease: EASE }}
-            className="font-playfair text-cream/70 text-base md:text-lg leading-relaxed max-w-xl mx-auto"
-          >
-            {settings.sectionDescription}
-          </motion.p>
-        </div>
-      </section>
+          <div className="relative z-10 max-w-3xl mx-auto text-center">
+            <motion.p
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: EASE }}
+              className="font-playfair text-xs tracking-[0.3em] uppercase text-gold/80 mb-4"
+            >
+              {settings.sectionSubtitle}
+            </motion.p>
 
-      {/* Reservation Form */}
-      <section className="relative z-10 pb-24 md:pb-32 px-6">
-        <ReservationForm settings={settings} />
-      </section>
-    </main>
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.1, ease: EASE }}
+              className="font-playfair text-4xl md:text-5xl lg:text-6xl font-bold text-cream tracking-wider mb-6"
+            >
+              {settings.sectionTitle}
+            </motion.h1>
+
+            <motion.div
+              initial={{ scaleX: 0 }}
+              animate={{ scaleX: 1 }}
+              transition={{ duration: 1, delay: 0.3 }}
+              className="w-24 h-[1px] bg-gradient-to-r from-transparent via-gold to-transparent mx-auto mb-6 origin-center"
+            />
+
+            <motion.p
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4, ease: EASE }}
+              className="font-playfair text-cream/70 text-base md:text-lg leading-relaxed max-w-xl mx-auto"
+            >
+              {settings.sectionDescription}
+            </motion.p>
+          </div>
+        </section>
+
+        {/* Reservation Form */}
+        <section className="relative z-10 pb-24 md:pb-32 px-6">
+          <ReservationForm settings={settings} />
+        </section>
+      </main>
+    </GoogleReCaptchaProvider>
   );
 }
 
@@ -139,6 +143,7 @@ function ReservationForm({ settings }: { settings: ApiReservationSettings }) {
     success: false,
     message: "",
   });
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [selectedTime, setSelectedTime] = useState<string>("");
@@ -315,6 +320,22 @@ function ReservationForm({ settings }: { settings: ApiReservationSettings }) {
     }
   }, [state.success]);
 
+  const handleSubmit = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const fd = new FormData(e.currentTarget);
+    if (executeRecaptcha) {
+      try {
+        const token = await executeRecaptcha('reserve');
+        fd.set('recaptchaToken', token);
+      } catch {
+        // If reCAPTCHA fails, still submit — server will validate
+      }
+    }
+    startTransition(() => {
+      formAction(fd);
+    });
+  }, [executeRecaptcha, formAction]);
+
   // Success state
   if (state.success) {
     return (
@@ -414,7 +435,7 @@ function ReservationForm({ settings }: { settings: ApiReservationSettings }) {
             </motion.div>
           )}
 
-          <form ref={formRef} action={formAction} className="space-y-8">
+          <form ref={formRef} onSubmit={handleSubmit} className="space-y-8">
             {/* Hidden fields for selected values */}
             <input type="hidden" name="date" value={selectedDate} />
             <input type="hidden" name="time" value={selectedTime} />
@@ -639,6 +660,15 @@ function ReservationForm({ settings }: { settings: ApiReservationSettings }) {
                       />
                     </div>
                   </div>
+
+                  {/* reCAPTCHA attribution (required when badge is hidden) */}
+                  <p className="text-cream/30 text-[10px] font-playfair text-center leading-relaxed">
+                    This site is protected by reCAPTCHA and the Google{' '}
+                    <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="underline hover:text-cream/50 transition-colors">Privacy Policy</a>{' '}
+                    and{' '}
+                    <a href="https://policies.google.com/terms" target="_blank" rel="noopener noreferrer" className="underline hover:text-cream/50 transition-colors">Terms of Service</a>{' '}
+                    apply.
+                  </p>
 
                   {/* Submit */}
                   <motion.button
