@@ -14,7 +14,7 @@ export async function submitReserveForm(
 ): Promise<ReserveFormState> {
   const name = formData.get('name') as string;
   const email = formData.get('email') as string;
-  const phone = formData.get('phone') as string;
+  const rawPhone = (formData.get('phone') as string) ?? '';
   const date = formData.get('date') as string;
   const time = formData.get('time') as string;
   const numberOfGuests = Number(formData.get('numberOfGuests'));
@@ -23,10 +23,15 @@ export async function submitReserveForm(
   const durationMinutes = Number(formData.get('durationMinutes')) || undefined;
   const whatsappOptIn = formData.get('whatsappOptIn') === 'on';
 
+  // Normalize phone to E.164 (strip spaces/dashes/parens) to match server validation.
+  const phone = rawPhone.replace(/[\s\-().]/g, '');
+
   const errors: Record<string, string> = {};
   if (!name || name.trim().length < 2) errors.name = 'Name is required (min 2 characters)';
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.email = 'Valid email is required';
-  if (!phone || phone.trim().length < 8) errors.phone = 'Phone number is required';
+  if (!phone || !/^\+[1-9]\d{7,14}$/.test(phone)) {
+    errors.phone = 'Please include country code, e.g. +961 71 234 567';
+  }
   if (!date) errors.date = 'Please select a date';
   if (!time) errors.time = 'Please select a time slot';
   if (!tableId) errors.tableId = 'Please select a table';
@@ -64,7 +69,7 @@ export async function submitReserveForm(
     const result = await submitReservation({
       name: name.trim(),
       email: email.trim(),
-      phone: phone.trim(),
+      phone,
       date,
       time,
       durationMinutes,

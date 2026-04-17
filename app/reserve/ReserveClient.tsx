@@ -619,7 +619,9 @@ function ReservationForm({ settings }: { settings: ApiReservationSettings }) {
                           type="tel"
                           name="phone"
                           required
-                          placeholder="Phone"
+                          placeholder="Phone (e.g. +961 71 234 567)"
+                          pattern="^\+?[\s\-().0-9]{8,25}$"
+                          title="Include country code, e.g. +961 71 234 567"
                           className="w-full bg-transparent border border-gold/30 pl-11 pr-4 py-3.5 font-playfair text-cream text-sm placeholder:text-cream/40 focus:outline-none focus:border-gold transition-colors"
                         />
                       </div>
