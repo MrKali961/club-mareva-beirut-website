@@ -5,6 +5,7 @@ import { submitReservation } from '@/lib/api/reservations';
 interface ReserveFormState {
   success: boolean;
   message: string;
+  confirmedName?: string;
   errors?: Record<string, string>;
 }
 
@@ -78,7 +79,7 @@ export async function submitReserveForm(
       specialRequests: specialRequests?.trim() || undefined,
       whatsappOptIn,
     });
-    return { success: true, message: result.confirmationMessage || 'Your reservation has been received.' };
+    return { success: true, message: result.confirmationMessage || 'Your reservation has been received.', confirmedName: result.name };
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message : 'Something went wrong. Please try again or call us directly.';
     return { success: false, message: msg };

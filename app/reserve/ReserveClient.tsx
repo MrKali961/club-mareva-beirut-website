@@ -365,10 +365,19 @@ function ReservationForm({ settings }: { settings: ApiReservationSettings }) {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.6 }}
-            className="font-playfair text-2xl md:text-3xl text-cream mb-4 tracking-wider"
+            className="font-playfair text-2xl md:text-3xl text-cream mb-2 tracking-wider"
+          >
+            Thank you, {state.confirmedName || ""}
+          </motion.h2>
+
+          <motion.p
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.45, duration: 0.6 }}
+            className="font-playfair text-sm tracking-[0.15em] uppercase text-gold/70 mb-4"
           >
             Reservation Received
-          </motion.h2>
+          </motion.p>
 
           <motion.div
             initial={{ scaleX: 0 }}
