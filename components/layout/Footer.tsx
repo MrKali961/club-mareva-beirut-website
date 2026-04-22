@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Instagram, Facebook, MessageCircle } from 'lucide-react';
-import Link from 'next/link';
-import Image from 'next/image';
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { Instagram, Facebook, MessageCircle } from "lucide-react";
+import Link from "next/link";
+import Image from "next/image";
 
 const easeOut = [0.22, 1, 0.36, 1] as const;
 
@@ -22,10 +22,10 @@ export default function Footer() {
       }
       setLastScrollY(currentScrollY);
     };
-    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener("scroll", handleScroll, { passive: true });
 
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, [lastScrollY]);
 
@@ -45,9 +45,6 @@ export default function Footer() {
         className="fixed bottom-0 left-0 w-full z-0 min-h-screen flex flex-col bg-black-900 overflow-y-auto"
       >
         {/* ── Atmospheric Background Layers ── */}
-
-
-
 
         {/* ═══ Center Content ═══ */}
         <div className="relative z-10 flex-1 flex items-center justify-center px-6 py-16 lg:py-0">
@@ -98,19 +95,31 @@ export default function Footer() {
                   Explore
                 </h4>
                 <nav className="flex flex-col gap-3">
-                  <Link href="/" className="group font-playfair text-sm text-cream/60 hover:text-gold transition-colors duration-300 relative w-fit lg:w-fit mx-auto lg:mx-0">
+                  <Link
+                    href="/"
+                    className="group font-playfair text-sm text-cream/60 hover:text-gold transition-colors duration-300 relative w-fit lg:w-fit mx-auto lg:mx-0"
+                  >
                     Home
                     <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-gold transition-all duration-300 group-hover:w-full" />
                   </Link>
-                  <Link href="/cigars" className="group font-playfair text-sm text-cream/60 hover:text-gold transition-colors duration-300 relative w-fit mx-auto lg:mx-0">
+                  <Link
+                    href="/cigars"
+                    className="group font-playfair text-sm text-cream/60 hover:text-gold transition-colors duration-300 relative w-fit mx-auto lg:mx-0"
+                  >
                     Cigars
                     <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-gold transition-all duration-300 group-hover:w-full" />
                   </Link>
-                  <Link href="/news-and-events" className="group font-playfair text-sm text-cream/60 hover:text-gold transition-colors duration-300 relative w-fit mx-auto lg:mx-0">
+                  <Link
+                    href="/news-and-events"
+                    className="group font-playfair text-sm text-cream/60 hover:text-gold transition-colors duration-300 relative w-fit mx-auto lg:mx-0"
+                  >
                     News &amp; Events
                     <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-gold transition-all duration-300 group-hover:w-full" />
                   </Link>
-                  <Link href="/contact" className="group font-playfair text-sm text-cream/60 hover:text-gold transition-colors duration-300 relative w-fit mx-auto lg:mx-0">
+                  <Link
+                    href="/contact"
+                    className="group font-playfair text-sm text-cream/60 hover:text-gold transition-colors duration-300 relative w-fit mx-auto lg:mx-0"
+                  >
                     Contact
                     <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-gold transition-all duration-300 group-hover:w-full" />
                   </Link>
@@ -124,12 +133,20 @@ export default function Footer() {
                 </h4>
                 <div className="flex flex-col gap-3">
                   <div>
-                    <p className="font-playfair text-sm text-cream/80">Monday &ndash; Saturday</p>
-                    <p className="font-playfair text-sm text-cream/50">11:00 AM &ndash; 11:00 PM</p>
+                    <p className="font-playfair text-sm text-cream/80">
+                      Monday &ndash; Saturday
+                    </p>
+                    <p className="font-playfair text-sm text-cream/50">
+                      11:00 AM &ndash; 11:00 PM
+                    </p>
                   </div>
                   <div>
-                    <p className="font-playfair text-sm text-cream/80">Sunday</p>
-                    <p className="font-playfair text-sm text-cream/50">5:00 PM &ndash; 11:00 PM</p>
+                    <p className="font-playfair text-sm text-cream/80">
+                      Sunday
+                    </p>
+                    <p className="font-playfair text-sm text-cream/50">
+                      5:00 PM &ndash; 11:00 PM
+                    </p>
                   </div>
                 </div>
               </div>
@@ -225,43 +242,6 @@ export default function Footer() {
 
             {/* Gold divider */}
             <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-gold to-transparent mx-auto mt-10 mb-8 animate-line-expand animation-delay-700" />
-
-            {/* ── Reserve CTA ── */}
-            <motion.div
-              variants={{
-                hidden: { opacity: 0, y: 15 },
-                visible: {
-                  opacity: 1,
-                  y: 0,
-                  transition: { duration: 0.8, delay: 1.0, ease: easeOut },
-                },
-              }}
-            >
-              <a
-                href="https://wa.me/96179117997"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group relative block"
-              >
-                <motion.div
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-                  className="relative bg-gold text-black py-4 px-10 font-playfair font-medium tracking-wider uppercase text-sm text-center overflow-hidden shadow-[0_0_20px_rgba(201,162,39,0.25)] transition-shadow duration-300 group-hover:shadow-[0_0_40px_rgba(201,162,39,0.4)]"
-                >
-                  {/* Shimmer Effect */}
-                  <motion.span
-                    className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent"
-                    initial={{ x: '-100%' }}
-                    whileHover={{
-                      x: '200%',
-                      transition: { duration: 0.6, ease: 'easeInOut' },
-                    }}
-                  />
-                  <span className="relative z-10">Reserve Your Visit</span>
-                </motion.div>
-              </a>
-            </motion.div>
           </div>
         </div>
 
@@ -311,7 +291,7 @@ export default function Footer() {
               reserved.
             </motion.p>
             <p className="font-playfair text-[10px] text-cream/25 text-center mt-2 tracking-wide">
-              Powered by{' '}
+              Powered by{" "}
               <a
                 href="https://theelitessolutions.com"
                 target="_blank"
@@ -334,7 +314,7 @@ export default function Footer() {
           y: fabVisible ? 0 : 20,
         }}
         transition={{ duration: 0.4, delay: 1 }}
-        style={{ pointerEvents: fabVisible ? 'auto' : 'none' }}
+        style={{ pointerEvents: fabVisible ? "auto" : "none" }}
         className="fixed bottom-20 lg:bottom-8 right-6 lg:right-8 z-50"
       >
         <a
@@ -353,7 +333,7 @@ export default function Footer() {
             transition={{
               duration: 2.5,
               repeat: Infinity,
-              ease: 'easeInOut',
+              ease: "easeInOut",
             }}
             className="absolute inset-0 rounded-full bg-gold"
           />
