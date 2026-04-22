@@ -14,6 +14,7 @@ interface EventItem {
   date: string;
   category: string;
   image: string;
+  mediaType?: "image" | "video";
   slug: string;
   type: "upcoming" | "event" | "news";
 }
@@ -54,13 +55,24 @@ const EventCard = ({ event, index }: { event: EventItem; index: number }) => {
           >
             {/* Featured image or gradient placeholder */}
             {event.image ? (
-              <Image
-                src={event.image}
-                alt={event.title}
-                fill
-                className="object-cover"
-                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              />
+              event.mediaType === "video" ? (
+                <video
+                  src={event.image}
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
+                  className="absolute inset-0 w-full h-full object-cover bg-black"
+                />
+              ) : (
+                <Image
+                  src={event.image}
+                  alt={event.title}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                />
+              )
             ) : (
               <>
                 <div className="absolute inset-0 bg-gradient-to-br from-black-800 via-green-dark to-black" />

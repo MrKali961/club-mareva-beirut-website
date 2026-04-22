@@ -65,6 +65,8 @@ export default async function NewsAndEventsPage() {
         image: resolveImagePath(
           post.featured_image?.local_path || post.featured_image?.original_url,
         ),
+        mediaType:
+          post.featuredMediaType ?? post.featured_image?.mediaType ?? "image",
         slug: post.slug,
         excerpt: post.content.text.substring(0, 150) + "...",
         readTime: `${Math.ceil(post.content.text.split(" ").length / 200)} min`,
@@ -86,6 +88,7 @@ export default async function NewsAndEventsPage() {
       }),
       category: "Events",
       image: resolveImagePath(imageUrl),
+      mediaType: event.mediaType ?? event.mediaAsset?.mediaType ?? "image",
       slug: event.slug,
       excerpt:
         bodyText.substring(0, 150) + (bodyText.length > 150 ? "..." : ""),
@@ -101,6 +104,7 @@ export default async function NewsAndEventsPage() {
     category: event.category,
     description: event.description,
     image: event.image,
+    mediaType: event.mediaType ?? "image",
     featured: event.featured,
     month: new Date(event.date)
       .toLocaleDateString("en-US", { month: "short", timeZone: "UTC" })

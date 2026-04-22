@@ -50,6 +50,7 @@ export default async function Home() {
     rawDate: number;
     category: string;
     image: string;
+    mediaType: 'image' | 'video';
     slug: string;
     type: 'upcoming' | 'event' | 'news';
   };
@@ -67,6 +68,7 @@ export default async function Home() {
       rawDate: new Date(event.date).getTime(),
       category: event.category,
       image: resolveImagePath(event.image),
+      mediaType: event.mediaType ?? 'image',
       slug,
       type: 'upcoming',
     });
@@ -83,6 +85,7 @@ export default async function Home() {
       rawDate: new Date(event.date).getTime(),
       category: 'Events',
       image: resolveImagePath(imageUrl),
+      mediaType: event.mediaType ?? event.mediaAsset?.mediaType ?? 'image',
       slug: event.slug,
       type: 'event',
     });
@@ -98,6 +101,8 @@ export default async function Home() {
       rawDate: new Date(post.date_created).getTime(),
       category: post.categories[0] || 'News',
       image: resolveImagePath(post.featured_image?.local_path),
+      mediaType:
+        post.featuredMediaType ?? post.featured_image?.mediaType ?? 'image',
       slug: post.slug,
       type: 'news',
     });

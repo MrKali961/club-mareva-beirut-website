@@ -16,6 +16,7 @@ export interface UpcomingEventItem {
   category: string;
   description: string;
   image: string;
+  mediaType?: "image" | "video";
   featured: boolean;
   month: string;       // "MAR", "APR" - pre-computed
   day: string;         // "15", "22" - pre-computed
@@ -62,13 +63,24 @@ const UpcomingEventCard = ({
           >
             {/* Featured image or gradient placeholder */}
             {event.image ? (
-              <Image
-                src={event.image}
-                alt={event.title}
-                fill
-                className="object-cover"
-                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              />
+              event.mediaType === "video" ? (
+                <video
+                  src={event.image}
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
+                  className="absolute inset-0 w-full h-full object-cover bg-black"
+                />
+              ) : (
+                <Image
+                  src={event.image}
+                  alt={event.title}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                />
+              )
             ) : (
               <>
                 {/* Enhanced gradient placeholder background */}

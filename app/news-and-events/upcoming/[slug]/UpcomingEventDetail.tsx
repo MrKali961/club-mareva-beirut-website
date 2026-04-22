@@ -14,6 +14,7 @@ interface EventData {
   category: string;
   description: string;
   image: string;
+  mediaType?: "image" | "video";
   body?: string;
   location?: string;
   maxVisitors?: number;
@@ -29,6 +30,7 @@ interface OtherEvent {
   title: string;
   category: string;
   image: string;
+  mediaType?: "image" | "video";
   month: string;
   day: string;
   displayDate: string;
@@ -57,15 +59,26 @@ export default function UpcomingEventDetail({
           className="absolute inset-0"
         >
           {event.image ? (
-            <Image
-              src={event.image}
-              alt={event.title}
-              fill
-              className="object-cover"
-              priority
-              sizes="100vw"
-              quality={85}
-            />
+            event.mediaType === "video" ? (
+              <video
+                src={event.image}
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+            ) : (
+              <Image
+                src={event.image}
+                alt={event.title}
+                fill
+                className="object-cover"
+                priority
+                sizes="100vw"
+                quality={85}
+              />
+            )
           ) : (
             <>
               <div className="absolute inset-0 bg-gradient-to-br from-black via-green-dark/40 to-black" />
@@ -673,13 +686,24 @@ function OtherEventCard({
               className="relative w-full h-full"
             >
               {event.image ? (
-                <Image
-                  src={event.image}
-                  alt={event.title}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                />
+                event.mediaType === "video" ? (
+                  <video
+                    src={event.image}
+                    muted
+                    loop
+                    playsInline
+                    preload="metadata"
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                ) : (
+                  <Image
+                    src={event.image}
+                    alt={event.title}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  />
+                )
               ) : (
                 <>
                   <div className="absolute inset-0 bg-gradient-to-br from-black-800 via-green-dark to-black" />

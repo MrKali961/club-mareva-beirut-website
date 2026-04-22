@@ -10,6 +10,8 @@ interface ApiEvent {
   body: string;
   isFeatured: boolean;
   maxVisitors?: number;
+  mediaType?: 'image' | 'video';
+  mediaAsset?: { id: string; url: string; mediaType?: 'image' | 'video' } | null;
   metaTitle?: string | null;
   metaDescription?: string | null;
   metaKeywords?: string | null;
@@ -33,6 +35,7 @@ interface ApiEvent {
     mediaAssetId: string;
     displayOrder: number;
     createdAt: string;
+    mediaType?: 'image' | 'video';
     imageUrls: {
       original: string;
       medium: string;
@@ -50,6 +53,7 @@ export interface UpcomingEventWithSlug {
   category: string;
   description: string;
   image: string;
+  mediaType?: 'image' | 'video';
   featured: boolean;
   location?: string;
   maxVisitors?: number;
@@ -59,6 +63,7 @@ export interface UpcomingEventWithSlug {
     mediaAssetId: string;
     displayOrder: number;
     createdAt: string;
+    mediaType?: 'image' | 'video';
     imageUrls: {
       original: string;
       medium: string;
@@ -88,6 +93,7 @@ export function apiEventToUpcomingEvent(event: ApiEvent): UpcomingEventWithSlug 
       return text.length > 200 ? text.substring(0, 197).trimEnd() + '...' : text;
     })(),
     image: event.imageUrls?.original || event.image?.url || event.mainImageUrl || '',
+    mediaType: event.mediaType ?? event.mediaAsset?.mediaType ?? 'image',
     featured: event.isFeatured,
     location: event.location,
     maxVisitors: event.maxVisitors,

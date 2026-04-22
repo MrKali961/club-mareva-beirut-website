@@ -164,19 +164,27 @@ export default async function PostPage({
           image: resolveImagePath(
             p.featured_image?.local_path || p.featured_image?.original_url,
           ),
+          mediaType:
+            p.featuredMediaType ?? p.featured_image?.mediaType ?? "image",
           excerpt: p.content.text.substring(0, 120) + "...",
         }));
 
-      const galleryImages = (event.galleryImages ?? []).length > 0
-        ? (event.galleryImages ?? [])
-            .sort((a, b) => a.displayOrder - b.displayOrder)
-            .map((gi) => resolveImagePath(gi.imageUrls.original))
+      const sortedGallery = (event.galleryImages ?? [])
+        .slice()
+        .sort((a, b) => a.displayOrder - b.displayOrder);
+      const galleryImages = sortedGallery.length > 0
+        ? sortedGallery.map((gi) => resolveImagePath(gi.imageUrls.original))
         : extractImagesFromHtml(event.body || '');
+      const galleryMediaTypes: ('image' | 'video')[] = sortedGallery.length > 0
+        ? sortedGallery.map((gi) => gi.mediaType ?? 'image')
+        : galleryImages.map(() => 'image' as const);
 
       // Build imageIdMap from gallery images (maps junction-table ID → URL)
       const imageIdMap: Record<string, string> = {};
+      const mediaTypeIdMap: Record<string, 'image' | 'video'> = {};
       for (const gi of event.galleryImages ?? []) {
         imageIdMap[gi.id] = resolveImagePath(gi.imageUrls.original);
+        mediaTypeIdMap[gi.id] = gi.mediaType ?? 'image';
       }
 
       const postData = {
@@ -190,10 +198,13 @@ export default async function PostPage({
         }),
         category: event.category || "Events",
         featuredImage: resolveImagePath(event.image),
+        featuredMediaType: event.mediaType ?? "image",
         content: event.body || "",
         images: galleryImages,
+        imageMediaTypes: galleryMediaTypes,
         galleryLayout: event.galleryLayout ?? null,
         imageIdMap,
+        mediaTypeIdMap,
       };
 
       return <PostClient post={postData} relatedPosts={relatedPosts} />;
@@ -210,6 +221,7 @@ export default async function PostPage({
         title: e.title,
         category: e.category,
         image: e.image,
+        mediaType: e.mediaType ?? ("image" as const),
         month: new Date(e.date)
           .toLocaleDateString("en-US", { month: "short", timeZone: "UTC" })
           .toUpperCase(),
@@ -228,6 +240,7 @@ export default async function PostPage({
       category: event.category,
       description: event.description,
       image: event.image,
+      mediaType: event.mediaType ?? ("image" as const),
       body: event.body,
       location: event.location,
       maxVisitors: event.maxVisitors,
@@ -275,9 +288,12 @@ export default async function PostPage({
       image: resolveImagePath(
         p.featured_image?.local_path || p.featured_image?.original_url,
       ),
+      mediaType:
+        p.featuredMediaType ?? p.featured_image?.mediaType ?? "image",
       excerpt: p.content.text.substring(0, 120) + "...",
     }));
 
+  const galleryImgs = post.images.filter((img) => img.local_path || img.original_url);
   const postData = {
     title: post.title,
     slug: post.slug,
@@ -291,12 +307,16 @@ export default async function PostPage({
     featuredImage: resolveImagePath(
       post.featured_image?.local_path || post.featured_image?.original_url,
     ),
+    featuredMediaType:
+      post.featuredMediaType ?? post.featured_image?.mediaType ?? "image",
     content: post.content.clean,
-    images: post.images
-      .filter((img) => img.local_path || img.original_url)
-      .map((img) => resolveImagePath(img.local_path || img.original_url)),
+    images: galleryImgs.map((img) =>
+      resolveImagePath(img.local_path || img.original_url),
+    ),
+    imageMediaTypes: galleryImgs.map((img) => img.mediaType ?? "image"),
     galleryLayout: post.galleryLayout ?? null,
     imageIdMap: post.imageIdMap ?? {},
+    mediaTypeIdMap: post.mediaTypeIdMap ?? {},
   };
 
   return <PostClient post={postData} relatedPosts={relatedPosts} />;

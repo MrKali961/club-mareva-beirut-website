@@ -18,6 +18,8 @@ export interface ApiNewsArticle {
   mainImageUrl?: string;
   body: string;
   isFeatured: boolean;
+  mediaType?: 'image' | 'video';
+  mediaAsset?: { id: string; url: string; mediaType?: 'image' | 'video' } | null;
   image?: {
     url: string;
     alt: string;
@@ -33,6 +35,7 @@ export interface ApiNewsArticle {
     mediaAssetId: string;
     displayOrder: number;
     createdAt: string;
+    mediaType?: 'image' | 'video';
     imageUrls: {
       original: string;
       medium: string;
@@ -63,6 +66,8 @@ export interface ApiEvent {
   body: string;
   isFeatured: boolean;
   maxVisitors?: number;
+  mediaType?: 'image' | 'video';
+  mediaAsset?: { id: string; url: string; mediaType?: 'image' | 'video' } | null;
   metaTitle?: string | null;
   metaDescription?: string | null;
   metaKeywords?: string | null;
@@ -81,6 +86,7 @@ export interface ApiEvent {
     mediaAssetId: string;
     displayOrder: number;
     createdAt: string;
+    mediaType?: 'image' | 'video';
     imageUrls: {
       original: string;
       medium: string;

@@ -48,6 +48,7 @@ export interface PostImage {
   original_url: string;
   local_path: string;
   alt_text?: string;
+  mediaType?: 'image' | 'video';
 }
 
 export interface GalleryLayoutRow {
@@ -84,6 +85,8 @@ export interface Post {
   };
   galleryLayout?: GalleryLayoutRow[] | null;
   imageIdMap?: Record<string, string>;
+  mediaTypeIdMap?: Record<string, 'image' | 'video'>;
+  featuredMediaType?: 'image' | 'video';
 }
 
 export interface Page {
@@ -115,6 +118,7 @@ export interface UpcomingEvent {
   category: string;
   description: string;
   image: string;
+  mediaType?: 'image' | 'video';
   featured: boolean;
   location?: string;
   maxVisitors?: number;

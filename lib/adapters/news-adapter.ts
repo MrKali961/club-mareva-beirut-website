@@ -9,6 +9,8 @@ interface ApiNewsArticle {
   mainImageUrl?: string;
   body: string;
   isFeatured: boolean;
+  mediaType?: 'image' | 'video';
+  mediaAsset?: { id: string; url: string; mediaType?: 'image' | 'video' } | null;
   image?: {
     url: string;
     alt: string;
@@ -23,6 +25,7 @@ interface ApiNewsArticle {
     mediaAssetId: string;
     displayOrder: number;
     createdAt: string;
+    mediaType?: 'image' | 'video';
     imageUrls: {
       original: string;
       medium: string;
@@ -106,6 +109,8 @@ export function extractImagesFromHtml(html: string): string[] {
 
 export function apiNewsToPost(article: ApiNewsArticle): Post {
   const imageUrl = article.imageUrls?.original || article.image?.url || article.mainImageUrl || '';
+  const featuredMediaType: 'image' | 'video' =
+    article.mediaType ?? article.mediaAsset?.mediaType ?? 'image';
 
   return {
     id: typeof article.id === 'number' ? article.id : parseInt(article.id, 10) || 0,
@@ -126,18 +131,22 @@ export function apiNewsToPost(article: ApiNewsArticle): Post {
           original_url: imageUrl,
           local_path: imageUrl,
           alt_text: article.image?.alt || article.title,
+          mediaType: featuredMediaType,
         }
       : undefined,
+    featuredMediaType,
     images: (article.galleryImages ?? []).length > 0
       ? article.galleryImages!.map((gi) => ({
           original_url: gi.imageUrls.original,
           local_path: gi.imageUrls.original,
           alt_text: '',
+          mediaType: gi.mediaType ?? 'image',
         }))
       : extractImagesFromHtml(article.body).map((url) => ({
           original_url: url,
           local_path: url,
           alt_text: '',
+          mediaType: 'image' as const,
         })),
     seo: {
       metaTitle: article.metaTitle || null,
@@ -150,5 +159,9 @@ export function apiNewsToPost(article: ApiNewsArticle): Post {
       acc[gi.id] = gi.imageUrls.original;
       return acc;
     }, {} as Record<string, string>),
+    mediaTypeIdMap: (article.galleryImages ?? []).reduce((acc, gi) => {
+      acc[gi.id] = gi.mediaType ?? 'image';
+      return acc;
+    }, {} as Record<string, 'image' | 'video'>),
   };
 }

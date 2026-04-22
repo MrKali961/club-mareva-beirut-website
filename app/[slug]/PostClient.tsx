@@ -19,10 +19,13 @@ export interface PostData {
   date: string;
   category: string;
   featuredImage: string;
+  featuredMediaType?: "image" | "video";
   content: string;
   images: string[];
+  imageMediaTypes?: ("image" | "video")[];
   galleryLayout?: GalleryLayoutRow[] | null;
   imageIdMap?: Record<string, string>;
+  mediaTypeIdMap?: Record<string, "image" | "video">;
 }
 
 export interface RelatedPostData {
@@ -31,6 +34,7 @@ export interface RelatedPostData {
   date: string;
   category: string;
   image: string;
+  mediaType?: "image" | "video";
   excerpt: string;
 }
 
@@ -39,7 +43,19 @@ interface PostClientProps {
   relatedPosts: RelatedPostData[];
 }
 
-function GalleryImage({ src, index, title, onOpen }: { src: string; index: number; title: string; onOpen: (i: number) => void }) {
+function GalleryImage({
+  src,
+  index,
+  title,
+  onOpen,
+  mediaType = "image",
+}: {
+  src: string;
+  index: number;
+  title: string;
+  onOpen: (i: number) => void;
+  mediaType?: "image" | "video";
+}) {
   return (
     <motion.button
       initial={{ opacity: 0, scale: 0.95 }}
@@ -50,21 +66,38 @@ function GalleryImage({ src, index, title, onOpen }: { src: string; index: numbe
       className="relative w-full overflow-hidden group cursor-pointer block"
     >
       <div className="relative overflow-hidden">
-        <Image
-          src={src}
-          alt={`${title} - Image ${index + 1}`}
-          width={1200}
-          height={800}
-          sizes="(max-width: 480px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          className="w-full h-auto block transition-transform duration-700 group-hover:scale-110"
-        />
+        {mediaType === "video" ? (
+          <video
+            src={src}
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            className="w-full h-auto block transition-transform duration-700 group-hover:scale-110 bg-black"
+          />
+        ) : (
+          <Image
+            src={src}
+            alt={`${title} - Image ${index + 1}`}
+            width={1200}
+            height={800}
+            sizes="(max-width: 480px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="w-full h-auto block transition-transform duration-700 group-hover:scale-110"
+          />
+        )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400" />
         <div className="absolute inset-0 border-2 border-gold/0 group-hover:border-gold/80 transition-all duration-400" />
         <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-400">
           <div className="w-14 h-14 rounded-full bg-gold flex items-center justify-center transform scale-50 group-hover:scale-100 transition-transform duration-400 shadow-lg">
-            <svg className="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
-            </svg>
+            {mediaType === "video" ? (
+              <svg className="w-6 h-6 text-black" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            ) : (
+              <svg className="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+              </svg>
+            )}
           </div>
         </div>
         <div className="absolute bottom-3 right-3 px-2.5 py-1 bg-black/70 backdrop-blur-sm text-gold text-xs font-playfair font-medium rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -217,15 +250,26 @@ export default function PostClient({ post, relatedPosts }: PostClientProps) {
       <section className="relative h-[70vh] min-h-[600px] overflow-hidden">
         <div className="absolute inset-0">
           {post.featuredImage ? (
-            <Image
-              src={post.featuredImage}
-              alt={post.title}
-              fill
-              className="object-cover"
-              priority
-              sizes="100vw"
-              quality={85}
-            />
+            post.featuredMediaType === "video" ? (
+              <video
+                src={post.featuredImage}
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+            ) : (
+              <Image
+                src={post.featuredImage}
+                alt={post.title}
+                fill
+                className="object-cover"
+                priority
+                sizes="100vw"
+                quality={85}
+              />
+            )
           ) : (
             <div className="absolute inset-0 bg-gradient-to-br from-black via-green-dark/40 to-black">
               <div className="absolute inset-0 opacity-20">
@@ -284,30 +328,43 @@ export default function PostClient({ post, relatedPosts }: PostClientProps) {
                   <div
                     className={`my-10 ${segment.images.length === 1 ? "" : "grid grid-cols-1 sm:grid-cols-2 gap-3"}`}
                   >
-                    {segment.images.map(({ src, index }) => (
-                      <motion.button
-                        key={index}
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true, margin: "-50px" }}
-                        transition={{ duration: 0.5 }}
-                        onClick={() => openLightbox(index)}
-                        className="relative w-full overflow-hidden group cursor-pointer block"
-                      >
-                        <div className="relative overflow-hidden">
-                          <Image
-                            src={src}
-                            alt={`${post.title} - Image ${index + 1}`}
-                            width={1200}
-                            height={800}
-                            sizes="(max-width: 640px) 100vw, 400px"
-                            className="w-full h-auto block transition-transform duration-700 group-hover:scale-105"
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400" />
-                          <div className="absolute inset-0 border border-gold/0 group-hover:border-gold/40 transition-all duration-400" />
-                        </div>
-                      </motion.button>
-                    ))}
+                    {segment.images.map(({ src, index }) => {
+                      const itemType = post.imageMediaTypes?.[index] ?? "image";
+                      return (
+                        <motion.button
+                          key={index}
+                          initial={{ opacity: 0, y: 20 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          viewport={{ once: true, margin: "-50px" }}
+                          transition={{ duration: 0.5 }}
+                          onClick={() => openLightbox(index)}
+                          className="relative w-full overflow-hidden group cursor-pointer block"
+                        >
+                          <div className="relative overflow-hidden">
+                            {itemType === "video" ? (
+                              <video
+                                src={src}
+                                muted
+                                playsInline
+                                preload="metadata"
+                                className="w-full h-auto block transition-transform duration-700 group-hover:scale-105 bg-black"
+                              />
+                            ) : (
+                              <Image
+                                src={src}
+                                alt={`${post.title} - Image ${index + 1}`}
+                                width={1200}
+                                height={800}
+                                sizes="(max-width: 640px) 100vw, 400px"
+                                className="w-full h-auto block transition-transform duration-700 group-hover:scale-105"
+                              />
+                            )}
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400" />
+                            <div className="absolute inset-0 border border-gold/0 group-hover:border-gold/40 transition-all duration-400" />
+                          </div>
+                        </motion.button>
+                      );
+                    })}
                   </div>
                 )}
             </div>
@@ -344,6 +401,7 @@ export default function PostClient({ post, relatedPosts }: PostClientProps) {
                         index={hero.globalIndex}
                         title={post.title}
                         onOpen={openLightbox}
+                        mediaType={post.imageMediaTypes?.[hero.globalIndex]}
                       />
                       {rest.length > 0 && (
                         <div style={{ display: 'grid', gridTemplateColumns: `repeat(${rest.length}, 1fr)`, gap: '8px', marginTop: '8px' }}>
@@ -354,6 +412,7 @@ export default function PostClient({ post, relatedPosts }: PostClientProps) {
                               index={img.globalIndex}
                               title={post.title}
                               onOpen={openLightbox}
+                              mediaType={post.imageMediaTypes?.[img.globalIndex]}
                             />
                           ))}
                         </div>
@@ -371,6 +430,7 @@ export default function PostClient({ post, relatedPosts }: PostClientProps) {
                         index={img.globalIndex}
                         title={post.title}
                         onOpen={openLightbox}
+                        mediaType={post.imageMediaTypes?.[img.globalIndex]}
                       />
                     ))}
                   </div>
@@ -401,6 +461,7 @@ export default function PostClient({ post, relatedPosts }: PostClientProps) {
                     index={globalIndex}
                     title={post.title}
                     onOpen={openLightbox}
+                    mediaType={post.imageMediaTypes?.[globalIndex]}
                   />
                 );
               })}
@@ -429,13 +490,24 @@ export default function PostClient({ post, relatedPosts }: PostClientProps) {
                   <Link href={`/${relatedPost.slug}`} className="group block">
                     <div className="relative aspect-[4/3] overflow-hidden mb-4">
                       {relatedPost.image ? (
-                        <Image
-                          src={relatedPost.image}
-                          alt={relatedPost.title}
-                          fill
-                          className="object-cover transition-transform duration-700 group-hover:scale-110"
-                          sizes="(max-width: 768px) 100vw, 33vw"
-                        />
+                        relatedPost.mediaType === "video" ? (
+                          <video
+                            src={relatedPost.image}
+                            muted
+                            loop
+                            playsInline
+                            preload="metadata"
+                            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 bg-black"
+                          />
+                        ) : (
+                          <Image
+                            src={relatedPost.image}
+                            alt={relatedPost.title}
+                            fill
+                            className="object-cover transition-transform duration-700 group-hover:scale-110"
+                            sizes="(max-width: 768px) 100vw, 33vw"
+                          />
+                        )
                       ) : (
                         <div className="absolute inset-0 bg-gradient-to-br from-green-dark via-black-800 to-black" />
                       )}
@@ -539,15 +611,25 @@ export default function PostClient({ post, relatedPosts }: PostClientProps) {
                   transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
                   className="relative w-full h-full max-w-5xl max-h-[65vh] md:max-h-[70vh]"
                 >
-                  <Image
-                    src={post.images[currentImageIndex]}
-                    alt={`Gallery image ${currentImageIndex + 1}`}
-                    fill
-                    className="object-contain"
-                    sizes="(max-width: 768px) 100vw, 80vw"
-                    priority
-                    quality={85}
-                  />
+                  {post.imageMediaTypes?.[currentImageIndex] === "video" ? (
+                    <video
+                      src={post.images[currentImageIndex]}
+                      controls
+                      autoPlay
+                      playsInline
+                      className="absolute inset-0 w-full h-full object-contain bg-black"
+                    />
+                  ) : (
+                    <Image
+                      src={post.images[currentImageIndex]}
+                      alt={`Gallery image ${currentImageIndex + 1}`}
+                      fill
+                      className="object-contain"
+                      sizes="(max-width: 768px) 100vw, 80vw"
+                      priority
+                      quality={85}
+                    />
+                  )}
                 </motion.div>
               </AnimatePresence>
             </div>
@@ -559,36 +641,56 @@ export default function PostClient({ post, relatedPosts }: PostClientProps) {
             >
               <div className="max-w-6xl mx-auto px-4 py-4">
                 <div className="flex gap-2 overflow-x-auto scrollbar-thin scrollbar-thumb-gold/30 scrollbar-track-transparent pb-2">
-                  {post.images.map((image, index) => (
-                    <button
-                      key={index}
-                      onClick={() => setCurrentImageIndex(index)}
-                      className={`relative flex-shrink-0 w-16 h-16 md:w-20 md:h-20 overflow-hidden rounded transition-all duration-300 ${
-                        currentImageIndex === index
-                          ? "ring-2 ring-gold ring-offset-2 ring-offset-black scale-105"
-                          : "opacity-50 hover:opacity-100 hover:ring-1 hover:ring-cream/30"
-                      }`}
-                    >
-                      <Image
-                        src={image}
-                        alt={`Thumbnail ${index + 1}`}
-                        fill
-                        className="object-cover"
-                        sizes="80px"
-                      />
-                      {currentImageIndex === index && (
-                        <motion.div
-                          layoutId="activeThumb"
-                          className="absolute inset-0 border-2 border-gold rounded"
-                          transition={{
-                            type: "spring",
-                            stiffness: 500,
-                            damping: 30,
-                          }}
-                        />
-                      )}
-                    </button>
-                  ))}
+                  {post.images.map((image, index) => {
+                    const thumbType = post.imageMediaTypes?.[index] ?? "image";
+                    return (
+                      <button
+                        key={index}
+                        onClick={() => setCurrentImageIndex(index)}
+                        className={`relative flex-shrink-0 w-16 h-16 md:w-20 md:h-20 overflow-hidden rounded transition-all duration-300 ${
+                          currentImageIndex === index
+                            ? "ring-2 ring-gold ring-offset-2 ring-offset-black scale-105"
+                            : "opacity-50 hover:opacity-100 hover:ring-1 hover:ring-cream/30"
+                        }`}
+                      >
+                        {thumbType === "video" ? (
+                          <>
+                            <video
+                              src={image}
+                              muted
+                              playsInline
+                              preload="metadata"
+                              className="absolute inset-0 w-full h-full object-cover bg-black"
+                            />
+                            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                              <svg className="w-5 h-5 text-white drop-shadow" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M8 5v14l11-7z" />
+                              </svg>
+                            </div>
+                          </>
+                        ) : (
+                          <Image
+                            src={image}
+                            alt={`Thumbnail ${index + 1}`}
+                            fill
+                            className="object-cover"
+                            sizes="80px"
+                          />
+                        )}
+                        {currentImageIndex === index && (
+                          <motion.div
+                            layoutId="activeThumb"
+                            className="absolute inset-0 border-2 border-gold rounded"
+                            transition={{
+                              type: "spring",
+                              stiffness: 500,
+                              damping: 30,
+                            }}
+                          />
+                        )}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             </div>
