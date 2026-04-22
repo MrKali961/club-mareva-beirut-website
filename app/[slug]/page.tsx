@@ -244,6 +244,7 @@ export default async function PostPage({
       body: event.body,
       location: event.location,
       maxVisitors: event.maxVisitors,
+      confirmedGuests: event.confirmedGuests,
       month: new Date(event.date)
         .toLocaleDateString("en-US", { month: "short", timeZone: "UTC" })
         .toUpperCase(),

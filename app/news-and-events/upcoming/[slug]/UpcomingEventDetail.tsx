@@ -18,6 +18,7 @@ interface EventData {
   body?: string;
   location?: string;
   maxVisitors?: number;
+  confirmedGuests?: number;
   month: string;
   day: string;
   displayDate: string;
@@ -269,6 +270,7 @@ export default function UpcomingEventDetail({
           <RegistrationForm
             eventId={event.id}
             maxVisitors={event.maxVisitors}
+            confirmedGuests={event.confirmedGuests}
           />
 
           {/* <motion.div
@@ -502,9 +504,11 @@ export default function UpcomingEventDetail({
 function RegistrationForm({
   eventId,
   maxVisitors,
+  confirmedGuests,
 }: {
   eventId: string;
   maxVisitors?: number;
+  confirmedGuests?: number;
 }) {
   const [state, formAction, isPending] = useActionState(
     submitEventRegistration,
@@ -513,6 +517,32 @@ function RegistrationForm({
       message: "",
     },
   );
+
+  const isFull =
+    typeof maxVisitors === "number" &&
+    maxVisitors > 0 &&
+    typeof confirmedGuests === "number" &&
+    confirmedGuests >= maxVisitors;
+
+  if (isFull && !state.success) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="text-center py-12 px-6 border border-gold/30 bg-black/60"
+      >
+        <p className="font-playfair text-xs tracking-[0.3em] uppercase text-gold/80 mb-3">
+          Fully Booked
+        </p>
+        <p className="font-playfair text-cream text-lg mb-2 tracking-wider">
+          This event has reached maximum capacity
+        </p>
+        <p className="font-playfair text-cream/60 text-sm">
+          Registrations are now closed. Please explore our other upcoming events below.
+        </p>
+      </motion.div>
+    );
+  }
 
   if (state.success) {
     return (

@@ -66,6 +66,7 @@ export interface ApiEvent {
   body: string;
   isFeatured: boolean;
   maxVisitors?: number;
+  confirmedGuests?: number;
   mediaType?: 'image' | 'video';
   mediaAsset?: { id: string; url: string; mediaType?: 'image' | 'video' } | null;
   metaTitle?: string | null;

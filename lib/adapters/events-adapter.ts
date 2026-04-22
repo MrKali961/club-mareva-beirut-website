@@ -10,6 +10,7 @@ interface ApiEvent {
   body: string;
   isFeatured: boolean;
   maxVisitors?: number;
+  confirmedGuests?: number;
   mediaType?: 'image' | 'video';
   mediaAsset?: { id: string; url: string; mediaType?: 'image' | 'video' } | null;
   metaTitle?: string | null;
@@ -57,6 +58,7 @@ export interface UpcomingEventWithSlug {
   featured: boolean;
   location?: string;
   maxVisitors?: number;
+  confirmedGuests?: number;
   body?: string; // raw HTML body for detail page
   galleryImages?: Array<{
     id: string;
@@ -97,6 +99,7 @@ export function apiEventToUpcomingEvent(event: ApiEvent): UpcomingEventWithSlug 
     featured: event.isFeatured,
     location: event.location,
     maxVisitors: event.maxVisitors,
+    confirmedGuests: event.confirmedGuests,
     body: normalizeWordPressHtml(event.body ?? ''),
     galleryImages: event.galleryImages,
     galleryLayout: event.galleryLayout ?? null,
