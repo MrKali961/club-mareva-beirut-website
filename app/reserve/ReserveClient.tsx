@@ -150,9 +150,7 @@ function ReservationForm({ settings }: { settings: ApiReservationSettings }) {
   const [selectedTableId, setSelectedTableId] = useState<string>("");
   const [selectedTableCapacity, setSelectedTableCapacity] = useState<number>(0);
   const [guestCount, setGuestCount] = useState(2);
-  const [durationMinutes, setDurationMinutes] = useState(
-    settings.slotDurationMinutes,
-  );
+  const [durationMinutes, setDurationMinutes] = useState(0);
   const [availability, setAvailability] = useState<ApiAvailability | null>(
     null,
   );
@@ -212,18 +210,15 @@ function ReservationForm({ settings }: { settings: ApiReservationSettings }) {
     [],
   );
 
-  const handleTimeSelect = useCallback(
-    (time: string) => {
-      setSelectedTime(time);
-      setDurationMinutes(settings.slotDurationMinutes);
-      // Reset downstream selections
-      setSelectedTableId("");
-      setSelectedTableCapacity(0);
-      setTableAvailability(null);
-      setGuestCount(2);
-    },
-    [settings.slotDurationMinutes],
-  );
+  const handleTimeSelect = useCallback((time: string) => {
+    setSelectedTime(time);
+    setDurationMinutes(0);
+    // Reset downstream selections
+    setSelectedTableId("");
+    setSelectedTableCapacity(0);
+    setTableAvailability(null);
+    setGuestCount(2);
+  }, []);
 
   const handleDurationSelect = useCallback(
     (duration: number) => {
@@ -247,7 +242,7 @@ function ReservationForm({ settings }: { settings: ApiReservationSettings }) {
     setLoadingAvailability(true);
     setAvailability(null);
     setSelectedTime("");
-    setDurationMinutes(settings.slotDurationMinutes);
+    setDurationMinutes(0);
     setSelectedTableId("");
     setSelectedTableCapacity(0);
     setTableAvailability(null);
@@ -526,7 +521,7 @@ function ReservationForm({ settings }: { settings: ApiReservationSettings }) {
 
             {/* Step 3: Table Selection */}
             <AnimatePresence>
-              {selectedTime && (
+              {selectedTime && durationMinutes > 0 && (
                 <motion.div
                   ref={tableSectionRef}
                   initial={{ opacity: 0, height: 0 }}
