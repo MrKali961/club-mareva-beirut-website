@@ -7,6 +7,7 @@ import { Calendar, ChevronDown, ArrowLeft, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { submitEventRegistration } from "../actions";
+import { formatPhoneInput } from "@/lib/phone";
 
 interface EventData {
   id: string;
@@ -518,6 +519,8 @@ function RegistrationForm({
     },
   );
 
+  const [phoneValue, setPhoneValue] = useState("+961 ");
+
   const isFull =
     typeof maxVisitors === "number" &&
     maxVisitors > 0 &&
@@ -625,8 +628,13 @@ function RegistrationForm({
         <input
           type="tel"
           name="phone"
-          placeholder="Phone Number"
+          placeholder="+961 XX XXX XXX"
           required
+          value={phoneValue}
+          onChange={(e) => {
+            const formatted = formatPhoneInput(e.target.value);
+            setPhoneValue(formatted || "+961 ");
+          }}
           className="w-full bg-transparent border border-gold/30 px-4 py-3 font-playfair text-cream text-sm placeholder:text-cream/40 focus:outline-none focus:border-gold transition-colors"
         />
         {state.errors?.phone && (

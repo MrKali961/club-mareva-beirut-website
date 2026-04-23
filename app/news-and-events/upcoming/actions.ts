@@ -18,10 +18,14 @@ export async function submitEventRegistration(
   const phone = formData.get('phone') as string;
   const numberOfGuests = parseInt(formData.get('numberOfGuests') as string, 10) || 1;
 
+  const strippedPhone = phone.replace(/[\s\-().]/g, '');
+
   const errors: Record<string, string> = {};
   if (!name || name.trim().length < 2) errors.name = 'Name is required';
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.email = 'Valid email is required';
-  if (!phone || phone.trim().length < 6) errors.phone = 'Valid phone number is required';
+  if (!strippedPhone || !/^\+[1-9]\d{7,14}$/.test(strippedPhone)) {
+    errors.phone = 'Please include country code, e.g. +961 71 234 567';
+  }
   if (!eventId) errors.eventId = 'Event ID is missing';
   if (numberOfGuests < 1 || numberOfGuests > 10) errors.numberOfGuests = 'Guest count must be 1-10';
 
@@ -31,9 +35,9 @@ export async function submitEventRegistration(
 
   try {
     await registerForEvent(eventId, {
-      name: name.trim(),
+      name: name.trim().replace(/\s+/g, ' '),
       email: email.trim(),
-      phone: phone.trim(),
+      phone: strippedPhone,
       numberOfGuests,
     });
     return {
