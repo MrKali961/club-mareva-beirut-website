@@ -79,9 +79,10 @@ function GalleryImage({
           <Image
             src={src}
             alt={`${title} - Image ${index + 1}`}
-            width={1200}
-            height={800}
+            width={1600}
+            height={1067}
             sizes="(max-width: 480px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            quality={90}
             className="w-full h-auto block transition-transform duration-700 group-hover:scale-110"
           />
         )}
@@ -353,9 +354,10 @@ export default function PostClient({ post, relatedPosts }: PostClientProps) {
                               <Image
                                 src={src}
                                 alt={`${post.title} - Image ${index + 1}`}
-                                width={1200}
-                                height={800}
-                                sizes="(max-width: 640px) 100vw, 400px"
+                                width={1600}
+                                height={1067}
+                                sizes="(max-width: 640px) 100vw, 800px"
+                                quality={90}
                                 className="w-full h-auto block transition-transform duration-700 group-hover:scale-105"
                               />
                             )}
@@ -569,7 +571,7 @@ export default function PostClient({ post, relatedPosts }: PostClientProps) {
 
             {/* Main Image Area */}
             <div
-              className="flex-1 flex items-center justify-center relative px-16 py-8"
+              className="flex-1 flex items-center justify-center relative px-4 md:px-16 py-2 md:py-4 min-h-0"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Navigation Buttons */}
@@ -609,7 +611,7 @@ export default function PostClient({ post, relatedPosts }: PostClientProps) {
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -50 }}
                   transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-                  className="relative w-full h-full max-w-5xl max-h-[65vh] md:max-h-[70vh]"
+                  className="relative w-full h-full"
                 >
                   {post.imageMediaTypes?.[currentImageIndex] === "video" ? (
                     <video
@@ -625,9 +627,9 @@ export default function PostClient({ post, relatedPosts }: PostClientProps) {
                       alt={`Gallery image ${currentImageIndex + 1}`}
                       fill
                       className="object-contain"
-                      sizes="(max-width: 768px) 100vw, 80vw"
+                      sizes="(max-width: 768px) 100vw, 95vw"
                       priority
-                      quality={85}
+                      quality={95}
                     />
                   )}
                 </motion.div>
