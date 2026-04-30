@@ -7,7 +7,8 @@ import { Calendar, ChevronDown, ArrowLeft, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { submitEventRegistration } from "../actions";
-import { formatPhoneInput } from "@/lib/phone";
+import PhoneInput from "react-phone-number-input";
+import "react-phone-number-input/style.css";
 
 interface EventData {
   id: string;
@@ -519,7 +520,7 @@ function RegistrationForm({
     },
   );
 
-  const [phoneValue, setPhoneValue] = useState("+961 ");
+  const [phoneValue, setPhoneValue] = useState<string | undefined>(undefined);
 
   const isFull =
     typeof maxVisitors === "number" &&
@@ -625,18 +626,22 @@ function RegistrationForm({
       </div>
 
       <div>
-        <input
-          type="tel"
-          name="phone"
-          placeholder="+961 XX XXX XXX"
-          required
-          value={phoneValue}
-          onChange={(e) => {
-            const formatted = formatPhoneInput(e.target.value);
-            setPhoneValue(formatted || "+961 ");
-          }}
-          className="w-full bg-transparent border border-gold/30 px-4 py-3 font-playfair text-cream text-sm placeholder:text-cream/40 focus:outline-none focus:border-gold transition-colors"
-        />
+        <div className="reserve-phone-input flex items-center border border-gold/30 focus-within:border-gold transition-colors px-3 py-2">
+          <PhoneInput
+            name="phone"
+            international
+            defaultCountry="LB"
+            value={phoneValue}
+            onChange={setPhoneValue}
+            placeholder="+961 71 234 567"
+            className="flex-1"
+            numberInputProps={{
+              required: true,
+              className:
+                "w-full bg-transparent font-playfair text-cream text-sm placeholder:text-cream/40 focus:outline-none",
+            }}
+          />
+        </div>
         {state.errors?.phone && (
           <p className="text-red-400 text-xs mt-1 font-playfair">
             {state.errors.phone}

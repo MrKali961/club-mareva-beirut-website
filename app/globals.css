@@ -235,3 +235,28 @@ h1, h2, h3, h4, h5, h6 {
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
+
+/* react-phone-number-input — luxury dark/gold theme override */
+.reserve-phone-input .PhoneInputCountry {
+  margin-right: 0.5rem;
+  padding-right: 0.5rem;
+  border-right: 1px solid rgba(201, 162, 39, 0.3);
+}
+.reserve-phone-input .PhoneInputCountrySelect {
+  color: #f5e6c8;
+}
+.reserve-phone-input .PhoneInputCountrySelectArrow {
+  color: rgba(201, 162, 39, 0.6);
+  opacity: 1;
+}
+.reserve-phone-input .PhoneInputInput {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #f5e6c8;
+  font-family: var(--font-playfair, serif);
+  font-size: 0.875rem;
+}
+.reserve-phone-input .PhoneInputInput::placeholder {
+  color: rgba(245, 230, 200, 0.4);
+}

@@ -1,6 +1,7 @@
 'use server';
 
 import { submitReservation } from '@/lib/api/reservations';
+import { toRawPhone, isValidPhone } from '@/lib/phone';
 
 interface ReserveFormState {
   success: boolean;
@@ -24,14 +25,15 @@ export async function submitReserveForm(
   const durationMinutes = Number(formData.get('durationMinutes')) || undefined;
   const whatsappOptIn = formData.get('whatsappOptIn') === 'on';
 
-  // Normalize phone to E.164 (strip spaces/dashes/parens) to match server validation.
-  const phone = rawPhone.replace(/[\s\-().]/g, '');
+  // Normalize phone to canonical E.164 for any country (defaults to LB when no
+  // country code is provided). Validates against the country's actual rules.
+  const phone = toRawPhone(rawPhone);
 
   const errors: Record<string, string> = {};
   if (!name || name.trim().length < 2) errors.name = 'Name is required (min 2 characters)';
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.email = 'Valid email is required';
-  if (!phone || !/^\+[1-9]\d{7,14}$/.test(phone)) {
-    errors.phone = 'Please include country code, e.g. +961 71 234 567';
+  if (!phone || !isValidPhone(phone)) {
+    errors.phone = 'Please enter a valid phone number with country code, e.g. +961 71 234 567';
   }
   if (!date) errors.date = 'Please select a date';
   if (!time) errors.time = 'Please select a time slot';

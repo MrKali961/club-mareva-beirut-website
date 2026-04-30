@@ -1,6 +1,7 @@
 'use server';
 
 import { registerForEvent } from '@/lib/api/events';
+import { toRawPhone, isValidPhone } from '@/lib/phone';
 
 interface RegistrationFormState {
   success: boolean;
@@ -18,13 +19,15 @@ export async function submitEventRegistration(
   const phone = formData.get('phone') as string;
   const numberOfGuests = parseInt(formData.get('numberOfGuests') as string, 10) || 1;
 
-  const strippedPhone = phone.replace(/[\s\-().]/g, '');
+  // Normalize phone to canonical E.164 for any country (defaults to LB when no
+  // country code is provided). Validates against the country's actual rules.
+  const strippedPhone = toRawPhone(phone);
 
   const errors: Record<string, string> = {};
   if (!name || name.trim().length < 2) errors.name = 'Name is required';
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.email = 'Valid email is required';
-  if (!strippedPhone || !/^\+[1-9]\d{7,14}$/.test(strippedPhone)) {
-    errors.phone = 'Please include country code, e.g. +961 71 234 567';
+  if (!strippedPhone || !isValidPhone(strippedPhone)) {
+    errors.phone = 'Please enter a valid phone number with country code, e.g. +961 71 234 567';
   }
   if (!eventId) errors.eventId = 'Event ID is missing';
   if (numberOfGuests < 1 || numberOfGuests > 10) errors.numberOfGuests = 'Guest count must be 1-10';

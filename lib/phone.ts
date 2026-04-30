@@ -1,68 +1,70 @@
 /**
- * Unified phone number formatting for Lebanese numbers.
- * Display format: +961 XX XXX XXX
+ * Phone number formatting and normalization, powered by libphonenumber-js.
+ * Supports all country codes; defaults to Lebanon (LB) when the user types a
+ * local-format number without a country code.
  */
 
+import {
+  parsePhoneNumberFromString,
+  isValidPhoneNumber,
+  type CountryCode,
+} from 'libphonenumber-js';
+
+const DEFAULT_COUNTRY: CountryCode = 'LB';
+
 /**
- * Format a raw phone string for display: +961 XX XXX XXX
- * Returns the original string if it can't be parsed as a Lebanese number.
+ * Format a raw phone string for display in international form, e.g.
+ *   "+96171234567" -> "+961 71 234 567"
+ *   "+33612345678" -> "+33 6 12 34 56 78"
+ * Returns the original string if it can't be parsed.
  */
 export function formatPhone(raw: string | null | undefined): string {
-  if (!raw) return ''
-
-  const digits = raw.replace(/[^\d]/g, '')
-  if (!digits) return raw
-
-  let local: string
-  if (digits.startsWith('961') && digits.length >= 11) {
-    local = digits.slice(3)
-  } else if (digits.startsWith('0') && digits.length >= 8) {
-    local = digits.slice(1)
-  } else if (digits.length === 8) {
-    local = digits
-  } else {
-    return raw
-  }
-
-  if (local.length !== 8) return raw
-
-  return `+961 ${local.slice(0, 2)} ${local.slice(2, 5)} ${local.slice(5, 8)}`
+  if (!raw) return '';
+  const parsed = parsePhoneNumberFromString(raw, DEFAULT_COUNTRY);
+  if (!parsed) return raw;
+  return parsed.formatInternational();
 }
 
 /**
- * Strip a formatted phone to digits-only with + prefix, for tel: hrefs.
- * e.g. "+961 01 123 123" -> "+96101123123"
+ * Normalize any user input to canonical E.164, e.g.
+ *   "03 71 72 73 74"        -> "+96171727374"   (default LB)
+ *   "+961 71 234 567"       -> "+96171234567"
+ *   "+33 6 12 34 56 78"     -> "+33612345678"
+ *   "(415) 555-1234" + "US" -> "+14155551234"
+ * Returns the original string if it can't be parsed.
  */
-export function toRawPhone(phone: string | null | undefined): string {
-  if (!phone) return ''
-  const digits = phone.replace(/[^\d]/g, '')
-  if (digits.startsWith('961')) return `+${digits}`
-  if (digits.startsWith('0') && digits.length >= 8) return `+961${digits.slice(1)}`
-  if (digits.length === 8) return `+961${digits}`
-  return phone
+export function toRawPhone(
+  phone: string | null | undefined,
+  defaultCountry: CountryCode = DEFAULT_COUNTRY,
+): string {
+  if (!phone) return '';
+  const parsed = parsePhoneNumberFromString(phone, defaultCountry);
+  if (!parsed) return phone;
+  return parsed.format('E.164');
 }
 
 /**
- * Live-format phone input as the user types.
- * Auto-prepends +961 and inserts spaces: +961 XX XXX XXX
+ * Validate a phone number for any country.
  */
-export function formatPhoneInput(value: string): string {
-  let digits = value.replace(/[^\d]/g, '')
+export function isValidPhone(
+  phone: string | null | undefined,
+  defaultCountry: CountryCode = DEFAULT_COUNTRY,
+): boolean {
+  if (!phone) return false;
+  return isValidPhoneNumber(phone, defaultCountry);
+}
 
-  if (digits.startsWith('961')) digits = digits.slice(3)
-  if (digits.startsWith('0')) digits = digits.slice(1)
-
-  digits = digits.slice(0, 8)
-  if (!digits) return ''
-
-  let result = '+961 '
-  if (digits.length <= 2) {
-    result += digits
-  } else if (digits.length <= 5) {
-    result += digits.slice(0, 2) + ' ' + digits.slice(2)
-  } else {
-    result += digits.slice(0, 2) + ' ' + digits.slice(2, 5) + ' ' + digits.slice(5)
-  }
-
-  return result
+/**
+ * Live-format phone input as the user types — international form.
+ * Used for legacy plain-input fields. New forms should prefer
+ * <PhoneInput /> from react-phone-number-input which has a country selector.
+ */
+export function formatPhoneInput(
+  value: string,
+  defaultCountry: CountryCode = DEFAULT_COUNTRY,
+): string {
+  if (!value) return '';
+  const parsed = parsePhoneNumberFromString(value, defaultCountry);
+  if (parsed) return parsed.formatInternational();
+  return value;
 }

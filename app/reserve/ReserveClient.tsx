@@ -23,6 +23,8 @@ import FloorMap from "./FloorMap";
 import Link from "next/link";
 import { submitReserveForm } from "./actions";
 import { GoogleReCaptchaProvider, useGoogleReCaptcha } from "react-google-recaptcha-v3";
+import PhoneInput from "react-phone-number-input";
+import "react-phone-number-input/style.css";
 import type {
   ApiReservationSettings,
   ApiAvailability,
@@ -158,6 +160,7 @@ function ReservationForm({ settings }: { settings: ApiReservationSettings }) {
     useState<ApiTableAvailability | null>(null);
   const [loadingAvailability, setLoadingAvailability] = useState(false);
   const [loadingTables, setLoadingTables] = useState(false);
+  const [phone, setPhone] = useState<string | undefined>(undefined);
   const formRef = useRef<HTMLFormElement>(null);
   const timeSectionRef = useRef<HTMLDivElement>(null);
   const durationSectionRef = useRef<HTMLDivElement>(null);
@@ -617,16 +620,21 @@ function ReservationForm({ settings }: { settings: ApiReservationSettings }) {
                     </div>
 
                     <div>
-                      <div className="relative">
-                        <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gold/40" />
-                        <input
-                          type="tel"
+                      <div className="reserve-phone-input relative flex items-center border border-gold/30 focus-within:border-gold transition-colors px-3 py-2">
+                        <Phone className="w-4 h-4 text-gold/40 mr-2 flex-shrink-0" />
+                        <PhoneInput
                           name="phone"
-                          required
+                          international
+                          defaultCountry="LB"
+                          value={phone}
+                          onChange={setPhone}
                           placeholder="Phone (e.g. +961 71 234 567)"
-                          pattern="^\+?[\s\-().0-9]{8,25}$"
-                          title="Include country code, e.g. +961 71 234 567"
-                          className="w-full bg-transparent border border-gold/30 pl-11 pr-4 py-3.5 font-playfair text-cream text-sm placeholder:text-cream/40 focus:outline-none focus:border-gold transition-colors"
+                          className="flex-1"
+                          numberInputProps={{
+                            required: true,
+                            className:
+                              "w-full bg-transparent font-playfair text-cream text-sm placeholder:text-cream/40 focus:outline-none",
+                          }}
                         />
                       </div>
                       {state.errors?.phone && (
