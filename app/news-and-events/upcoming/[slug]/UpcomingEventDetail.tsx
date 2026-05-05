@@ -431,6 +431,40 @@ export default function UpcomingEventDetail({
           margin: 1.5rem 0 1.5rem auto;
         }
 
+        /* Inline video embeds */
+        .prose-article [data-video-embed] {
+          position: relative;
+          width: 100%;
+          max-width: 100%;
+          aspect-ratio: 16 / 9;
+          margin: 1.5rem auto;
+          border-radius: 0.5rem;
+          overflow: hidden;
+          background: #000;
+        }
+
+        .prose-article [data-video-embed] > video,
+        .prose-article [data-video-embed] > iframe {
+          position: absolute;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          border: 0;
+          display: block;
+        }
+
+        .prose-article [data-video-embed][data-align="left"] {
+          margin: 1.5rem auto 1.5rem 0;
+        }
+
+        .prose-article [data-video-embed][data-align="center"] {
+          margin: 1.5rem auto;
+        }
+
+        .prose-article [data-video-embed][data-align="right"] {
+          margin: 1.5rem 0 1.5rem auto;
+        }
+
         /* Image grid layouts */
         .prose-article [data-image-layout] {
           display: grid;
