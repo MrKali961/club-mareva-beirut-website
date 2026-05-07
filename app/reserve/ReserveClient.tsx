@@ -321,6 +321,9 @@ function ReservationForm({ settings }: { settings: ApiReservationSettings }) {
   const handleSubmit = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
+    // PhoneInput's hidden form value is the AsYouType-formatted national text,
+    // not E.164. Override with the controlled state so non-LB numbers validate.
+    fd.set('phone', phone ?? '');
     if (executeRecaptcha) {
       try {
         const token = await executeRecaptcha('reserve');
@@ -332,7 +335,7 @@ function ReservationForm({ settings }: { settings: ApiReservationSettings }) {
     startTransition(() => {
       formAction(fd);
     });
-  }, [executeRecaptcha, formAction]);
+  }, [executeRecaptcha, formAction, phone]);
 
   // Success state
   if (state.success) {
