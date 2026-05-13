@@ -97,9 +97,9 @@ export default function Hero() {
             transition={{ duration: 0.8, delay: 1.0, ease: [0.22, 1, 0.36, 1] }}
             className="font-playfair text-4xl md:text-5xl lg:text-6xl text-white mb-6 leading-tight"
           >
-            Where <span className="text-gold italic">Elegance</span> Meets
+            Beirut&rsquo;s Most <span className="text-gold italic">Distinguished</span>
             <br />
-            <span className="text-gold italic">Indulgence</span>
+            Cigar <span className="text-gold italic">Lounge</span>
           </motion.h1>
 
           {/* Decorative divider */}
@@ -117,9 +117,9 @@ export default function Hero() {
             transition={{ duration: 0.8, delay: 1.4, ease: [0.22, 1, 0.36, 1] }}
             className="font-playfair text-sm font-light leading-relaxed text-cream/80 md:text-base lg:text-lg max-w-2xl mx-auto"
           >
-            Club Mareva Beirut transcends the conventional notion of a cigar
-            club. It is a sanctuary that ignites the senses and elicits an
-            unparalleled level of stimulation.
+            Since 2020, Club Mareva has set the standard for cigar and whisky
+            culture in Lebanon. A curated humidor, a serious spirits program,
+            and a room designed for the conversations worth having.
           </motion.p>
 
           {/* CTA Buttons */}
