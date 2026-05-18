@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     default: 'Club Mareva Beirut | Premium Cigar Lounge',
     template: '%s | Club Mareva Beirut'
   },
-  description: 'A sanctuary that ignites the senses. Premium cigars, rare whiskies, and exclusive events in Jal El Dib, Beirut, Lebanon.',
+  description: 'A sanctuary that ignites the senses. Premium cigars, rare whiskies, and exclusive events in Jal El Dib Seaside, Beirut, Lebanon.',
   keywords: ['cigar lounge', 'beirut', 'lebanon', 'whisky tasting', 'premium cigars', 'habanos', 'club mareva', 'cigar bar'],
   authors: [{ name: 'Club Mareva Beirut' }],
   openGraph: {

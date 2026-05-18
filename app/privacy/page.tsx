@@ -11,7 +11,7 @@ export default function PrivacyPage() {
             1. Introduction
           </h2>
           <p>
-            Club Mareva Beirut (&ldquo;Club Mareva,&rdquo; &ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;) is a premium cigar lounge and hospitality venue located at Sea Side Road, Jal El Dib, Beirut, Lebanon. We operate the website{' '}
+            Club Mareva Beirut (&ldquo;Club Mareva,&rdquo; &ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;) is a premium cigar lounge and hospitality venue located at Jal El Dib Seaside, Beirut, Lebanon. We operate the website{' '}
             <a
               href="https://www.clubmarevabeirut.com"
               className="text-gold hover:text-gold-light transition-colors underline"
@@ -227,7 +227,7 @@ export default function PrivacyPage() {
             If you have any questions, concerns, or requests regarding this Privacy Policy or the handling of your personal information, please contact us at:
           </p>
           <p className="mb-1"><strong>Club Mareva Beirut</strong></p>
-          <p className="mb-1">Sea Side Road, Jal El Dib, Beirut, Lebanon</p>
+          <p className="mb-1">Jal El Dib Seaside, Beirut, Lebanon</p>
           <p className="mb-1">
             Phone / WhatsApp:{' '}
             <a

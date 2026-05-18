@@ -131,7 +131,7 @@ export default function CTASection() {
                     Address
                   </p>
                   <p className="font-playfair text-cream/90">
-                    Sea Side Rd, Jal El Dib
+                    Jal El Dib Seaside
                   </p>
                   <p className="font-playfair text-cream/60 text-sm">
                     Beirut, Lebanon

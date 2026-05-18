@@ -87,7 +87,7 @@ export default function Hero() {
             transition={{ duration: 0.5, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
             className="font-playfair text-[0.65rem] tracking-[0.4em] uppercase text-gold/80 mb-4"
           >
-            Est. 2020 &mdash; Jal El Dib, Beirut
+            Est. 2020 &mdash; Jal El Dib Seaside, Beirut
           </motion.p>
 
           {/* Main Heading */}

@@ -288,7 +288,20 @@ function NewsEventsContent({ posts, upcomingEvents }: NewsEventsClientProps) {
       {/* Hero Banner */}
       <section className="relative h-[40vh] min-h-[400px] flex items-center justify-center overflow-hidden">
         {/* Background with overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-black via-green-dark/40 to-black">
+        <div className="absolute inset-0 bg-black">
+          {/* Hero background image */}
+          <Image
+            src="https://club-mareva.s3.eu-west-2.amazonaws.com/library/Mareva20260423-L0047-d87821185561.jpg"
+            alt=""
+            fill
+            priority
+            quality={90}
+            sizes="100vw"
+            className="object-cover"
+          />
+          {/* Darkening overlay for text legibility */}
+          <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-green-dark/40 to-black/80" />
+          <div className="absolute inset-0 bg-black/30" />
           <div className="absolute inset-0 opacity-20">
             <div className="w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(201,162,39,0.15),transparent_70%)]" />
           </div>

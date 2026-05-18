@@ -163,7 +163,7 @@ export default function Footer() {
                     rel="noopener noreferrer"
                     className="group font-playfair text-sm text-cream/60 hover:text-gold transition-colors duration-300 relative w-fit mx-auto lg:mx-0"
                   >
-                    Sea Side Rd, Jal El Dib
+                    Jal El Dib Seaside
                     <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-gold transition-all duration-300 group-hover:w-full" />
                   </a>
                   <a

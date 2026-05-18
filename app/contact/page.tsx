@@ -163,7 +163,7 @@ export default function ContactPage() {
               {/* Address */}
               <motion.div variants={fadeIn} className="text-center">
                 <p className="font-playfair text-cream/90 text-sm md:text-base leading-relaxed">
-                  Sea Side Rd, Jal El Dib, Lebanon
+                  Jal El Dib Seaside, Lebanon
                 </p>
               </motion.div>
 
