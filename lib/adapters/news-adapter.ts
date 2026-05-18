@@ -96,6 +96,50 @@ function wrapBareText(text: string): string {
     .join('\n');
 }
 
+/** Stem of an S3 migration filename: drop dir, extension, and trailing -<12hex> migration hash. */
+function s3StemKey(url: string): string {
+  const file = (url.split("/").pop() ?? "").split("?")[0];
+  return file
+    .replace(/\.[a-z0-9]+$/i, "")
+    .replace(/-[0-9a-f]{12}$/i, "")
+    .toLowerCase();
+}
+
+/** Stem of a legacy WordPress filename: drop extension, WP size suffix, and -scaled. */
+function wpStemKey(file: string): string {
+  return file
+    .split("?")[0]
+    .replace(/\.[a-z0-9]+$/i, "")
+    .replace(/-\d{2,4}x\d{2,4}$/i, "")
+    .replace(/-scaled$/i, "")
+    .toLowerCase();
+}
+
+const LEGACY_WP_IMG_RE =
+  /https?:\/\/(?:www\.)?clubmarevabeirut\.com\/wp-content\/uploads\/[^\s"'<>)]+?\.(?:jpe?g|png|gif|webp)/gi;
+
+/**
+ * Rewrite inline image URLs that point at the decommissioned WordPress domain
+ * (clubmarevabeirut.com/wp-content) to the migrated S3 asset, matched by
+ * filename stem against the record's gallery images. URLs with no gallery
+ * match are left unchanged (no regression vs. prior behaviour).
+ */
+export function rewriteMigratedImageUrls(
+  html: string,
+  galleryImages?: Array<{ imageUrls: { original: string } }>,
+): string {
+  if (!html || !galleryImages || galleryImages.length === 0) return html;
+  const stemToS3 = new Map<string, string>();
+  for (const gi of galleryImages) {
+    const orig = gi.imageUrls?.original;
+    if (orig) stemToS3.set(s3StemKey(orig), orig);
+  }
+  return html.replace(LEGACY_WP_IMG_RE, (full) => {
+    const file = full.split("/").pop() ?? "";
+    return stemToS3.get(wpStemKey(file)) ?? full;
+  });
+}
+
 export function extractImagesFromHtml(html: string): string[] {
   if (!html) return [];
   const imgRegex = /<img[^>]+src=["']([^"']+)["'][^>]*>/gi;
@@ -123,7 +167,7 @@ export function apiNewsToPost(article: ApiNewsArticle): Post {
     categories: ['News'],
     content: {
       raw: article.body,
-      clean: normalizeWordPressHtml(article.body),
+      clean: normalizeWordPressHtml(rewriteMigratedImageUrls(article.body, article.galleryImages)),
       text: stripHtml(article.body),
     },
     featured_image: imageUrl

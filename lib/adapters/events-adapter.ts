@@ -1,4 +1,4 @@
-import { stripHtml, normalizeWordPressHtml } from './news-adapter';
+import { stripHtml, normalizeWordPressHtml, rewriteMigratedImageUrls } from './news-adapter';
 
 interface ApiEvent {
   id: string;
@@ -100,7 +100,7 @@ export function apiEventToUpcomingEvent(event: ApiEvent): UpcomingEventWithSlug 
     location: event.location,
     maxVisitors: event.maxVisitors,
     confirmedGuests: event.confirmedGuests,
-    body: normalizeWordPressHtml(event.body ?? ''),
+    body: normalizeWordPressHtml(rewriteMigratedImageUrls(event.body ?? '', event.galleryImages)),
     galleryImages: event.galleryImages,
     galleryLayout: event.galleryLayout ?? null,
     metaTitle: event.metaTitle || null,
