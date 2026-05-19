@@ -176,10 +176,10 @@ export default function Footer() {
                     <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-gold transition-all duration-300 group-hover:w-full" />
                   </a>
                   <a
-                    href="mailto:info@clubmareva.com"
+                    href="mailto:info@clubmarevabeirut.com"
                     className="group font-playfair text-sm text-cream/60 hover:text-gold transition-colors duration-300 relative w-fit mx-auto lg:mx-0"
                   >
-                    info@clubmareva.com
+                    info@clubmarevabeirut.com
                     <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-gold transition-all duration-300 group-hover:w-full" />
                   </a>
                 </div>

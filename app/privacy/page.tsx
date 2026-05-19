@@ -5,13 +5,15 @@ export default function PrivacyPage() {
         Privacy Policy
       </h1>
       <div className="space-y-6 text-cream/80 font-playfair text-lg leading-relaxed">
-
         <div>
           <h2 className="font-playfair text-2xl font-bold text-gold mb-3 tracking-wide">
             1. Introduction
           </h2>
           <p>
-            Club Mareva Beirut (&ldquo;Club Mareva,&rdquo; &ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;) is a premium cigar lounge and hospitality venue located at Jal El Dib Seaside, Beirut, Lebanon. We operate the website{' '}
+            Club Mareva Beirut (&ldquo;Club Mareva,&rdquo; &ldquo;we,&rdquo;
+            &ldquo;us,&rdquo; or &ldquo;our&rdquo;) is a premium cigar lounge
+            and hospitality venue located at Jal El Dib Seaside, Beirut,
+            Lebanon. We operate the website{" "}
             <a
               href="https://www.clubmarevabeirut.com"
               className="text-gold hover:text-gold-light transition-colors underline"
@@ -19,11 +21,14 @@ export default function PrivacyPage() {
               rel="noopener noreferrer"
             >
               www.clubmarevabeirut.com
-            </a>{' '}
+            </a>{" "}
             (the &ldquo;Website&rdquo;) and the services accessible through it.
           </p>
           <p className="mt-4">
-            This Privacy Policy explains what personal information we collect, why we collect it, how we use and protect it, and the choices available to you. By accessing or using our Website or making a reservation, you agree to the practices described in this Policy.
+            This Privacy Policy explains what personal information we collect,
+            why we collect it, how we use and protect it, and the choices
+            available to you. By accessing or using our Website or making a
+            reservation, you agree to the practices described in this Policy.
           </p>
         </div>
 
@@ -37,10 +42,12 @@ export default function PrivacyPage() {
               2.1 Information You Provide Directly
             </h3>
             <p className="mb-3">
-              We collect personal information that you voluntarily provide through the following channels:
+              We collect personal information that you voluntarily provide
+              through the following channels:
             </p>
             <p className="mb-2">
-              <strong>Contact Form:</strong> When you use the contact form on our Website, we collect:
+              <strong>Contact Form:</strong> When you use the contact form on
+              our Website, we collect:
             </p>
             <ul className="list-disc list-inside space-y-2 ml-2 mb-4">
               <li>Full name</li>
@@ -49,7 +56,8 @@ export default function PrivacyPage() {
               <li>Message content</li>
             </ul>
             <p className="mb-2">
-              <strong>Reservation System:</strong> When you make a table reservation through our Website, we collect:
+              <strong>Reservation System:</strong> When you make a table
+              reservation through our Website, we collect:
             </p>
             <ul className="list-disc list-inside space-y-2 ml-2 mb-4">
               <li>Preferred date and time</li>
@@ -59,7 +67,9 @@ export default function PrivacyPage() {
               <li>WhatsApp phone number (used to confirm your reservation)</li>
             </ul>
             <p className="mb-2">
-              <strong>Event Registrations:</strong> When you register for events hosted at Club Mareva, we may collect your name, contact details, and event preferences.
+              <strong>Event Registrations:</strong> When you register for events
+              hosted at Club Mareva, we may collect your name, contact details,
+              and event preferences.
             </p>
           </div>
 
@@ -68,7 +78,9 @@ export default function PrivacyPage() {
               2.2 Information Collected Automatically
             </h3>
             <p className="mb-3">
-              When you visit our Website, certain information may be collected automatically by your browser or by third-party services embedded in our Website, including:
+              When you visit our Website, certain information may be collected
+              automatically by your browser or by third-party services embedded
+              in our Website, including:
             </p>
             <ul className="list-disc list-inside space-y-2 ml-2">
               <li>IP address and general geographic location</li>
@@ -84,12 +96,25 @@ export default function PrivacyPage() {
               2.3 Third-Party Services
             </h3>
             <p className="mb-3">
-              Our Website integrates with the following third-party platforms, which may independently collect data:
+              Our Website integrates with the following third-party platforms,
+              which may independently collect data:
             </p>
             <ul className="list-disc list-inside space-y-2 ml-2">
-              <li><strong>Google Maps</strong> — Embedded on our Contact page to display our location. Google may collect data in accordance with the Google Privacy Policy.</li>
-              <li><strong>Instagram &amp; Facebook (Meta)</strong> — Links and social media integrations on our Website. If you interact with these, Meta may collect data per their Privacy Policy.</li>
-              <li><strong>WhatsApp (Meta)</strong> — Used as a primary channel for reservation confirmations and customer inquiries. Messages sent via WhatsApp are subject to Meta&apos;s Privacy Policy.</li>
+              <li>
+                <strong>Google Maps</strong> — Embedded on our Contact page to
+                display our location. Google may collect data in accordance with
+                the Google Privacy Policy.
+              </li>
+              <li>
+                <strong>Instagram &amp; Facebook (Meta)</strong> — Links and
+                social media integrations on our Website. If you interact with
+                these, Meta may collect data per their Privacy Policy.
+              </li>
+              <li>
+                <strong>WhatsApp (Meta)</strong> — Used as a primary channel for
+                reservation confirmations and customer inquiries. Messages sent
+                via WhatsApp are subject to Meta&apos;s Privacy Policy.
+              </li>
             </ul>
           </div>
         </div>
@@ -99,18 +124,28 @@ export default function PrivacyPage() {
             3. How We Use Your Information
           </h2>
           <p className="mb-3">
-            We use the personal information we collect for the following purposes:
+            We use the personal information we collect for the following
+            purposes:
           </p>
           <ul className="list-disc list-inside space-y-2 ml-2">
-            <li>To process and confirm table reservations and send you booking confirmations via WhatsApp</li>
-            <li>To respond to your inquiries submitted through our contact form</li>
-            <li>To communicate with you about events, promotions, and updates (only with your consent)</li>
+            <li>
+              To process and confirm table reservations and send you booking
+              confirmations via WhatsApp
+            </li>
+            <li>
+              To respond to your inquiries submitted through our contact form
+            </li>
+            <li>
+              To communicate with you about events, promotions, and updates
+              (only with your consent)
+            </li>
             <li>To manage event registrations and coordinate attendance</li>
             <li>To improve the functionality and content of our Website</li>
             <li>To comply with applicable legal obligations</li>
           </ul>
           <p className="mt-4">
-            We do not sell, rent, or trade your personal information to third parties for their own marketing purposes.
+            We do not sell, rent, or trade your personal information to third
+            parties for their own marketing purposes.
           </p>
         </div>
 
@@ -119,12 +154,30 @@ export default function PrivacyPage() {
             4. How We Share Your Information
           </h2>
           <p className="mb-3">
-            We do not share your personal information with third parties except in the following limited circumstances:
+            We do not share your personal information with third parties except
+            in the following limited circumstances:
           </p>
           <ul className="list-disc list-inside space-y-2 ml-2">
-            <li><strong>Service Providers:</strong> We may share your information with trusted third-party vendors who assist us in operating our Website and delivering our services (e.g., hosting, communications platforms). These parties are obligated to keep your information confidential and may only use it to provide services on our behalf.</li>
-            <li><strong>Legal Requirements:</strong> We may disclose your information when required by applicable law, court order, or governmental authority, or to protect the rights, property, or safety of Club Mareva, our guests, or others.</li>
-            <li><strong>Business Transfers:</strong> In the event of a merger, acquisition, or sale of assets, your personal information may be transferred. We will notify you before your information becomes subject to a different privacy policy.</li>
+            <li>
+              <strong>Service Providers:</strong> We may share your information
+              with trusted third-party vendors who assist us in operating our
+              Website and delivering our services (e.g., hosting, communications
+              platforms). These parties are obligated to keep your information
+              confidential and may only use it to provide services on our
+              behalf.
+            </li>
+            <li>
+              <strong>Legal Requirements:</strong> We may disclose your
+              information when required by applicable law, court order, or
+              governmental authority, or to protect the rights, property, or
+              safety of Club Mareva, our guests, or others.
+            </li>
+            <li>
+              <strong>Business Transfers:</strong> In the event of a merger,
+              acquisition, or sale of assets, your personal information may be
+              transferred. We will notify you before your information becomes
+              subject to a different privacy policy.
+            </li>
           </ul>
         </div>
 
@@ -133,10 +186,17 @@ export default function PrivacyPage() {
             5. WhatsApp Communications
           </h2>
           <p className="mb-4">
-            Club Mareva uses WhatsApp as a primary channel to confirm reservations and respond to inquiries. When you provide your WhatsApp number, you consent to receiving messages from us related to your reservation or inquiry. We will not use your WhatsApp number for unsolicited marketing unless you have explicitly opted in.
+            Club Mareva uses WhatsApp as a primary channel to confirm
+            reservations and respond to inquiries. When you provide your
+            WhatsApp number, you consent to receiving messages from us related
+            to your reservation or inquiry. We will not use your WhatsApp number
+            for unsolicited marketing unless you have explicitly opted in.
           </p>
           <p>
-            Please be aware that WhatsApp messages are transmitted over Meta&apos;s infrastructure. While WhatsApp uses end-to-end encryption for messages, we cannot guarantee the security of communications once delivered to your device.
+            Please be aware that WhatsApp messages are transmitted over
+            Meta&apos;s infrastructure. While WhatsApp uses end-to-end
+            encryption for messages, we cannot guarantee the security of
+            communications once delivered to your device.
           </p>
         </div>
 
@@ -145,18 +205,31 @@ export default function PrivacyPage() {
             6. Cookies and Tracking Technologies
           </h2>
           <p className="mb-3">
-            Our Website may use cookies and similar tracking technologies to enhance your browsing experience and analyze site usage. Cookies are small text files stored on your device.
+            Our Website may use cookies and similar tracking technologies to
+            enhance your browsing experience and analyze site usage. Cookies are
+            small text files stored on your device.
           </p>
           <p className="mb-3">
             Types of cookies we or our third-party providers may use include:
           </p>
           <ul className="list-disc list-inside space-y-2 ml-2 mb-4">
-            <li><strong>Essential cookies</strong> — Necessary for the Website to function properly</li>
-            <li><strong>Analytics cookies</strong> — Help us understand how visitors use our Website</li>
-            <li><strong>Third-party cookies</strong> — Placed by embedded services such as Google Maps</li>
+            <li>
+              <strong>Essential cookies</strong> — Necessary for the Website to
+              function properly
+            </li>
+            <li>
+              <strong>Analytics cookies</strong> — Help us understand how
+              visitors use our Website
+            </li>
+            <li>
+              <strong>Third-party cookies</strong> — Placed by embedded services
+              such as Google Maps
+            </li>
           </ul>
           <p>
-            You can control or disable cookies through your browser settings. However, disabling certain cookies may affect the functionality of the Website.
+            You can control or disable cookies through your browser settings.
+            However, disabling certain cookies may affect the functionality of
+            the Website.
           </p>
         </div>
 
@@ -165,7 +238,11 @@ export default function PrivacyPage() {
             7. Data Retention
           </h2>
           <p>
-            We retain your personal information only for as long as necessary to fulfil the purposes described in this Privacy Policy, or as required by applicable law. Reservation and contact data is generally retained for up to 24 months from the date of collection, after which it is securely deleted or anonymized.
+            We retain your personal information only for as long as necessary to
+            fulfil the purposes described in this Privacy Policy, or as required
+            by applicable law. Reservation and contact data is generally
+            retained for up to 24 months from the date of collection, after
+            which it is securely deleted or anonymized.
           </p>
         </div>
 
@@ -174,10 +251,15 @@ export default function PrivacyPage() {
             8. Data Security
           </h2>
           <p className="mb-4">
-            We implement reasonable technical and organizational measures to protect your personal information against unauthorized access, loss, alteration, or disclosure. These measures include the use of secure server connections (HTTPS) for our Website.
+            We implement reasonable technical and organizational measures to
+            protect your personal information against unauthorized access, loss,
+            alteration, or disclosure. These measures include the use of secure
+            server connections (HTTPS) for our Website.
           </p>
           <p>
-            However, no method of transmission over the internet or electronic storage is completely secure. While we strive to protect your personal information, we cannot guarantee its absolute security.
+            However, no method of transmission over the internet or electronic
+            storage is completely secure. While we strive to protect your
+            personal information, we cannot guarantee its absolute security.
           </p>
         </div>
 
@@ -186,18 +268,40 @@ export default function PrivacyPage() {
             9. Your Rights
           </h2>
           <p className="mb-3">
-            Depending on your location and applicable law, you may have the following rights regarding your personal information:
+            Depending on your location and applicable law, you may have the
+            following rights regarding your personal information:
           </p>
           <ul className="list-disc list-inside space-y-2 ml-2 mb-4">
-            <li><strong>Right to Access</strong> — Request a copy of the personal information we hold about you</li>
-            <li><strong>Right to Rectification</strong> — Request correction of inaccurate or incomplete data</li>
-            <li><strong>Right to Erasure</strong> — Request deletion of your personal data under certain circumstances</li>
-            <li><strong>Right to Restriction</strong> — Request that we limit how we process your data</li>
-            <li><strong>Right to Object</strong> — Object to our processing of your data in certain situations</li>
-            <li><strong>Right to Withdraw Consent</strong> — Where processing is based on consent, withdraw it at any time</li>
+            <li>
+              <strong>Right to Access</strong> — Request a copy of the personal
+              information we hold about you
+            </li>
+            <li>
+              <strong>Right to Rectification</strong> — Request correction of
+              inaccurate or incomplete data
+            </li>
+            <li>
+              <strong>Right to Erasure</strong> — Request deletion of your
+              personal data under certain circumstances
+            </li>
+            <li>
+              <strong>Right to Restriction</strong> — Request that we limit how
+              we process your data
+            </li>
+            <li>
+              <strong>Right to Object</strong> — Object to our processing of
+              your data in certain situations
+            </li>
+            <li>
+              <strong>Right to Withdraw Consent</strong> — Where processing is
+              based on consent, withdraw it at any time
+            </li>
           </ul>
           <p>
-            To exercise any of these rights, please contact us using the information in Section 12 below. We will respond to your request within a reasonable time frame and in accordance with applicable law.
+            To exercise any of these rights, please contact us using the
+            information in Section 12 below. We will respond to your request
+            within a reasonable time frame and in accordance with applicable
+            law.
           </p>
         </div>
 
@@ -206,7 +310,10 @@ export default function PrivacyPage() {
             10. Children&apos;s Privacy
           </h2>
           <p>
-            Our Website and services are not directed at individuals under the age of 18. We do not knowingly collect personal information from minors. If you believe we have inadvertently collected information from a child, please contact us immediately so we can delete it.
+            Our Website and services are not directed at individuals under the
+            age of 18. We do not knowingly collect personal information from
+            minors. If you believe we have inadvertently collected information
+            from a child, please contact us immediately so we can delete it.
           </p>
         </div>
 
@@ -215,7 +322,11 @@ export default function PrivacyPage() {
             11. Links to Third-Party Websites
           </h2>
           <p>
-            Our Website may contain links to external websites, including our social media pages on Instagram and Facebook, and embedded services such as Google Maps. We are not responsible for the privacy practices or content of those third-party sites. We encourage you to review the privacy policies of any external websites you visit.
+            Our Website may contain links to external websites, including our
+            social media pages on Instagram and Facebook, and embedded services
+            such as Google Maps. We are not responsible for the privacy
+            practices or content of those third-party sites. We encourage you to
+            review the privacy policies of any external websites you visit.
           </p>
         </div>
 
@@ -224,12 +335,16 @@ export default function PrivacyPage() {
             12. Contact Us
           </h2>
           <p className="mb-4">
-            If you have any questions, concerns, or requests regarding this Privacy Policy or the handling of your personal information, please contact us at:
+            If you have any questions, concerns, or requests regarding this
+            Privacy Policy or the handling of your personal information, please
+            contact us at:
           </p>
-          <p className="mb-1"><strong>Club Mareva Beirut</strong></p>
+          <p className="mb-1">
+            <strong>Club Mareva Beirut</strong>
+          </p>
           <p className="mb-1">Jal El Dib Seaside, Beirut, Lebanon</p>
           <p className="mb-1">
-            Phone / WhatsApp:{' '}
+            Phone / WhatsApp:{" "}
             <a
               href="https://wa.me/96179117997"
               className="text-gold hover:text-gold-light transition-colors underline"
@@ -237,8 +352,8 @@ export default function PrivacyPage() {
               rel="noopener noreferrer"
             >
               +961 79 117 997
-            </a>{' '}
-            |{' '}
+            </a>{" "}
+            |{" "}
             <a
               href="https://wa.me/96181638731"
               className="text-gold hover:text-gold-light transition-colors underline"
@@ -249,16 +364,16 @@ export default function PrivacyPage() {
             </a>
           </p>
           <p className="mb-1">
-            Email:{' '}
+            Email:{" "}
             <a
-              href="mailto:info@clubmareva.com"
+              href="mailto:info@clubmarevabeirut.com"
               className="text-gold hover:text-gold-light transition-colors underline"
             >
-              info@clubmareva.com
+              info@clubmarevabeirut.com
             </a>
           </p>
           <p>
-            Website:{' '}
+            Website:{" "}
             <a
               href="https://www.clubmarevabeirut.com"
               className="text-gold hover:text-gold-light transition-colors underline"
@@ -275,18 +390,25 @@ export default function PrivacyPage() {
             13. Changes to This Privacy Policy
           </h2>
           <p className="mb-4">
-            We may update this Privacy Policy from time to time to reflect changes in our practices, technology, or applicable legal requirements. When we make material changes, we will update the &ldquo;Last Updated&rdquo; date at the top of this page. We encourage you to review this Policy periodically to stay informed about how we protect your information.
+            We may update this Privacy Policy from time to time to reflect
+            changes in our practices, technology, or applicable legal
+            requirements. When we make material changes, we will update the
+            &ldquo;Last Updated&rdquo; date at the top of this page. We
+            encourage you to review this Policy periodically to stay informed
+            about how we protect your information.
           </p>
           <p>
-            Your continued use of our Website after any changes constitutes your acceptance of the updated Privacy Policy.
+            Your continued use of our Website after any changes constitutes your
+            acceptance of the updated Privacy Policy.
           </p>
         </div>
 
         <div className="pt-12 border-t border-gold/20">
           <p className="text-sm text-cream/60">Last Updated: April 7, 2026</p>
-          <p className="text-sm text-cream/60 mt-1">&copy; 2026 Club Mareva Beirut. All rights reserved.</p>
+          <p className="text-sm text-cream/60 mt-1">
+            &copy; 2026 Club Mareva Beirut. All rights reserved.
+          </p>
         </div>
-
       </div>
     </main>
   );
