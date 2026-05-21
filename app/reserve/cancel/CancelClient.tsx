@@ -8,18 +8,22 @@ interface CancelState {
   error?: string;
 }
 
+const MAX_REASON_LENGTH = 500;
+
 export default function CancelClient({ token }: { token: string }) {
   const [state, setState] = useState<CancelState>({ status: 'confirm' });
+  const [reason, setReason] = useState('');
 
   const handleCancel = async () => {
     setState({ status: 'loading' });
 
     try {
       const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL;
+      const trimmed = reason.trim();
       const res = await fetch(`${apiBase}/reservations/cancel/${token}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: '{}',
+        body: JSON.stringify(trimmed ? { reason: trimmed } : {}),
       });
 
       const json = await res.json();
@@ -57,9 +61,31 @@ export default function CancelClient({ token }: { token: string }) {
               </svg>
             </div>
             <h1 className="font-playfair text-3xl text-cream mb-3 tracking-wider">Cancel Reservation?</h1>
-            <p className="font-playfair text-cream/70 text-sm mb-8">
+            <p className="font-playfair text-cream/70 text-sm mb-6">
               Are you sure you want to cancel your table reservation? This action cannot be undone.
             </p>
+
+            <div className="mb-8 text-left">
+              <label
+                htmlFor="cancel-reason"
+                className="block font-playfair text-xs uppercase tracking-[0.2em] text-cream/50 mb-2"
+              >
+                Reason for cancellation (optional)
+              </label>
+              <textarea
+                id="cancel-reason"
+                value={reason}
+                onChange={(e) => setReason(e.target.value.slice(0, MAX_REASON_LENGTH))}
+                rows={3}
+                maxLength={MAX_REASON_LENGTH}
+                placeholder="Let us know if there's anything we could have done differently."
+                className="w-full bg-black/40 border border-gold/30 focus:border-gold/70 focus:outline-none text-cream font-playfair text-sm p-3 placeholder:text-cream/30 transition-colors"
+              />
+              <p className="font-playfair text-cream/30 text-[10px] tracking-wider mt-1 text-right">
+                {reason.length}/{MAX_REASON_LENGTH}
+              </p>
+            </div>
+
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button
                 onClick={handleCancel}
