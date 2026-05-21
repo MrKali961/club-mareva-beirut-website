@@ -232,7 +232,7 @@ export default function UpcomingEventDetail({
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="max-w-[800px] mx-auto px-6 sm:px-8"
+            className="max-w-[800px] lg:max-w-[1000px] mx-auto px-6 sm:px-8"
           >
             <div
               className="prose-article"

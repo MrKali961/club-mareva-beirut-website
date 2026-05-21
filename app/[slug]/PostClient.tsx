@@ -307,7 +307,7 @@ export default function PostClient({ post, relatedPosts }: PostClientProps) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6, delay: 0.4 }}
-        className="max-w-[800px] mx-auto px-6 py-20"
+        className="max-w-[800px] lg:max-w-[1000px] mx-auto px-6 py-20"
       >
         {hasInlineImages || !contentSegments ? (
           /* User placed images manually — render body as-is */
