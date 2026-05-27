@@ -7,6 +7,7 @@ import Hero from "@/components/sections/Hero";
 import Introduction from "@/components/sections/Introduction";
 import BrandShowcase from "@/components/sections/BrandShowcase";
 import EventsCarousel from "@/components/sections/EventsCarousel";
+import FeaturedHighlights from "@/components/sections/FeaturedHighlights";
 import Story from "@/components/sections/Story";
 import Amenities from "@/components/sections/Amenities";
 import ReservationSection from "@/components/sections/ReservationSection";
@@ -108,21 +109,34 @@ export default async function Home() {
     });
   }
 
-  // Sort by date (newest first), take top 8
+  // Sort by date (newest first)
   allItems.sort((a, b) => b.rawDate - a.rawDate);
-  const events = allItems.slice(0, 8).map(({ rawDate, ...rest }) => ({
-    ...rest,
-    date: new Date(rawDate).toLocaleDateString('en-US', {
+  const formatDate = (rawDate: number) =>
+    new Date(rawDate).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
       timeZone: 'UTC',
-    }),
+    });
+
+  // Top 3 for the new FeaturedHighlights section above the carousel.
+  const highlights = allItems.slice(0, 3).map(({ rawDate, ...rest }) => ({
+    ...rest,
+    date: formatDate(rawDate),
+  }));
+
+  // Carousel continues to render the existing top-8 list — slight overlap
+  // with the highlights above is intentional; the carousel is the deeper
+  // discovery row, the highlights are the prominent lead-in.
+  const events = allItems.slice(0, 8).map(({ rawDate, ...rest }) => ({
+    ...rest,
+    date: formatDate(rawDate),
   }));
 
   return (
     <main>
       <Hero />
+      <FeaturedHighlights items={highlights} />
       <EventsCarousel events={events} />
       <BrandShowcase brands={brandItems} />
       <Introduction />
