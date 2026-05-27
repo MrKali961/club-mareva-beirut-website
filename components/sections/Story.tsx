@@ -81,7 +81,7 @@ export default function Story() {
         {/* Background image */}
         <div className="absolute inset-0">
           <Image
-            src="/images/clubmarevabeirut/2023/Pictures-1.jpg"
+            src="https://club-mareva.s3.eu-west-2.amazonaws.com/library/Mareva20260423-L0047-d87821185561.jpg"
             alt=""
             fill
             className="object-cover"

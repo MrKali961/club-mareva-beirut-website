@@ -315,9 +315,9 @@ export default function CigarsClient({ brands }: CigarsClientProps) {
           ================================================================ */}
       <section className="relative h-[60vh] md:h-[70vh] flex items-center justify-center overflow-hidden">
         <VideoBackground
-          posterSrc="/images/clubmarevabeirut/2025/CigarHumidorMareva.webp"
-          fallbackImageSrc="/images/clubmarevabeirut/2025/CigarHumidorMareva.webp"
-          alt="Club Mareva Beirut Cigar Humidor"
+          posterSrc="https://club-mareva.s3.eu-west-2.amazonaws.com/library/Mareva20260326-L0007-5d8f077e4f74.jpg"
+          fallbackImageSrc="https://club-mareva.s3.eu-west-2.amazonaws.com/library/Mareva20260326-L0007-5d8f077e4f74.jpg"
+          alt="Club Mareva Beirut interior"
           overlayClassName="bg-black/60"
           enableKenBurns={true}
         />
