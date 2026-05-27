@@ -236,6 +236,10 @@ export default async function PostPage({
 
     const eventData = {
       id: event.id,
+      slug: event.slug,
+      // Raw ISO date is needed by AddToCalendarMenu to build provider URLs.
+      // All display strings below are derived from it.
+      date: event.date,
       title: event.title,
       category: event.category,
       description: event.description,

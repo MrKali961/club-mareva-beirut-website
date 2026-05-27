@@ -9,9 +9,13 @@ import Link from "next/link";
 import { submitEventRegistration } from "../actions";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
+import AddToCalendarMenu from "@/components/ui/AddToCalendarMenu";
 
 interface EventData {
   id: string;
+  slug: string;
+  /** Raw ISO 8601 UTC date — needed by AddToCalendarMenu to build provider URLs. */
+  date: string;
   title: string;
   category: string;
   description: string;
@@ -178,11 +182,12 @@ export default function UpcomingEventDetail({
               {event.description}
             </motion.p> */}
 
-            {/* Reserve CTA */}
+            {/* Reserve CTA + Add to Calendar */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.6, ease }}
+              className="flex flex-wrap items-center gap-3 sm:gap-4"
             >
               <motion.button
                 onClick={() =>
@@ -197,6 +202,14 @@ export default function UpcomingEventDetail({
                 <span className="relative z-10">Reserve</span>
                 <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/30 to-transparent" />
               </motion.button>
+
+              <AddToCalendarMenu
+                title={event.title}
+                startIso={event.date}
+                location={event.location}
+                description={event.body || event.description}
+                slug={event.slug}
+              />
             </motion.div>
           </div>
         </div>
