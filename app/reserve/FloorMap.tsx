@@ -77,7 +77,7 @@ function FloorBackground() {
         height="700"
         rx="6"
         fill="#111111"
-        stroke="rgba(201,162,39,0.15)"
+        stroke="rgba(198, 177, 88,0.15)"
         strokeWidth="2"
       />
       <defs>
@@ -95,7 +95,7 @@ function FloorBackground() {
             y1="0"
             x2="0"
             y2="40"
-            stroke="rgba(201,162,39,0.03)"
+            stroke="rgba(198, 177, 88,0.03)"
             strokeWidth="1"
           />
         </pattern>
@@ -136,8 +136,8 @@ function Furniture() {
         width="780"
         height="145"
         rx="4"
-        fill="rgba(201,162,39,0.02)"
-        stroke="rgba(201,162,39,0.08)"
+        fill="rgba(198, 177, 88,0.02)"
+        stroke="rgba(198, 177, 88,0.08)"
         strokeWidth="1"
         strokeDasharray="8 4"
       />
@@ -145,7 +145,7 @@ function Furniture() {
         x="400"
         y="30"
         textAnchor="middle"
-        fill="rgba(201,162,39,0.3)"
+        fill="rgba(198, 177, 88,0.3)"
         fontSize="10"
         fontFamily="'Playfair Display', serif"
         letterSpacing="0.2em"
@@ -181,7 +181,7 @@ function Furniture() {
         {/* Upward arrow */}
         <polyline
           points="390,180 400,165 410,180"
-          stroke="rgba(201,162,39,0.4)"
+          stroke="rgba(198, 177, 88,0.4)"
           strokeWidth="1.5"
           fill="none"
           strokeLinecap="round"
@@ -192,7 +192,7 @@ function Furniture() {
           y1="165"
           x2="400"
           y2="190"
-          stroke="rgba(201,162,39,0.4)"
+          stroke="rgba(198, 177, 88,0.4)"
           strokeWidth="1.5"
           strokeLinecap="round"
         />
@@ -305,15 +305,15 @@ function Furniture() {
           width="70"
           height="55"
           rx="4"
-          fill="rgba(201,162,39,0.04)"
-          stroke="rgba(201,162,39,0.15)"
+          fill="rgba(198, 177, 88,0.04)"
+          stroke="rgba(198, 177, 88,0.15)"
           strokeWidth="1"
         />
         <text
           x="685"
           y="428"
           textAnchor="middle"
-          fill="rgba(201,162,39,0.25)"
+          fill="rgba(198, 177, 88,0.25)"
           fontSize="9"
           fontFamily="'Playfair Display', serif"
           letterSpacing="0.1em"
@@ -329,7 +329,7 @@ function Furniture() {
           y1="698"
           x2="300"
           y2="670"
-          stroke="rgba(201,162,39,0.3)"
+          stroke="rgba(198, 177, 88,0.3)"
           strokeWidth="1.5"
         />
         <line
@@ -337,14 +337,14 @@ function Furniture() {
           y1="698"
           x2="500"
           y2="670"
-          stroke="rgba(201,162,39,0.3)"
+          stroke="rgba(198, 177, 88,0.3)"
           strokeWidth="1.5"
         />
         <text
           x="400"
           y="690"
           textAnchor="middle"
-          fill="rgba(201,162,39,0.35)"
+          fill="rgba(198, 177, 88,0.35)"
           fontSize="10"
           fontFamily="'Playfair Display', serif"
           letterSpacing="0.2em"
@@ -537,7 +537,7 @@ function TableElement({
             cx={x + (type === "round" ? 22 : 32)}
             cy={y - (type === "round" ? 22 : 18)}
             r="10"
-            fill="#C9A227"
+            fill="#C6B158"
           />
           <polyline
             points={`${x + (type === "round" ? 17 : 27)},${y - (type === "round" ? 22 : 18)} ${x + (type === "round" ? 20 : 30)},${y - (type === "round" ? 19 : 15)} ${x + (type === "round" ? 27 : 37)},${y - (type === "round" ? 25 : 21)}`}
@@ -560,14 +560,14 @@ function TableElement({
             height={table.label ? 34 : 24}
             rx="4"
             fill="rgba(0,0,0,0.88)"
-            stroke="rgba(201,162,39,0.4)"
+            stroke="rgba(198, 177, 88,0.4)"
             strokeWidth="1"
           />
           <text
             x={x}
             y={y - (type === "round" ? 46 : 40)}
             textAnchor="middle"
-            fill="#C9A227"
+            fill="#C6B158"
             fontSize="10"
             fontFamily="'Playfair Display', serif"
           >
@@ -608,26 +608,26 @@ function getTableColors(
     };
   if (isSelected)
     return {
-      fill: "rgba(201,162,39,0.2)",
-      stroke: "#C9A227",
-      text: "#C9A227",
-      chairFill: "rgba(201,162,39,0.15)",
-      chairStroke: "rgba(201,162,39,0.6)",
+      fill: "rgba(198, 177, 88,0.2)",
+      stroke: "#C6B158",
+      text: "#C6B158",
+      chairFill: "rgba(198, 177, 88,0.15)",
+      chairStroke: "rgba(198, 177, 88,0.6)",
     };
   if (isHighlighted)
     return {
-      fill: "rgba(201,162,39,0.12)",
-      stroke: "rgba(201,162,39,0.7)",
-      text: "rgba(201,162,39,0.9)",
-      chairFill: "rgba(201,162,39,0.1)",
-      chairStroke: "rgba(201,162,39,0.5)",
+      fill: "rgba(198, 177, 88,0.12)",
+      stroke: "rgba(198, 177, 88,0.7)",
+      text: "rgba(198, 177, 88,0.9)",
+      chairFill: "rgba(198, 177, 88,0.1)",
+      chairStroke: "rgba(198, 177, 88,0.5)",
     };
   return {
-    fill: "rgba(201,162,39,0.06)",
-    stroke: "rgba(201,162,39,0.35)",
+    fill: "rgba(198, 177, 88,0.06)",
+    stroke: "rgba(198, 177, 88,0.35)",
     text: "rgba(245,245,240,0.6)",
-    chairFill: "rgba(201,162,39,0.05)",
-    chairStroke: "rgba(201,162,39,0.25)",
+    chairFill: "rgba(198, 177, 88,0.05)",
+    chairStroke: "rgba(198, 177, 88,0.25)",
   };
 }
 
@@ -684,7 +684,7 @@ export default function FloorMap({
             </span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-2.5 sm:w-3 h-2.5 sm:h-3 rounded-full border-2 border-gold bg-gold/25 shadow-[0_0_6px_rgba(201,162,39,0.4)]" />
+            <span className="w-2.5 sm:w-3 h-2.5 sm:h-3 rounded-full border-2 border-gold bg-gold/25 shadow-[0_0_6px_rgba(198, 177, 88,0.4)]" />
             <span className="font-playfair text-[9px] sm:text-[10px] text-cream/50 tracking-wider uppercase">
               Selected
             </span>

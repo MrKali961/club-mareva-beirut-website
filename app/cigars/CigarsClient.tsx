@@ -199,12 +199,12 @@ function BrandCard({ brand, index }: { brand: Brand; index: number }) {
         delay: (index % 3) * 0.12,
         ease: EASE_OUT_EXPO,
       }}
-      className="group relative bg-black-800 border border-white/[0.06] overflow-hidden transition-all duration-500 hover:border-gold/30 hover:shadow-[0_0_40px_-12px_rgba(201,162,39,0.15)]"
+      className="group relative bg-black-800 border border-white/[0.06] overflow-hidden transition-all duration-500 hover:border-gold/30 hover:shadow-[0_0_40px_-12px_rgba(198, 177, 88,0.15)]"
     >
       {/* Logo area */}
       <div className="relative aspect-[3/2] bg-black-900 overflow-hidden">
         {/* Subtle radial gradient behind logo */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(201,162,39,0.04)_0%,transparent_70%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(198, 177, 88,0.04)_0%,transparent_70%)]" />
 
         {/* Thin gold line at top */}
         <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/20 to-transparent" />

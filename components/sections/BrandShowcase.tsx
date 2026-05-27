@@ -75,7 +75,7 @@ export default function BrandShowcase({ brands }: BrandShowcaseProps) {
       <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, #27533e, #1c3d2d, #27533e)' }} />
 
       {/* Radial glow */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(201,162,39,0.05)_0%,transparent_70%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(198, 177, 88,0.05)_0%,transparent_70%)]" />
 
       {/* Noise texture */}
       <div

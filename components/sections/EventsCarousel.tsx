@@ -77,7 +77,7 @@ const EventCard = ({ event, index }: { event: EventItem; index: number }) => {
               <>
                 <div className="absolute inset-0 bg-gradient-to-br from-black-800 via-green-dark to-black" />
                 <div className="absolute inset-0 opacity-30">
-                  <div className="w-full h-full bg-[radial-gradient(circle_at_60%_40%,rgba(201,162,39,0.2),transparent_60%)]" />
+                  <div className="w-full h-full bg-[radial-gradient(circle_at_60%_40%,rgba(198, 177, 88,0.2),transparent_60%)]" />
                 </div>
                 <div className="absolute inset-0 flex items-center justify-center opacity-10">
                   <div className="w-32 h-32 border border-gold/30 rotate-45" />
@@ -98,7 +98,7 @@ const EventCard = ({ event, index }: { event: EventItem; index: number }) => {
           className="absolute top-6 left-6 z-20"
         >
           {isUpcoming ? (
-            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-gold via-gold-light to-gold text-black text-xs font-playfair font-bold tracking-[0.2em] uppercase shadow-[0_0_20px_rgba(201,162,39,0.4)]">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-gold via-gold-light to-gold text-black text-xs font-playfair font-bold tracking-[0.2em] uppercase shadow-[0_0_20px_rgba(198, 177, 88,0.4)]">
               <span className="w-1.5 h-1.5 bg-black rounded-full animate-pulse" />
               Upcoming
             </span>
@@ -298,7 +298,7 @@ const EventsCarousel = ({ events }: EventsCarouselProps) => {
                 animate={{
                   scale: selectedIndex === index ? 1 : 0.7,
                   backgroundColor:
-                    selectedIndex === index ? "#C9A227" : "#404040",
+                    selectedIndex === index ? "#C6B158" : "#404040",
                 }}
                 transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
                 className="w-2.5 h-2.5 rounded-full"

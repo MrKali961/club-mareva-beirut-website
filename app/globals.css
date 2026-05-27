@@ -6,9 +6,9 @@
   --color-black: #0A0A0A;
   --color-black-900: #000000;
   --color-black-800: #1A1A1A;
-  --color-gold: #C9A227;
-  --color-gold-light: #D4AF37;
-  --color-gold-dark: #B8941F;
+  --color-gold: #C6B158;
+  --color-gold-light: #DCCC8E;
+  --color-gold-dark: #9C8A3D;
   --color-green: #27533e;
   --color-green-light: #3a7a58;
   --color-green-dark: #1c3d2d;
@@ -92,8 +92,8 @@ h1, h2, h3, h4, h5, h6 {
 .ring-green { --tw-ring-color: var(--color-green); }
 
 /* Shadow utilities with gold */
-.shadow-gold { box-shadow: 0 4px 14px 0 rgba(201, 162, 39, 0.3); }
-.shadow-gold-lg { box-shadow: 0 10px 40px 0 rgba(201, 162, 39, 0.4); }
+.shadow-gold { box-shadow: 0 4px 14px 0 rgba(198, 177, 88, 0.3); }
+.shadow-gold-lg { box-shadow: 0 10px 40px 0 rgba(198, 177, 88, 0.4); }
 
 /* ============================================
    Hero Section Performance Animations
@@ -240,13 +240,13 @@ h1, h2, h3, h4, h5, h6 {
 .reserve-phone-input .PhoneInputCountry {
   margin-right: 0.5rem;
   padding-right: 0.5rem;
-  border-right: 1px solid rgba(201, 162, 39, 0.3);
+  border-right: 1px solid rgba(198, 177, 88, 0.3);
 }
 .reserve-phone-input .PhoneInputCountrySelect {
   color: #f5e6c8;
 }
 .reserve-phone-input .PhoneInputCountrySelectArrow {
-  color: rgba(201, 162, 39, 0.6);
+  color: rgba(198, 177, 88, 0.6);
   opacity: 1;
 }
 .reserve-phone-input .PhoneInputInput {

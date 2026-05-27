@@ -39,8 +39,8 @@ export default function CTASection() {
       className="relative py-20 md:py-28 bg-green overflow-hidden"
     >
       {/* Decorative background elements */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_20%,rgba(201,162,39,0.08)_0%,transparent_50%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_70%_80%,rgba(201,162,39,0.06)_0%,transparent_50%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_20%,rgba(198, 177, 88,0.08)_0%,transparent_50%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_70%_80%,rgba(198, 177, 88,0.06)_0%,transparent_50%)]" />
 
       {/* Noise texture */}
       <div
@@ -261,7 +261,7 @@ export default function CTASection() {
                 rel="noopener noreferrer"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="group relative inline-flex items-center justify-center gap-3 px-8 py-4 bg-gold text-black font-playfair font-medium tracking-wider uppercase text-sm overflow-hidden transition-all duration-300 hover:shadow-[0_0_40px_rgba(201,162,39,0.5)]"
+                className="group relative inline-flex items-center justify-center gap-3 px-8 py-4 bg-gold text-black font-playfair font-medium tracking-wider uppercase text-sm overflow-hidden transition-all duration-300 hover:shadow-[0_0_40px_rgba(198, 177, 88,0.5)]"
               >
                 <MessageCircle className="w-5 h-5" />
                 <span className="relative z-10">Reserve via WhatsApp</span>
@@ -280,7 +280,7 @@ export default function CTASection() {
                 <motion.span
                   whileHover={{
                     scale: 1.02,
-                    backgroundColor: "rgba(201, 162, 39, 0.1)",
+                    backgroundColor: "rgba(198, 177, 88, 0.1)",
                   }}
                   whileTap={{ scale: 0.98 }}
                   className="inline-flex items-center justify-center px-8 py-4 bg-transparent border border-gold/50 text-gold font-playfair font-medium tracking-wider uppercase text-sm transition-all duration-300 hover:border-gold w-full sm:w-auto"

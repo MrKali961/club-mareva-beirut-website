@@ -76,7 +76,7 @@ export default function ReserveClient({ settings }: Props) {
         {/* Hero Header */}
         <section className="relative pt-32 pb-16 md:pt-40 md:pb-20 px-6">
           {/* Decorative radial glow */}
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,rgba(201,162,39,0.12)_0%,transparent_60%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,rgba(198, 177, 88,0.12)_0%,transparent_60%)]" />
 
           {/* Corner accents */}
           <motion.div
@@ -425,7 +425,7 @@ function ReservationForm({ settings }: { settings: ApiReservationSettings }) {
       className="max-w-2xl mx-auto"
     >
       {/* Form card */}
-      <div className="relative border border-gold/25 bg-black-800 p-6 md:p-10 shadow-[0_0_60px_rgba(201,162,39,0.08)]">
+      <div className="relative border border-gold/25 bg-black-800 p-6 md:p-10 shadow-[0_0_60px_rgba(198, 177, 88,0.08)]">
         {/* Inner glow */}
         <div className="absolute inset-0 bg-gradient-to-br from-gold/[0.03] via-transparent to-gold/[0.02] pointer-events-none" />
 
@@ -698,7 +698,7 @@ function ReservationForm({ settings }: { settings: ApiReservationSettings }) {
                     }
                     whileHover={{ scale: 1.01 }}
                     whileTap={{ scale: 0.99 }}
-                    className="group relative w-full bg-gold text-black py-4 font-playfair font-semibold tracking-[0.15em] uppercase text-sm disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden shadow-[0_0_20px_rgba(201,162,39,0.2)] transition-shadow duration-300 hover:shadow-[0_0_40px_rgba(201,162,39,0.35)]"
+                    className="group relative w-full bg-gold text-black py-4 font-playfair font-semibold tracking-[0.15em] uppercase text-sm disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden shadow-[0_0_20px_rgba(198, 177, 88,0.2)] transition-shadow duration-300 hover:shadow-[0_0_40px_rgba(198, 177, 88,0.35)]"
                   >
                     {/* Shimmer */}
                     <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/25 to-transparent" />
@@ -876,7 +876,7 @@ function DatePicker({
                   disabled
                     ? "text-cream/15 cursor-not-allowed"
                     : isSelected
-                      ? "bg-gold text-black font-semibold shadow-[0_0_12px_rgba(201,162,39,0.3)]"
+                      ? "bg-gold text-black font-semibold shadow-[0_0_12px_rgba(198, 177, 88,0.3)]"
                       : "text-cream/80 hover:bg-gold/15 hover:text-gold"
                 }
                 ${isToday && !isSelected ? "ring-1 ring-gold/40" : ""}
@@ -964,7 +964,7 @@ function TimeSlotGrid({
                 !isAvailable
                   ? "border-cream/10 text-cream/20 cursor-not-allowed bg-black/20"
                   : isSelected
-                    ? "border-gold bg-gold text-black font-semibold shadow-[0_0_15px_rgba(201,162,39,0.25)]"
+                    ? "border-gold bg-gold text-black font-semibold shadow-[0_0_15px_rgba(198, 177, 88,0.25)]"
                     : "border-gold/30 text-cream/80 hover:border-gold hover:text-gold hover:bg-gold/5"
               }
             `}
@@ -1084,7 +1084,7 @@ function DurationSelector({
               relative py-3 px-2 font-playfair text-sm tracking-wider text-center transition-all duration-200 border
               ${
                 isSelected
-                  ? "border-gold bg-gold text-black font-semibold shadow-[0_0_15px_rgba(201,162,39,0.25)]"
+                  ? "border-gold bg-gold text-black font-semibold shadow-[0_0_15px_rgba(198, 177, 88,0.25)]"
                   : "border-gold/30 text-cream/80 hover:border-gold hover:text-gold hover:bg-gold/5"
               }
             `}
@@ -1236,7 +1236,7 @@ function DisabledState({ message }: { message: string }) {
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link
             href="/contact"
-            className="inline-flex items-center justify-center px-8 py-3 bg-gold text-black font-playfair text-sm font-semibold tracking-[0.15em] uppercase hover:shadow-[0_0_30px_rgba(201,162,39,0.4)] transition-shadow duration-300"
+            className="inline-flex items-center justify-center px-8 py-3 bg-gold text-black font-playfair text-sm font-semibold tracking-[0.15em] uppercase hover:shadow-[0_0_30px_rgba(198, 177, 88,0.4)] transition-shadow duration-300"
           >
             Contact Us
           </Link>

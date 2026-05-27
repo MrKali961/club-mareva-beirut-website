@@ -133,7 +133,7 @@ export default function Hero() {
               href="/reserve"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="group relative px-8 py-4 bg-gold text-black font-playfair font-medium tracking-wider uppercase text-sm overflow-hidden transition-all duration-300 hover:shadow-[0_0_40px_rgba(201,162,39,0.4)]"
+              className="group relative px-8 py-4 bg-gold text-black font-playfair font-medium tracking-wider uppercase text-sm overflow-hidden transition-all duration-300 hover:shadow-[0_0_40px_rgba(198, 177, 88,0.4)]"
             >
               <span className="relative z-10">Reserve a Table</span>
               <motion.span
@@ -148,7 +148,7 @@ export default function Hero() {
               href="#experience"
               whileHover={{
                 scale: 1.02,
-                backgroundColor: "rgba(201, 162, 39, 0.1)",
+                backgroundColor: "rgba(198, 177, 88, 0.1)",
               }}
               whileTap={{ scale: 0.98 }}
               className="px-8 py-4 bg-transparent border border-gold/50 text-gold font-playfair font-medium tracking-wider uppercase text-sm transition-all duration-300 hover:border-gold"

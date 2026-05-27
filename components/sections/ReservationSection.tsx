@@ -22,7 +22,7 @@ export default function ReservationSection({ settings }: Props) {
       className="relative py-20 md:py-28 bg-black overflow-hidden"
     >
       {/* Decorative background gradients */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_70%_30%,rgba(201,162,39,0.08)_0%,transparent_50%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_70%_30%,rgba(198, 177, 88,0.08)_0%,transparent_50%)]" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_20%_70%,rgba(39,83,62,0.15)_0%,transparent_50%)]" />
 
       {/* Noise texture */}
@@ -99,7 +99,7 @@ export default function ReservationSection({ settings }: Props) {
                 <motion.span
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="group relative inline-flex items-center justify-center gap-3 px-8 py-4 bg-gold text-black font-playfair font-medium tracking-wider uppercase text-sm overflow-hidden transition-all duration-300 hover:shadow-[0_0_40px_rgba(201,162,39,0.5)]"
+                  className="group relative inline-flex items-center justify-center gap-3 px-8 py-4 bg-gold text-black font-playfair font-medium tracking-wider uppercase text-sm overflow-hidden transition-all duration-300 hover:shadow-[0_0_40px_rgba(198, 177, 88,0.5)]"
                 >
                   <CalendarCheck className="w-5 h-5" />
                   <span className="relative z-10">Reserve Your Table</span>

@@ -24,9 +24,9 @@ const config: Config = {
           800: '#1A1A1A',
         },
         gold: {
-          DEFAULT: '#C9A227',
-          light: '#D4AF37',
-          dark: '#B8941F',
+          DEFAULT: '#C6B158',
+          light: '#DCCC8E',
+          dark: '#9C8A3D',
         },
         green: {
           DEFAULT: '#27533e',

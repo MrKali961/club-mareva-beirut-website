@@ -113,7 +113,7 @@ export function BrandCard({ logo, name, origin, description, className = '' }: B
         transition={{ duration: 0.4, ease: [0.43, 0.13, 0.23, 0.96] }}
       >
         <motion.div
-          className="absolute inset-0 opacity-0 shadow-[0_20px_60px_rgba(201,162,39,0.15)]"
+          className="absolute inset-0 opacity-0 shadow-[0_20px_60px_rgba(198, 177, 88,0.15)]"
           variants={{
             initial: { opacity: 0 },
             hover: { opacity: 1 },
@@ -146,7 +146,7 @@ export function BrandCard({ logo, name, origin, description, className = '' }: B
               className="font-playfair text-2xl font-bold text-cream mb-2"
               variants={{
                 initial: { opacity: 0.9 },
-                hover: { opacity: 1, color: '#C9A227' },
+                hover: { opacity: 1, color: '#C6B158' },
               }}
               transition={{ duration: 0.3 }}
             >

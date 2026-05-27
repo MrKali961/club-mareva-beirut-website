@@ -90,7 +90,7 @@ export default function OurSignatureClient({ items }: OurSignatureClientProps) {
             quality={85}
           />
           <div className="absolute inset-0 bg-black/65" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_40%,rgba(201,162,39,0.08),transparent_70%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_40%,rgba(198, 177, 88,0.08),transparent_70%)]" />
         </div>
 
         <motion.div
@@ -215,7 +215,7 @@ export default function OurSignatureClient({ items }: OurSignatureClientProps) {
               animate={{
                 scale: activeIndex === i ? 1 : 0.7,
                 backgroundColor:
-                  activeIndex === i ? "#C9A227" : "rgba(245,245,240,0.25)",
+                  activeIndex === i ? "#C6B158" : "rgba(245,245,240,0.25)",
               }}
               transition={{ duration: 0.3, ease }}
               className="w-2.5 h-2.5 rounded-full"

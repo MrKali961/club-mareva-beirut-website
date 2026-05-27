@@ -10,7 +10,7 @@ import { fileURLToPath } from 'node:url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const OUT_DIR = join(__dirname, '..', 'public', 'images', 'calendar');
 
-const GOLD = '#C8A97E';
+const GOLD = '#C6B158';
 const DARK = '#0a0a0a';
 const CREAM = '#f5f5f0';
 

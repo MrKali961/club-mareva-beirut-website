@@ -88,7 +88,7 @@ const UpcomingEventCard = ({
 
                 {/* Pattern overlay for visual interest */}
                 <div className="absolute inset-0 opacity-30">
-                  <div className="w-full h-full bg-[radial-gradient(circle_at_60%_40%,rgba(201,162,39,0.2),transparent_60%)]" />
+                  <div className="w-full h-full bg-[radial-gradient(circle_at_60%_40%,rgba(198, 177, 88,0.2),transparent_60%)]" />
                 </div>
 
                 {/* Decorative cigar pattern */}
@@ -329,7 +329,7 @@ const UpcomingEvents = ({ events }: UpcomingEventsProps) => {
               <motion.div
                 animate={{
                   scale: selectedIndex === index ? 1 : 0.7,
-                  backgroundColor: selectedIndex === index ? '#C9A227' : '#404040',
+                  backgroundColor: selectedIndex === index ? '#C6B158' : '#404040',
                 }}
                 transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
                 className="w-2.5 h-2.5 rounded-full"

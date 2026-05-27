@@ -90,7 +90,7 @@ export default function ContactPage() {
         >
           {/* Map Container with Gold Border */}
           <div className="relative h-full w-full p-6 lg:p-12">
-            <div className="relative h-full w-full border border-gold/30 shadow-[0_0_60px_rgba(201,162,39,0.15)] overflow-hidden">
+            <div className="relative h-full w-full border border-gold/30 shadow-[0_0_60px_rgba(198, 177, 88,0.15)] overflow-hidden">
               {/* Google Maps Embed with Dark/Night Styling */}
               <iframe
                 src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d13245.189598584364!2d35.5767838!3d33.9077446!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x151f3fa4748cca47%3A0xab0866b20337ddff!2sClub%20Mareva%20Beirut!5e0!3m2!1sen!2slb!4v1686093070213!5m2!1sen!2slb"
@@ -134,7 +134,7 @@ export default function ContactPage() {
           {/* Contact Card */}
           <motion.div
             variants={containerVariants}
-            className="relative w-full max-w-[420px] bg-black-800 border border-gold/30 p-6 md:p-8 shadow-[0_0_40px_rgba(201,162,39,0.1)]"
+            className="relative w-full max-w-[420px] bg-black-800 border border-gold/30 p-6 md:p-8 shadow-[0_0_40px_rgba(198, 177, 88,0.1)]"
           >
             {/* Subtle Inner Glow */}
             <div className="absolute inset-0 bg-gradient-to-br from-gold/5 via-transparent to-gold/3 pointer-events-none" />
@@ -241,7 +241,7 @@ export default function ContactPage() {
                         stiffness: 400,
                         damping: 17,
                       }}
-                      className="p-3 border border-gold/30 bg-gold/5 transition-all duration-300 group-hover:border-gold group-hover:bg-gold/10 group-hover:shadow-[0_0_20px_rgba(201,162,39,0.3)]"
+                      className="p-3 border border-gold/30 bg-gold/5 transition-all duration-300 group-hover:border-gold group-hover:bg-gold/10 group-hover:shadow-[0_0_20px_rgba(198, 177, 88,0.3)]"
                     >
                       <Instagram className="w-6 h-6 text-gold" />
                     </motion.div>
@@ -260,7 +260,7 @@ export default function ContactPage() {
                         stiffness: 400,
                         damping: 17,
                       }}
-                      className="p-3 border border-gold/30 bg-gold/5 transition-all duration-300 group-hover:border-gold group-hover:bg-gold/10 group-hover:shadow-[0_0_20px_rgba(201,162,39,0.3)]"
+                      className="p-3 border border-gold/30 bg-gold/5 transition-all duration-300 group-hover:border-gold group-hover:bg-gold/10 group-hover:shadow-[0_0_20px_rgba(198, 177, 88,0.3)]"
                     >
                       <Facebook className="w-6 h-6 text-gold" />
                     </motion.div>
@@ -286,7 +286,7 @@ export default function ContactPage() {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                    className="relative w-full bg-gold text-black py-3 px-5 font-playfair font-medium tracking-wide uppercase text-sm text-center overflow-hidden shadow-[0_0_20px_rgba(201,162,39,0.25)] transition-shadow duration-300 group-hover:shadow-[0_0_40px_rgba(201,162,39,0.4)]"
+                    className="relative w-full bg-gold text-black py-3 px-5 font-playfair font-medium tracking-wide uppercase text-sm text-center overflow-hidden shadow-[0_0_20px_rgba(198, 177, 88,0.25)] transition-shadow duration-300 group-hover:shadow-[0_0_40px_rgba(198, 177, 88,0.4)]"
                   >
                     {/* Shimmer Effect */}
                     <motion.span

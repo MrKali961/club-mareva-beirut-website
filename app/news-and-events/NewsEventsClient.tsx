@@ -84,7 +84,7 @@ function PostCard({ post, index }: { post: PostItem; index: number }) {
             boxShadow: isHovered
               ? isEvent
                 ? "0 0 40px rgba(28, 61, 45, 0.25), 0 8px 32px rgba(0,0,0,0.6)"
-                : "0 0 40px rgba(201,162,39,0.12), 0 8px 32px rgba(0,0,0,0.6)"
+                : "0 0 40px rgba(198, 177, 88,0.12), 0 8px 32px rgba(0,0,0,0.6)"
               : "0 4px 20px rgba(0,0,0,0.4)",
             transition: "box-shadow 0.5s ease",
           }}
@@ -114,10 +114,10 @@ function PostCard({ post, index }: { post: PostItem; index: number }) {
               <>
                 <div className="absolute inset-0 bg-gradient-to-br from-green-dark via-black to-black" />
                 <div className="absolute inset-0 opacity-30">
-                  <div className="w-full h-full bg-[radial-gradient(circle_at_50%_40%,rgba(201,162,39,0.2),transparent_60%)]" />
+                  <div className="w-full h-full bg-[radial-gradient(circle_at_50%_40%,rgba(198, 177, 88,0.2),transparent_60%)]" />
                 </div>
                 <div className="absolute inset-0 opacity-10">
-                  <div className="w-full h-full bg-[linear-gradient(45deg,transparent_25%,rgba(201,162,39,0.1)_25%,rgba(201,162,39,0.1)_50%,transparent_50%,transparent_75%,rgba(201,162,39,0.1)_75%)] bg-[length:60px_60px]" />
+                  <div className="w-full h-full bg-[linear-gradient(45deg,transparent_25%,rgba(198, 177, 88,0.1)_25%,rgba(198, 177, 88,0.1)_50%,transparent_50%,transparent_75%,rgba(198, 177, 88,0.1)_75%)] bg-[length:60px_60px]" />
                 </div>
               </>
             )}
@@ -303,7 +303,7 @@ function NewsEventsContent({ posts, upcomingEvents }: NewsEventsClientProps) {
           <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-green-dark/40 to-black/80" />
           <div className="absolute inset-0 bg-black/30" />
           <div className="absolute inset-0 opacity-20">
-            <div className="w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(201,162,39,0.15),transparent_70%)]" />
+            <div className="w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(198, 177, 88,0.15),transparent_70%)]" />
           </div>
           {/* Noise texture overlay */}
           <div className="absolute inset-0 opacity-[0.015] mix-blend-overlay">
@@ -354,7 +354,7 @@ function NewsEventsContent({ posts, upcomingEvents }: NewsEventsClientProps) {
             transition={{ duration: 0.6, delay: 0.3 }}
             style={{
               boxShadow:
-                "0 20px 60px rgba(0,0,0,0.8), 0 0 40px rgba(201,162,39,0.1)",
+                "0 20px 60px rgba(0,0,0,0.8), 0 0 40px rgba(198, 177, 88,0.1)",
             }}
           >
             {categories.map((category, index) => (
@@ -366,7 +366,7 @@ function NewsEventsContent({ posts, upcomingEvents }: NewsEventsClientProps) {
                   transition-all duration-300
                   ${
                     activeCategory === category
-                      ? "bg-gold text-black font-semibold shadow-[0_0_20px_rgba(201,162,39,0.4)]"
+                      ? "bg-gold text-black font-semibold shadow-[0_0_20px_rgba(198, 177, 88,0.4)]"
                       : "bg-transparent text-gold border border-gold/40 hover:border-gold hover:bg-gold/5"
                   }
                 `}

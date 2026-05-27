@@ -274,7 +274,7 @@ export default function PostClient({ post, relatedPosts }: PostClientProps) {
           ) : (
             <div className="absolute inset-0 bg-gradient-to-br from-black via-green-dark/40 to-black">
               <div className="absolute inset-0 opacity-20">
-                <div className="w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(201,162,39,0.15),transparent_70%)]" />
+                <div className="w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(198, 177, 88,0.15),transparent_70%)]" />
               </div>
             </div>
           )}
@@ -906,12 +906,12 @@ export default function PostClient({ post, relatedPosts }: PostClientProps) {
         }
 
         .scrollbar-thin::-webkit-scrollbar-thumb {
-          background: rgba(201, 162, 39, 0.3);
+          background: rgba(198, 177, 88, 0.3);
           border-radius: 3px;
         }
 
         .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-          background: rgba(201, 162, 39, 0.5);
+          background: rgba(198, 177, 88, 0.5);
         }
       `}</style>
     </main>

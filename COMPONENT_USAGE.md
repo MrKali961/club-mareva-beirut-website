@@ -86,7 +86,7 @@ export default function HomePage() {
 
 - Black: `#0A0A0A` (bg-black)
 - Dark Black: `#1A1A1A` (bg-black-800)
-- Gold: `#C9A227` (text-gold, border-gold)
+- Gold: `#C6B158` (text-gold, border-gold)
 - Cream: `#F5F5F0` (text-cream)
 - Green Dark: `#003018` (bg-green-dark)
 

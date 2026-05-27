@@ -256,7 +256,7 @@ export default function Amenities() {
           <motion.span
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="group inline-flex items-center gap-3 px-8 py-4 bg-gold text-black font-playfair font-medium tracking-wider uppercase text-sm transition-all duration-300 hover:shadow-[0_0_40px_rgba(201,162,39,0.4)]"
+            className="group inline-flex items-center gap-3 px-8 py-4 bg-gold text-black font-playfair font-medium tracking-wider uppercase text-sm transition-all duration-300 hover:shadow-[0_0_40px_rgba(198, 177, 88,0.4)]"
           >
             Book Your Visit
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />

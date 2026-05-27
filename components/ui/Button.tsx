@@ -28,7 +28,7 @@ interface ButtonAsLink extends BaseButtonProps {
 type ButtonProps = ButtonAsButton | ButtonAsLink;
 
 const buttonVariants: Record<ButtonVariant, string> = {
-  primary: 'bg-gold text-black hover:shadow-[0_0_30px_rgba(201,162,39,0.4)] relative overflow-hidden',
+  primary: 'bg-gold text-black hover:shadow-[0_0_30px_rgba(198, 177, 88,0.4)] relative overflow-hidden',
   secondary: 'bg-transparent border-2 border-gold text-gold hover:bg-gold/10',
   ghost: 'bg-transparent text-gold hover:bg-gold/5',
 };

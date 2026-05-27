@@ -42,7 +42,7 @@ export default function Emblem({ size = 'md', className = '', animate = true, va
     <motion.div
       whileHover={{
         scale: 1.1,
-        filter: 'drop-shadow(0 0 8px rgba(201, 162, 39, 0.5))',
+        filter: 'drop-shadow(0 0 8px rgba(198, 177, 88, 0.5))',
       }}
       transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
       className="inline-flex"

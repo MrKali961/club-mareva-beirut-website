@@ -201,7 +201,7 @@ export default function Footer() {
                     <motion.div
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.95 }}
-                      className="p-2.5 rounded-full border border-cream/15 group-hover:border-gold group-hover:shadow-[0_0_15px_rgba(201,162,39,0.3)] transition-all duration-300"
+                      className="p-2.5 rounded-full border border-cream/15 group-hover:border-gold group-hover:shadow-[0_0_15px_rgba(198, 177, 88,0.3)] transition-all duration-300"
                     >
                       <Instagram className="w-4 h-4 text-cream/70 group-hover:text-gold transition-colors duration-300" />
                     </motion.div>
@@ -216,7 +216,7 @@ export default function Footer() {
                     <motion.div
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.95 }}
-                      className="p-2.5 rounded-full border border-cream/15 group-hover:border-gold group-hover:shadow-[0_0_15px_rgba(201,162,39,0.3)] transition-all duration-300"
+                      className="p-2.5 rounded-full border border-cream/15 group-hover:border-gold group-hover:shadow-[0_0_15px_rgba(198, 177, 88,0.3)] transition-all duration-300"
                     >
                       <Facebook className="w-4 h-4 text-cream/70 group-hover:text-gold transition-colors duration-300" />
                     </motion.div>
@@ -231,7 +231,7 @@ export default function Footer() {
                     <motion.div
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.95 }}
-                      className="p-2.5 rounded-full border border-cream/15 group-hover:border-gold group-hover:shadow-[0_0_15px_rgba(201,162,39,0.3)] transition-all duration-300"
+                      className="p-2.5 rounded-full border border-cream/15 group-hover:border-gold group-hover:shadow-[0_0_15px_rgba(198, 177, 88,0.3)] transition-all duration-300"
                     >
                       <MessageCircle className="w-4 h-4 text-cream/70 group-hover:text-gold transition-colors duration-300" />
                     </motion.div>

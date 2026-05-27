@@ -220,7 +220,7 @@ export default function FeedbackClient({ token, initialRating }: FeedbackClientP
                 onMouseLeave={() => setHover(0)}
                 aria-label={`${value} star${value > 1 ? 's' : ''}`}
                 className="text-4xl md:text-5xl leading-none transition-colors duration-150 focus:outline-none focus:ring-1 focus:ring-gold/40"
-                style={{ color: filled ? '#C8A97E' : 'rgba(245,245,240,0.2)' }}
+                style={{ color: filled ? '#C6B158' : 'rgba(245,245,240,0.2)' }}
               >
                 {filled ? '★' : '☆'}
               </button>

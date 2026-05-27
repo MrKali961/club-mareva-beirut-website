@@ -21,7 +21,7 @@ Club Mareva Beirut is a premium cigar lounge website built with **Next.js 16.1.6
 - **Deployment:** Vercel
 
 ### Design System
-- **Color palette:** Black (`#000`), cream/warm whites, gold (`#C8A97E` / `#D4AF37`), forest green (`#27533e`)
+- **Color palette:** Black (`#000`), cream/warm whites, gold (`#C6B158` / `#DCCC8E`), forest green (`#27533e`)
 - **Typography:** Cinzel (headings), Cormorant Garamond (body), Inter (UI)
 - **Aesthetic:** Luxury, dark, editorial — think high-end cigar lounge
 - **NO generic UI kits** — all components are custom-built to match the brand
