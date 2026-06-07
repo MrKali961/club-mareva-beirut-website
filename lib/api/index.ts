@@ -9,3 +9,4 @@ export * from './alcohol';
 export * from './accessories';
 export * from './menu';
 export * from './reservations';
+export * from './raffle';

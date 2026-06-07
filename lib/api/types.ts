@@ -1,3 +1,19 @@
+// GRAND DRAW public standings (percentages only — never absolute per-country counts)
+export interface ApiRaffleStandingCountry {
+  code: string;
+  name: string;
+  flagUrl: string | null;
+  percentage: number;
+}
+
+export interface ApiRaffleStandings {
+  campaignName: string;
+  isLive: boolean;
+  countries: ApiRaffleStandingCountry[];
+  totalTicketsIssued: number | null;
+  updatedAt: string;
+}
+
 // Common pagination wrapper from API responses
 export interface PaginatedResponse<T> {
   items: T[];

@@ -1,7 +1,8 @@
 import { getLatestPosts, getUpcomingEvents, getBrands } from "@/lib/content";
 import { fetchAllEvents } from "@/lib/api/events";
 import { fetchReservationSettings } from "@/lib/api/reservations";
-import type { ApiEvent, ApiReservationSettings } from "@/lib/api/types";
+import { fetchRaffleStandings } from "@/lib/api/raffle";
+import type { ApiEvent, ApiReservationSettings, ApiRaffleStandings } from "@/lib/api/types";
 import { apiBrandToShowcaseBrand } from "@/lib/adapters/brands-adapter";
 import Hero from "@/components/sections/Hero";
 import Introduction from "@/components/sections/Introduction";
@@ -11,6 +12,7 @@ import FeaturedHighlights from "@/components/sections/FeaturedHighlights";
 import Story from "@/components/sections/Story";
 import Amenities from "@/components/sections/Amenities";
 import ReservationSection from "@/components/sections/ReservationSection";
+import GrandDrawTeaser from "@/components/sections/GrandDrawTeaser";
 import CTASection from "@/components/sections/CTASection";
 
 export const revalidate = 300;
@@ -22,7 +24,7 @@ function resolveImagePath(path: string | undefined): string {
 }
 
 export default async function Home() {
-  const [posts, upcomingEvents, eventsResponse, reservationSettings] = await Promise.all([
+  const [posts, upcomingEvents, eventsResponse, reservationSettings, raffleStandings] = await Promise.all([
     getLatestPosts(10),
     getUpcomingEvents(),
     fetchAllEvents(1, 50).catch(() => ({
@@ -30,6 +32,7 @@ export default async function Home() {
       pagination: { page: 1, limit: 50, total: 0, totalPages: 0 },
     })),
     fetchReservationSettings().catch(() => null as ApiReservationSettings | null),
+    fetchRaffleStandings().catch(() => null as ApiRaffleStandings | null),
   ]);
 
   // Fetch cigar brands for BrandShowcase
@@ -142,6 +145,7 @@ export default async function Home() {
       <Introduction />
       <Story />
       <Amenities />
+      {raffleStandings?.isLive && <GrandDrawTeaser standings={raffleStandings} />}
       {reservationSettings && <ReservationSection settings={reservationSettings} />}
       <CTASection />
     </main>
