@@ -6,11 +6,21 @@ export interface ApiRaffleStandingCountry {
   percentage: number;
 }
 
+export interface ApiRaffleWinner {
+  position: number;
+  name: string;
+  countryCode: string;
+  countryName: string;
+  countryFlagUrl: string | null;
+}
+
 export interface ApiRaffleStandings {
   campaignName: string;
   isLive: boolean;
   countries: ApiRaffleStandingCountry[];
   totalTicketsIssued: number | null;
+  drawCompleted: boolean;
+  winners: ApiRaffleWinner[];
   updatedAt: string;
 }
 
