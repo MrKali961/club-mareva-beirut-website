@@ -25,6 +25,9 @@
 
 html {
   scroll-behavior: smooth;
+  /* Height of the GRAND DRAW announcement bar; the banner sets this to its
+     height when the campaign is live, and 0 otherwise. */
+  --gd-banner-h: 0px;
 }
 
 body {
@@ -34,6 +37,9 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
+  /* Push all in-flow content below the announcement bar (0 when not live). */
+  padding-top: var(--gd-banner-h, 0px);
+  transition: padding-top 0.35s ease;
 }
 
 h1, h2, h3, h4, h5, h6 {

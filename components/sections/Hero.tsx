@@ -38,6 +38,9 @@ export default function Hero() {
     <section
       ref={containerRef}
       className="relative h-screen w-full overflow-hidden"
+      // Cancel the body's announcement-bar offset so the hero stays full-bleed;
+      // the bar overlays the very top of the hero instead of pushing it down.
+      style={{ marginTop: 'calc(-1 * var(--gd-banner-h, 0px))' }}
     >
       {/* Video/Image Background with parallax */}
       <motion.div style={{ y: backgroundY }} className="absolute inset-0 -z-10">

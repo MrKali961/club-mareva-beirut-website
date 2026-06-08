@@ -6,6 +6,7 @@ import { Home, BookOpen, Calendar, Mail, Newspaper, Award } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useSearchParams } from 'next/navigation';
+import GrandDrawBanner from './GrandDrawBanner';
 
 type NavLink = {
   name: string;
@@ -62,12 +63,16 @@ function NavigationInner() {
 
   return (
     <>
-      {/* Main Header Navigation */}
+      {/* GRAND DRAW announcement bar (only renders while the campaign is live) */}
+      <GrandDrawBanner />
+
+      {/* Main Header Navigation — sits just below the announcement bar */}
       <motion.header
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out ${
+        style={{ top: 'var(--gd-banner-h, 0px)' }}
+        className={`fixed left-0 right-0 z-50 transition-all duration-300 ease-in-out ${
           scrollState === 'solid'
             ? 'bg-black/95 backdrop-blur-md border-b border-gold/10'
             : scrollState === 'mid'
