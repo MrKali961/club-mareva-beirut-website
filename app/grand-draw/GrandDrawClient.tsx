@@ -286,12 +286,14 @@ export default function GrandDrawClient({ standings }: Props) {
   const inView = useInView(ref, { once: true, margin: '-60px' });
 
   const countries = standings?.countries ?? [];
+  // Only surface nations that have earned at least one entry (percentage > 0).
+  const activeCountries = countries.filter((c) => c.percentage > 0);
   const winners = standings?.winners ?? [];
   const drawn = (standings?.drawCompleted ?? false) && winners.length > 0;
-  const maxPct = Math.max(1, ...countries.map((c) => c.percentage));
-  const hasEntries = countries.some((c) => c.percentage > 0);
-  const top3 = hasEntries ? countries.slice(0, 3) : [];
-  const rest = hasEntries ? countries.slice(3) : countries;
+  const maxPct = Math.max(1, ...activeCountries.map((c) => c.percentage));
+  const hasEntries = activeCountries.length > 0;
+  const top3 = hasEntries ? activeCountries.slice(0, 3) : [];
+  const rest = hasEntries ? activeCountries.slice(3) : [];
 
   const totalEntries = useCountUp(standings?.totalTicketsIssued ?? 0, inView);
 
