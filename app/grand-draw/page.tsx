@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { fetchRaffleStandings } from '@/lib/api/raffle';
 import type { ApiRaffleStandings } from '@/lib/api/types';
+import { absoluteUrl } from '@/lib/seo';
 import GrandDrawClient from './GrandDrawClient';
 
 export const revalidate = 60;
@@ -16,6 +17,7 @@ export const metadata: Metadata = {
       'Earn raffle tickets with every visit, back your nation, and win one of five grand prizes in the Club Mareva Beirut GRAND DRAW.',
     url: '/grand-draw',
     type: 'website',
+    images: [{ url: absoluteUrl('/opengraph-image'), width: 1200, height: 630 }],
   },
 };
 
