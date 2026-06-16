@@ -53,7 +53,7 @@ export default function GrandDrawBanner() {
       <span className="font-playfair text-[11px] uppercase tracking-[0.18em] text-cream/90 sm:text-xs">
         The Grand Draw &middot; World Cup 2026
       </span>
-      <span className="hidden font-playfair text-[11px] uppercase tracking-[0.15em] text-gold underline-offset-4 group-hover:underline sm:inline">
+      <span className="font-playfair text-[11px] uppercase tracking-[0.15em] text-gold underline-offset-4 group-hover:underline">
         Enter now &rarr;
       </span>
     </Link>
