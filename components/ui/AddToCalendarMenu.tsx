@@ -8,7 +8,8 @@ import { Calendar, ChevronDown, ChevronRight, X } from "lucide-react";
 interface AddToCalendarMenuProps {
   /** Event title shown in the calendar entry. */
   title: string;
-  /** ISO 8601 start datetime (UTC). */
+  /** ISO 8601 start datetime. Stored as Beirut wall-clock in UTC fields
+   *  (e.g. "...T20:00:00Z" means 8 PM in Beirut); re-anchored before use. */
   startIso: string;
   /** Event duration in minutes. Defaults to 120. */
   durationMinutes?: number;
@@ -32,6 +33,40 @@ interface ProviderEntry {
 }
 
 const EASE = [0.22, 1, 0.36, 1] as const;
+
+/** Events are scheduled in the venue's timezone. */
+const EVENT_TZ = "Asia/Beirut";
+
+/** Asia/Beirut offset in minutes (positive = ahead of UTC) at the given instant.
+ *  Reads the IANA zone via Intl so DST is handled automatically. */
+function beirutOffsetMinutes(at: Date): number {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: EVENT_TZ,
+    timeZoneName: "shortOffset",
+  }).formatToParts(at);
+  const tz = parts.find((p) => p.type === "timeZoneName")?.value ?? "GMT+0";
+  const m = tz.match(/GMT([+-])?(\d+)(?::(\d+))?/);
+  if (!m) return 0;
+  const sign = m[1] === "-" ? -1 : 1;
+  return sign * (Number(m[2] || 0) * 60 + Number(m[3] || 0));
+}
+
+/**
+ * Event datetimes arrive as Beirut wall-clock stored in UTC fields — the dashboard
+ * saves the admin's entered local time tagged as `Z`, so "2026-07-01T20:00:00Z"
+ * means 8 PM in Beirut. Re-anchor those wall-clock fields to the true UTC instant
+ * so calendar apps land the event at the correct local time for every viewer.
+ *
+ * Timezone-independent (no local getters), so SSR (UTC Node) and the client
+ * (Beirut browser) produce identical links — no hydration mismatch.
+ */
+function beirutStoredDateToInstant(stored: Date): Date {
+  const guess = stored.getTime();
+  const offset1 = beirutOffsetMinutes(new Date(guess));
+  const candidate = guess - offset1 * 60_000;
+  const offset2 = beirutOffsetMinutes(new Date(candidate));
+  return new Date(guess - offset2 * 60_000);
+}
 
 /** YYYYMMDDTHHMMSSZ — matches what Google/Yahoo deeplinks expect. */
 function toCompactUtc(d: Date): string {
@@ -166,7 +201,7 @@ export default function AddToCalendarMenu({
   }, [open]);
 
   // ── URL building ─────────────────────────────────────────────────────────
-  const start = new Date(startIso);
+  const start = beirutStoredDateToInstant(new Date(startIso));
   const end = new Date(start.getTime() + durationMinutes * 60_000);
   const safeLocation = (location || "Club Mareva Beirut").trim();
   const safeDescription = description ? stripHtml(description).slice(0, 1000) : title;
