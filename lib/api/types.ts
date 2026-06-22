@@ -19,6 +19,7 @@ export interface ApiRaffleStandings {
   isLive: boolean;
   countries: ApiRaffleStandingCountry[];
   totalTicketsIssued: number | null;
+  winnerCount: number;
   drawCompleted: boolean;
   winners: ApiRaffleWinner[];
   updatedAt: string;

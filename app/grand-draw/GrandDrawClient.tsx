@@ -289,6 +289,8 @@ export default function GrandDrawClient({ standings }: Props) {
   // Only surface nations that have earned at least one entry (percentage > 0).
   const activeCountries = countries.filter((c) => c.percentage > 0);
   const winners = standings?.winners ?? [];
+  // Number of grand prizes is configured in the dashboard; fall back to 5.
+  const winnerCount = standings?.winnerCount ?? 5;
   const drawn = (standings?.drawCompleted ?? false) && winners.length > 0;
   const maxPct = Math.max(1, ...activeCountries.map((c) => c.percentage));
   const hasEntries = activeCountries.length > 0;
@@ -333,7 +335,7 @@ export default function GrandDrawClient({ standings }: Props) {
               </h1>
               <p className="mx-auto max-w-xl font-playfair text-base leading-relaxed text-cream/70 md:text-lg">
                 Every $10 you spend earns a raffle ticket. Every goal your nation scores earns you
-                more. Five winners crowned at the final whistle.
+                more. {winnerCount} winners crowned at the final whistle.
               </p>
 
               {standings?.totalTicketsIssued != null && (
@@ -405,7 +407,7 @@ export default function GrandDrawClient({ standings }: Props) {
             {[
               { icon: Ticket, title: '$10 = 1 ticket', body: 'Earn entries with every bill at the lounge.' },
               { icon: Target, title: 'Goals = bonus', body: 'Each goal your team scores adds bonus tickets.' },
-              { icon: Trophy, title: '5 winners', body: 'Drawn fairly, weighted by your total entries.' },
+              { icon: Trophy, title: `${winnerCount} winners`, body: 'Drawn fairly, weighted by your total entries.' },
             ].map((item) => {
               const Icon = item.icon;
               return (
