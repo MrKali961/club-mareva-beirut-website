@@ -281,17 +281,6 @@ export default function PostClient({ post, relatedPosts }: PostClientProps) {
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent" />
         </div>
 
-        {post.featuredImage && (
-          <ShareMediaButton
-            url={post.featuredImage}
-            title={post.title}
-            label="Share"
-            ariaLabel="Share this media"
-            iconSize={18}
-            className="absolute top-6 right-6 z-20 inline-flex items-center gap-2 bg-black/50 backdrop-blur-sm border border-gold/40 text-gold hover:bg-gold hover:text-black px-4 py-2.5 font-playfair text-sm tracking-wider transition-all duration-300"
-          />
-        )}
-
         <div className="relative h-full max-w-7xl mx-auto px-6 flex flex-col justify-end pb-16">
           <motion.div
             initial={{ opacity: 0, y: 30 }}

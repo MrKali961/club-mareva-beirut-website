@@ -11,7 +11,6 @@ import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import AddToCalendarMenu from "@/components/ui/AddToCalendarMenu";
 import VideoPlayBadge from "@/components/ui/VideoPlayBadge";
-import ShareMediaButton from "@/components/ui/ShareMediaButton";
 
 interface EventData {
   id: string;
@@ -130,22 +129,6 @@ export default function UpcomingEventDetail({
                   {event.day}
                 </span>
               </motion.div>
-              {event.image && (
-                <motion.div
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.6, delay: 0.35, ease }}
-                >
-                  <ShareMediaButton
-                    url={event.image}
-                    title={event.title}
-                    label="Share"
-                    ariaLabel="Share this media"
-                    iconSize={16}
-                    className="inline-flex items-center gap-2 bg-black/50 backdrop-blur-sm border border-gold/40 text-gold hover:bg-gold hover:text-black px-3 py-2 font-playfair text-xs sm:text-sm tracking-wider transition-all duration-300"
-                  />
-                </motion.div>
-              )}
             </div>
           </div>
         </div>
