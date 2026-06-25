@@ -49,7 +49,15 @@ export default function ShareMediaButton({
     const shareUrl = toAbsoluteUrl(url);
     const shareData = title ? { title, url: shareUrl } : { url: shareUrl };
 
-    if (typeof navigator !== "undefined" && navigator.share) {
+    // Prefer the native share sheet only on touch / coarse-pointer devices
+    // (phones, tablets). On desktop — where the share dialog is clunky and
+    // some browsers don't support it — copy the media link to the clipboard.
+    const isTouchDevice =
+      typeof window !== "undefined" &&
+      (navigator.maxTouchPoints > 0 ||
+        window.matchMedia?.("(pointer: coarse)").matches);
+
+    if (isTouchDevice && typeof navigator !== "undefined" && navigator.share) {
       try {
         await navigator.share(shareData);
         return;

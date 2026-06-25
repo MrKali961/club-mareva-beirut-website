@@ -561,7 +561,7 @@ export default function PostClient({ post, relatedPosts }: PostClientProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/98 z-50 flex flex-col"
+            className="fixed inset-0 bg-black/98 z-[70] flex flex-col"
             onClick={() => setLightboxOpen(false)}
           >
             {/* Top Bar */}
