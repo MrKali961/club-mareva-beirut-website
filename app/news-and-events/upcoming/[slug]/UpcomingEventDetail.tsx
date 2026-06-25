@@ -11,6 +11,7 @@ import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import AddToCalendarMenu from "@/components/ui/AddToCalendarMenu";
 import VideoPlayBadge from "@/components/ui/VideoPlayBadge";
+import ShareMediaButton from "@/components/ui/ShareMediaButton";
 
 interface EventData {
   id: string;
@@ -114,20 +115,38 @@ export default function UpcomingEventDetail({
               </span>
             </motion.div>
 
-            {/* Date Badge - Top Right */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.2, ease }}
-              className="bg-black/60 backdrop-blur-sm border border-gold/30 px-4 sm:px-5 py-3 sm:py-4 flex flex-col items-center"
-            >
-              <span className="font-playfair text-xs tracking-[0.2em] text-gold uppercase leading-none mb-1">
-                {event.month}
-              </span>
-              <span className="font-playfair text-3xl sm:text-4xl font-bold text-cream leading-none">
-                {event.day}
-              </span>
-            </motion.div>
+            {/* Date Badge + Share - Top Right */}
+            <div className="flex flex-col items-end gap-3">
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 0.2, ease }}
+                className="bg-black/60 backdrop-blur-sm border border-gold/30 px-4 sm:px-5 py-3 sm:py-4 flex flex-col items-center"
+              >
+                <span className="font-playfair text-xs tracking-[0.2em] text-gold uppercase leading-none mb-1">
+                  {event.month}
+                </span>
+                <span className="font-playfair text-3xl sm:text-4xl font-bold text-cream leading-none">
+                  {event.day}
+                </span>
+              </motion.div>
+              {event.image && (
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6, delay: 0.35, ease }}
+                >
+                  <ShareMediaButton
+                    url={event.image}
+                    title={event.title}
+                    label="Share"
+                    ariaLabel="Share this media"
+                    iconSize={16}
+                    className="inline-flex items-center gap-2 bg-black/50 backdrop-blur-sm border border-gold/40 text-gold hover:bg-gold hover:text-black px-3 py-2 font-playfair text-xs sm:text-sm tracking-wider transition-all duration-300"
+                  />
+                </motion.div>
+              )}
+            </div>
           </div>
         </div>
 

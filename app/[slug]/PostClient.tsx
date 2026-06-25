@@ -7,6 +7,7 @@ import Link from "next/link";
 import Image from "next/image";
 import Masonry from "react-masonry-css";
 import VideoPlayBadge from "@/components/ui/VideoPlayBadge";
+import ShareMediaButton from "@/components/ui/ShareMediaButton";
 
 export interface GalleryLayoutRow {
   id: string;
@@ -279,6 +280,17 @@ export default function PostClient({ post, relatedPosts }: PostClientProps) {
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent" />
         </div>
+
+        {post.featuredImage && (
+          <ShareMediaButton
+            url={post.featuredImage}
+            title={post.title}
+            label="Share"
+            ariaLabel="Share this media"
+            iconSize={18}
+            className="absolute top-6 right-6 z-20 inline-flex items-center gap-2 bg-black/50 backdrop-blur-sm border border-gold/40 text-gold hover:bg-gold hover:text-black px-4 py-2.5 font-playfair text-sm tracking-wider transition-all duration-300"
+          />
+        )}
 
         <div className="relative h-full max-w-7xl mx-auto px-6 flex flex-col justify-end pb-16">
           <motion.div
@@ -563,13 +575,22 @@ export default function PostClient({ post, relatedPosts }: PostClientProps) {
               <div className="text-cream/50 text-xs hidden md:block">
                 Use arrow keys to navigate • ESC to close
               </div>
-              <button
-                onClick={() => setLightboxOpen(false)}
-                className="text-cream hover:text-gold transition-colors duration-300 p-2 hover:bg-cream/5 rounded-full"
-                aria-label="Close lightbox"
-              >
-                <X size={24} />
-              </button>
+              <div className="flex items-center gap-1">
+                <ShareMediaButton
+                  url={post.images[currentImageIndex]}
+                  title={post.title}
+                  ariaLabel="Share this media"
+                  iconSize={22}
+                  className="text-cream hover:text-gold transition-colors duration-300 p-2 hover:bg-cream/5 rounded-full"
+                />
+                <button
+                  onClick={() => setLightboxOpen(false)}
+                  className="text-cream hover:text-gold transition-colors duration-300 p-2 hover:bg-cream/5 rounded-full"
+                  aria-label="Close lightbox"
+                >
+                  <X size={24} />
+                </button>
+              </div>
             </div>
 
             {/* Main Image Area */}
