@@ -9,6 +9,7 @@ import { Calendar, ArrowRight } from "lucide-react";
 import UpcomingEvents, {
   UpcomingEventItem,
 } from "@/components/sections/UpcomingEvents";
+import VideoPlayBadge from "@/components/ui/VideoPlayBadge";
 
 type Category = "All" | "Events" | "News";
 
@@ -121,6 +122,9 @@ function PostCard({ post, index }: { post: PostItem; index: number }) {
                 </div>
               </>
             )}
+
+            {/* Video play indicator */}
+            {post.image && post.mediaType === "video" && <VideoPlayBadge />}
 
             {/* Dark overlay gradient */}
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent z-10" />

@@ -7,6 +7,7 @@ import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Calendar, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import VideoPlayBadge from '@/components/ui/VideoPlayBadge';
 
 export interface UpcomingEventItem {
   id: string;
@@ -97,6 +98,9 @@ const UpcomingEventCard = ({
                 </div>
               </>
             )}
+
+            {/* Video play indicator */}
+            {event.image && event.mediaType === "video" && <VideoPlayBadge />}
 
             {/* Dark gradient overlay — deeper at bottom to host text */}
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/65 to-black/20" />

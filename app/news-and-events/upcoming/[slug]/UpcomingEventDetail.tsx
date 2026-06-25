@@ -10,6 +10,7 @@ import { submitEventRegistration } from "../actions";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import AddToCalendarMenu from "@/components/ui/AddToCalendarMenu";
+import VideoPlayBadge from "@/components/ui/VideoPlayBadge";
 
 interface EventData {
   id: string;
@@ -802,6 +803,7 @@ function OtherEventCard({
                   </div>
                 </>
               )}
+              {event.image && event.mediaType === "video" && <VideoPlayBadge />}
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/20" />
             </motion.div>
           </div>
