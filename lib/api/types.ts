@@ -14,6 +14,14 @@ export interface ApiRaffleWinner {
   countryFlagUrl: string | null;
 }
 
+// A prize in the public lineup (exact value is admin-only, never returned here).
+export interface ApiRafflePrize {
+  position: number;
+  title: string;
+  description: string | null;
+  imageUrl: string | null;
+}
+
 export interface ApiRaffleStandings {
   campaignName: string;
   isLive: boolean;
@@ -22,6 +30,7 @@ export interface ApiRaffleStandings {
   winnerCount: number;
   drawCompleted: boolean;
   winners: ApiRaffleWinner[];
+  prizes: ApiRafflePrize[];
   updatedAt: string;
 }
 

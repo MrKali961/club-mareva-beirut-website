@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { motion, useInView, animate } from 'framer-motion';
-import { Trophy, Ticket, Target, Sparkles, Crown, Medal } from 'lucide-react';
-import type { ApiRaffleStandings, ApiRaffleWinner } from '@/lib/api/types';
+import { Trophy, Ticket, Target, Sparkles, Crown, Medal, Gift } from 'lucide-react';
+import type { ApiRaffleStandings, ApiRaffleWinner, ApiRafflePrize } from '@/lib/api/types';
 import GoldConfetti from '@/components/sections/GoldConfetti';
 
 interface Props {
@@ -281,6 +281,85 @@ function CountryRow({
 
 /* ------------------------------------------------------------------- page */
 
+/* --------------------------------------------------------------- prizes */
+
+function ordinal(n: number): string {
+  const s = ['th', 'st', 'nd', 'rd'];
+  const v = n % 100;
+  return n + (s[(v - 20) % 10] || s[v] || s[0]);
+}
+
+/** The prize lineup, grouped by winner position. Shown only when the admin has
+ *  enabled it (the server returns an empty array otherwise). */
+function PrizesShowcase({ prizes }: { prizes: ApiRafflePrize[] }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, margin: '-60px' });
+
+  // Preserve the server ordering (position, then displayOrder) while grouping.
+  const groups: { position: number; items: ApiRafflePrize[] }[] = [];
+  for (const p of prizes) {
+    let g = groups.find((x) => x.position === p.position);
+    if (!g) {
+      g = { position: p.position, items: [] };
+      groups.push(g);
+    }
+    g.items.push(p);
+  }
+
+  return (
+    <div ref={ref} className="mt-16">
+      <div className="mb-10 flex items-center justify-center gap-3">
+        <span className="h-px w-16 bg-gradient-to-r from-transparent to-gold/40" />
+        <Gift className="h-5 w-5 text-gold/60" />
+        <span className="h-px w-16 bg-gradient-to-l from-transparent to-gold/40" />
+      </div>
+      <h2 className="mb-10 text-center font-playfair text-xs uppercase tracking-[0.3em] text-cream/50">
+        The prizes
+      </h2>
+
+      <div className="space-y-10">
+        {groups.map((group, gi) => (
+          <motion.div
+            key={group.position}
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.55, delay: gi * 0.08 }}
+          >
+            <p className="mb-4 text-center font-playfair text-base italic text-gold">
+              {ordinal(group.position)} Prize
+            </p>
+            <div className="mx-auto grid max-w-3xl grid-cols-1 gap-5 sm:grid-cols-2">
+              {group.items.map((prize) => (
+                <div
+                  key={`${prize.position}-${prize.title}`}
+                  className="overflow-hidden rounded-xl border border-gold/15 bg-white/[0.02]"
+                >
+                  {prize.imageUrl && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={prize.imageUrl}
+                      alt={prize.title}
+                      className="aspect-video w-full object-cover"
+                    />
+                  )}
+                  <div className="p-5">
+                    <h3 className="font-playfair text-lg text-cream">{prize.title}</h3>
+                    {prize.description && (
+                      <p className="mt-1.5 font-playfair text-sm leading-relaxed text-cream/55">
+                        {prize.description}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function GrandDrawClient({ standings }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: '-60px' });
@@ -289,6 +368,8 @@ export default function GrandDrawClient({ standings }: Props) {
   // Only surface nations that have earned at least one entry (percentage > 0).
   const activeCountries = countries.filter((c) => c.percentage > 0);
   const winners = standings?.winners ?? [];
+  // Prize lineup — empty unless the admin enabled public display in settings.
+  const prizes = standings?.prizes ?? [];
   // Number of grand prizes is configured in the dashboard; fall back to 5.
   const winnerCount = standings?.winnerCount ?? 5;
   const drawn = (standings?.drawCompleted ?? false) && winners.length > 0;
@@ -422,6 +503,9 @@ export default function GrandDrawClient({ standings }: Props) {
               );
             })}
           </motion.div>
+
+          {/* Prize lineup — only when the admin has enabled public display */}
+          {prizes.length > 0 && <PrizesShowcase prizes={prizes} />}
 
           <p className="mt-10 text-center font-playfair text-xs tracking-wide text-cream/30">
             Figures shown are each nation&rsquo;s share of total entries. Winner names are shown with
